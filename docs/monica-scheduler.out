@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{Definici\363n inicial del problema}{}% 1
+\BOOKMARK [1][-]{section.2}{Modelaci\363n del problema}{}% 2
+\BOOKMARK [1][-]{section.3}{Herramientas utilizadas}{}% 3
+\BOOKMARK [1][-]{section.4}{Arquitectura: Microservicios}{}% 4
+\BOOKMARK [1][-]{section.5}{DHT}{}% 5
+\BOOKMARK [2][-]{subsection.5.1}{Kademlia}{section.5}% 6
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Comunicaci\363n: RPCs}{subsection.5.1}% 7
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Consistencia y Replicaci\363n: Active replication}{subsection.5.1}% 8
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Tolerancia a Fallas}{subsection.5.1}% 9
+\BOOKMARK [1][-]{section.6}{Seguridad}{}% 10
+\BOOKMARK [2][-]{subsection.6.1}{Autenticaci\363n}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.2}{Autorizaci\363n}{section.6}% 12
