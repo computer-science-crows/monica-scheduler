@@ -214,7 +214,66 @@
 	
 	\section{DHT}
 	
+	Una DHT (Tabla Hash Distribuida) es una estructura de datos que se utiliza en sistemas distribuidos para almacenar pares de clave-valor de manera eficiente.
+	
+	Propiedades:
+	
+	\begin{itemize}
+		\item  Distribución: Los datos se distribuyen entre todos los nodos de la red, lo que significa que no hay un único punto de fallo y que la red puede escalar a un gran número de nodos.
+		
+		\item  Descentralización: No hay un nodo central o coordinador en una DHT. Cada nodo puede funcionar de manera independiente y sólo necesita saber sobre un pequeño número de otros nodos.
+		
+		\item  Eficiencia: Las DHT pueden realizar operaciones de búsqueda, inserción y eliminación de datos en un tiempo logarítmico con respecto al número de nodos en la red.
+		
+		\item Resistencia a fallos: Las DHT suelen ser resistentes a fallos, lo que significa que pueden seguir funcionando incluso cuando algunos nodos de la red fallan o se desconectan.
+	\end{itemize}
+	
 	\subsection{Kademlia}
+	
+	La implementación de una Tabla Hash Distribuida (DHT) de Kademlia implica varios componentes clave. 
+	
+	Descripción general de elementos a implementar:
+	
+	\subsubsection{Nodo}
+	
+	\subsubsection{IDs de Nodo}
+	
+	Cada nodo en la red debe tener un identificador único. En Kademlia, este suele ser un número de 160 bits, a menudo generado usando una función hash como SHA-1.
+	
+	\subsubsection{Almacenamiento de Clave-Valor} 
+	
+	Cada nodo debe mantener un almacenamiento local de clave-valor. Estos son los datos de los que el nodo es responsable en la DHT.
+	
+	\subsubsection{Tabla de Enrutamiento}
+	
+	 Cada nodo debe mantener una lista de otros nodos en la red, ordenados por la distancia entre sus IDs de nodo y el suyo propio. Kademlia utiliza una estructura de datos específica llamada k-bucket para hacer esto.
+	
+	\subsubsection{Operaciones de Red} 
+	
+	Necesitarás implementar varias operaciones que los nodos pueden realizar a través de la red:
+	
+	\begin{itemize}
+		\item  `PING`: Verificar si otro nodo está en línea.
+		\item  `STORE`: Almacenar un par clave-valor en un nodo.
+		\item  `FIND\_NODE`: Encontrar los k nodos más cercanos a una clave dada.
+		\item  `FIND\_VALUE`: Recuperar un valor por su clave si el nodo lo tiene, o los k nodos más cercanos a la clave en caso contrario.
+	\end{itemize}
+	
+	\subsubsection{Proceso de Ingreso de Nodo} 
+	
+	Cuando un nuevo nodo se une a la red, necesita poblar su tabla de enrutamiento. Hace esto realizando una operación `FIND\_NODE` en su propia ID.
+	
+	\subsubsection{Replicación y Republicación de Valores} 
+	
+	Para asegurar que los datos no se pierdan cuando los nodos abandonan la red, Kademlia almacena múltiples copias de cada par clave-valor en diferentes nodos. Necesitarás implementar esta replicación, así como un proceso para que los nodos republiquen periódicamente sus pares clave-valor.
+	
+	\subsubsection{Manejo de Fallos de Nodo} 
+	
+	Los nodos necesitan verificar periódicamente si sus pares aún están en línea y actualizar sus tablas de enrutamiento en consecuencia.
+	
+	\subsubsection{Concurrencia} 
+	
+	Kademlia utiliza muchas operaciones concurrentes para acelerar las operaciones de red y hacer la red más robusta. Tendrás que manejar esto en tu implementación.
 	
 	\subsubsection{Comunicaci\'on: RPCs}
 	
