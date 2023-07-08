@@ -4,6 +4,9 @@ import sys
 
 from kademlia.network import Server
 
+for arg in sys.argv:
+    print(arg)
+
 if len(sys.argv) != 4:
     print("Usage: python get.py <bootstrap node> <bootstrap port> <key>")
     sys.exit(1)

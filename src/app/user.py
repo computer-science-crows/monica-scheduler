@@ -1,5 +1,6 @@
 import uuid
-from 
+from src.app.workspace import Workspace
+from src.app.event import Event
 
 class User:
 
@@ -9,25 +10,21 @@ class User:
         self.full_name = full_name
         self.password = password
         self.requests = {}
-        self.workspaces = {}
-        self.user_role = {}
-        
+        self.workspaces = {}  
+        self.active = False            
 
-    def create_event(self, workspace, event):
-        
-        if 
 
-    def create_workspace(self, workspace):
-        pass
+    def create_event(self, workspace: Workspace, event: Event):
+        new_event = workspace.add_event(self,event)
+    
+    def create_workspace(self, workspace_name, workspace_type, workspace_users):
+        new_workspace = Workspace(workspace_name,workspace_type)
 
-    def remove_event(self, workspace, event):
-        pass
+    def remove_event(self, workspace: Workspace, event: Event):
+        event = workspace.remove_event(event)
 
     def remove_workspace(self, workspace):
         pass
 
-    def send_request(self, request, users, workspace):
-        pass
-
-    def receive_request(self, request, user, workspace):
+    def set_request(self, request):
         pass
