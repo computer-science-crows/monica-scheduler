@@ -32,23 +32,36 @@ class Workspace(ABC):
 
     @abstractclassmethod
     def add_users(self,from_user, users_list_to_add):
-        pass
+        
+        for user in users_list_to_add:
+            self.add_user
 
     @abstractclassmethod
     def remove_user(self, user: User):
         pass
 
     def permission_to_remove(self,user):
-        pass
+        pass        
 
     def send_request(self, request, user:User):
-        user.set_request(request)        
+        user.set_request(request) 
 
+    def is_valid_event(self, event:Event):
+
+        for user in self.users:
+            for workspace in user.workspaces:
+                if event in workspace.events:
+                    return user
+                
+        return None
+    
+    
 
 class FlatWorkspace(Workspace):
 
     def __init__(self, name) -> None:
-        super().__init__(name, type)        
+        super().__init__(name, type)  
+        self.requests = {}      
         self.waiting_events = {}
         self.waiting_users = {}
 
@@ -66,6 +79,7 @@ class FlatWorkspace(Workspace):
         for user in self.users:
             self.send_request(request, user)
 
+        self.requests[request.request_id] = request
         self.waiting_events[event.event_id] = event
 
     def remove_event(self, event: Event, user: User):
@@ -83,9 +97,10 @@ class FlatWorkspace(Workspace):
         request = Request(self.workspace_id, from_user.alias)
         user_to_add.set_request(request)
 
+        self.requests[request.request_id] = request
         self.waiting_users[user_to_add.alias] = user_to_add
     
-    def remove_user(self, user_to_remove):
+    def remove_user(self, from_user, user_to_remove):
 
         try:
             self.users.pop(user_to_remove.alias)
@@ -95,6 +110,21 @@ class FlatWorkspace(Workspace):
 
         return False
 
+    def accepted_request(self, request_id):
+        
+        if request_id in self.requests.keys():
+            request = self.requests[request_id]
+            request_type = request.get_type()
+
+            if request_type == 'event':
+                pass
+            elif request_type == 'request':
+                pass
+                
+    def rejected_request(self, request_id):
+        pass
+
+        
        
 
 class HierarchicalWorkspace(Workspace):
@@ -128,9 +158,34 @@ class HierarchicalWorkspace(Workspace):
             self.events.pop(event.event_id)
             return True
         
-        print(f"User {user} cannot delete event because he is not administrator of the workspace {self}")
+        print(f"User {user} cannot delete event because it is not administrator of the workspace {self}")
 
         return False
+    
+    def add_user(self, from_user, user_to_add):
+
+        if self.users_roles[from_user.alias] == 'admin':
+            self.users[user_to_add.alias] = user_to_add
+            return True
+        
+        print(f"User {from_user} cannot add user because it is not administrator of the workspace {self}")
+        
+        return False
+    
+
+    def remove_user(self, from_user, user_to_remove):
+
+        if self.users_roles[from_user.alias] == 'admin':
+            self.users.pop(user_to_remove.alias)
+            return True
+        
+        print(f"User {from_user} cannot delete user because it is not administrator of the workspace {self}")
+        
+        return False
+    
+    
+
+
     
 
 
