@@ -8,5 +8,5 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-# CMD ["python3", "main.py"]
-CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468"]
+CMD ["python3", "main.py"]
+# CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468"]
