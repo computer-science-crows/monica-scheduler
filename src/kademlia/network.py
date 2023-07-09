@@ -69,12 +69,19 @@ class Server:
                                                local_addr=(interface, port))
         log.info("Node %i listening on %s:%i",
                  self.node.long_id, interface, port)
+        print(f"Node {self.node.long_id} listening on {interface}, {port}")
+        self.node.ip = interface
+        self.node.port = port
         self.transport, self.protocol = await listen
+        print(f"Transport: {self.transport}")
+        print(f"Protocol: {self.protocol}")
+        print(f"Kademlia storage init: {self.protocol.storage}")
         # finally, schedule refreshing table
         self.refresh_table()
 
     def refresh_table(self):
         log.debug("Refreshing routing table")
+        print("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
         self.refresh_loop = loop.call_later(3600, self.refresh_table)
@@ -86,6 +93,8 @@ class Server:
         """
         results = []
         for node_id in self.protocol.get_refresh_ids():
+            print(f"Refreshed node id: {node_id}")
+            print("here")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
@@ -122,15 +131,19 @@ class Server:
         """
         log.debug("Attempting to bootstrap node with %i initial contacts",
                   len(addrs))
+        print(
+            f"Attempting to bootstrap node with {len(addrs)} initial contacts")
         cos = list(map(self.bootstrap_node, addrs))
         gathered = await asyncio.gather(*cos)
         nodes = [node for node in gathered if node is not None]
+        print(f"nodes: {nodes}")
         spider = NodeSpiderCrawl(self.protocol, self.node, nodes,
                                  self.ksize, self.alpha)
         return await spider.find()
 
     async def bootstrap_node(self, addr):
         result = await self.protocol.ping(addr, self.node.id)
+        print(f"PING result from {self.node.ip} to {addr}: {result}")
         return Node(result[1], addr[0], addr[1]) if result[0] else None
 
     async def get(self, key):

@@ -1,37 +1,75 @@
+import argparse
+import logging
 import asyncio
+
 from kademlia.network import Server
-import subprocess
 
-ip = subprocess.check_output("hostname -i", shell=True)
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+log = logging.getLogger('kademlia')
+log.addHandler(handler)
+log.setLevel(logging.DEBUG)
 
-# Convert the output to a string
-interface = "172.18.255.255"
-ip = ip.decode("utf-8").strip()
-port = 5678
-print((ip, port))
+server = Server()
 
 
-async def run():
-    # Create a node and start listening on port 5678
-    node = Server()
-    await node.listen(port, interface)
+def parse_arguments():
+    parser = argparse.ArgumentParser()
 
-    # Bootstrap the node by connecting to other known nodes, in this case
-    # replace 123.123.123.123 with the IP of another node and optionally
-    # give as many ip/port combos as you can for other nodes.
-    await node.bootstrap([(ip, port)])
+    # Optional arguments
+    parser.add_argument(
+        "-i", "--ip", help="IP address of existing node", type=str, default=None)
+    parser.add_argument(
+        "-p", "--port", help="port number of existing node", type=int, default=None)
 
-    # set a value for the key "my-key" on the network
-    await node.set("my-key", "my awesome value")
+    return parser.parse_args()
 
-    # get the value associated with "my-key" from the network
-    result = await node.get("my-key")
-    print(result)
 
-    while True:
-        ...
-        l = [node.protocol.router.buckets[i].nodes
-             for i in range(len(node.protocol.router.buckets))]
-        print(l)
+def connect_to_bootstrap_node(args):
+    print("CONNECT NODE")
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
 
-asyncio.run(run())
+    loop.run_until_complete(server.listen(8468))
+    bootstrap_node = (args.ip, int(args.port))
+    print(bootstrap_node)
+    loop.run_until_complete(server.bootstrap([bootstrap_node]))
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+        loop.close()
+
+
+def create_bootstrap_node():
+    print("NEW NETWORK")
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+
+    loop.run_until_complete(server.listen(8468))
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+        loop.close()
+
+
+def main():
+    args = parse_arguments()
+
+    if args.ip and args.port:
+        connect_to_bootstrap_node(args)
+    else:
+        create_bootstrap_node()
+
+
+if __name__ == "__main__":
+    main()
