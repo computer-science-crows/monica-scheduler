@@ -3,47 +3,75 @@ from itertools import takewhile
 import operator
 from collections import OrderedDict
 from abc import abstractmethod, ABC
+import dictdatabase as DDB
 
+DDB.config.storage_directory = "src/database"
+#DDB.config.use_compression = True 
 
-class IStorage(ABC):
+class Storage:
     """
     Local storage for this node.
-    IStorage implementations of get must return the same type as put in by set
+    Storage implementations of get must return the same type as put in by set
     """
 
-    @abstractmethod
+    def __init__(self, file_name, ttl=604800):
+
+        self.file_name = file_name
+        self.ttl = ttl
+
+        if not DDB.at(f"{file_name}").exists():
+            DDB.at(f"{file_name}").create({})
+  
+    
     def __setitem__(self, key, value):
         """
         Set a key to the given value.
         """
+       
+        with DDB.at(f"{self.file_name}").session() as (session, file):
+            file[f"{key}"] = (time.monotonic(), value) 
+            session.write()     
 
-    @abstractmethod
+        
+
     def __getitem__(self, key):
         """
         Get the given key.  If item doesn't exist, raises C{KeyError}
         """
-
-    @abstractmethod
+        if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+            return DDB.at(f"{self.file_name}", key=f"{key}").read()
+        
+    
     def get(self, key, default=None):
         """
         Get given key.  If not found, return default.
         """
+        if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+            return DDB.at(f"{self.file_name}", key=f"{key}").read()
+        return default
 
-    @abstractmethod
+
     def iter_older_than(self, seconds_old):
-        """
-        Return the an iterator over (key, value) tuples for items older
-        than the given secondsOld.
-        """
+        min_birthday = time.monotonic() - seconds_old
+        zipped = self._triple_iter()
+        matches = takewhile(lambda r: min_birthday >= r[1], zipped)
+        return list(map(operator.itemgetter(0, 2), matches))
 
-    @abstractmethod
-    def __iter__(self):
-        """
-        Get the iterator for this storage, should yield tuple of (key, value)
-        """
+    def _triple_iter(self):
+        data = DDB.at(f"{self.file_name}").read()
+        keys = data.keys()
+        birthday = map(operator.itemgetter(0), data.values())
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, birthday, values)
 
+    def __iter__(self): 
+        data = DDB.at(f"{self.file_name}").read()       
+        keys = data.keys()
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, values)
 
-class ForgetfulStorage(IStorage):
+    
+class ForgetfulStorage(Storage):
     def __init__(self, ttl=604800):
         """
         By default, max age is a week.
@@ -92,3 +120,7 @@ class ForgetfulStorage(IStorage):
         ikeys = self.data.keys()
         ivalues = map(operator.itemgetter(1), self.data.values())
         return zip(ikeys, ivalues)
+
+
+
+ 
