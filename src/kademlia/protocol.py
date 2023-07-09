@@ -32,9 +32,7 @@ class KademliaProtocol(RPCProtocol):
         return sender
 
     def rpc_ping(self, sender, nodeid):
-        print("RPC_PING METHOD!!!!")
         source = Node(nodeid, sender[0], sender[1])
-        print(f'source ping method: {source}')
         self.welcome_if_new(source)
         return self.source_node.id
 
@@ -76,7 +74,6 @@ class KademliaProtocol(RPCProtocol):
         return self.handle_call_response(result, node_to_ask)
 
     async def call_ping(self, node_to_ask):
-        print("CALL_PING METHOD!!!!")
         address = (node_to_ask.ip, node_to_ask.port)
         result = await self.ping(address, self.source_node.id)
         return self.handle_call_response(result, node_to_ask)
@@ -87,7 +84,6 @@ class KademliaProtocol(RPCProtocol):
         return self.handle_call_response(result, node_to_ask)
 
     def welcome_if_new(self, node):
-        print("WELCOME IF NEW METHOD!!!!")
         """
         Given a new node, send it all the keys/values it should be storing,
         then add it to the routing table.
@@ -102,11 +98,9 @@ class KademliaProtocol(RPCProtocol):
         on the new node (per section 2.5 of the paper)
         """
         if not self.router.is_new_node(node):
-            print("not a new node")
             return
 
         log.info("never seen %s before, adding to router", node)
-        print("node never seen before")
         for key, value in self.storage:
             keynode = Node(digest(key))
             neighbors = self.router.find_neighbors(keynode)
