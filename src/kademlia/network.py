@@ -5,10 +5,11 @@ import random
 import pickle
 import asyncio
 import logging
+import uuid
 
 from kademlia.protocol import KademliaProtocol
 from kademlia.utils import digest
-from kademlia.storage import ForgetfulStorage
+from kademlia.storage import Storage
 from kademlia.node import Node
 from kademlia.crawling import ValueSpiderCrawl
 from kademlia.crawling import NodeSpiderCrawl
@@ -36,9 +37,10 @@ class Server:
             storage: An instance that implements the interface
                      :class:`~kademlia.storage.IStorage`
         """
+        self.id = uuid.uuid4()
         self.ksize = ksize
         self.alpha = alpha
-        self.storage = storage or ForgetfulStorage()
+        self.storage = storage or Storage(self.id)
         self.node = Node(node_id or digest(random.getrandbits(255)))
         self.transport = None
         self.protocol = None

@@ -1,11 +1,22 @@
-import dictdatabase as DDB
+import asyncio
+from kademlia.network import Server
+from kademlia.storage import Storage
 
-DDB.config.storage_directory = "src/database"
-DDB.config.use_compression = True
+async def run():
+    # Create a node and start listening on port 5678
+    node = Server()
+    await node.listen(5678)
 
-users_dict = {
-   "u1": { "name" : "Ben", "age": 30, "job": "Software Engineer" },
-   "u2": { "name" : "Sue", "age": 21, "job": "Architect" },
-   "u3": { "name" : "Joe", "age": 50, "job": "Manager" },
-}
-DDB.at("users").create(users_dict)
+    # Bootstrap the node by connecting to other known nodes, in this case
+    # replace 123.123.123.123 with the IP of another node and optionally
+    # give as many ip/port combos as you can for other nodes.
+    await node.bootstrap([("123.123.123.123", 5678)])
+
+    # set a value for the key "my-key" on the network
+    await node.set("my-key", "my awesome value")
+
+    # get the value associated with "my-key" from the network
+    result = await node.get("my-key")
+    print(result)
+
+asyncio.run(run())

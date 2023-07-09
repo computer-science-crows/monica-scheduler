@@ -14,9 +14,11 @@ class Storage:
     Storage implementations of get must return the same type as put in by set
     """
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, ttl=604800):
 
         self.file_name = file_name
+        self.ttl = ttl
+
         if not DDB.at(f"{file_name}").exists():
             DDB.at(f"{file_name}").create({})
   
@@ -25,8 +27,9 @@ class Storage:
         """
         Set a key to the given value.
         """
+       
         with DDB.at(f"{self.file_name}").session() as (session, file):
-            file[f"{key}"] = value 
+            file[f"{key}"] = (time.monotonic(), value) 
             session.write()     
 
         
@@ -47,16 +50,27 @@ class Storage:
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
         return default
 
+
+    def iter_older_than(self, seconds_old):
+        min_birthday = time.monotonic() - seconds_old
+        zipped = self._triple_iter()
+        matches = takewhile(lambda r: min_birthday >= r[1], zipped)
+        return list(map(operator.itemgetter(0, 2), matches))
+
+    def _triple_iter(self):
+        data = DDB.at(f"{self.file_name}").read()
+        keys = data.keys()
+        birthday = map(operator.itemgetter(0), data.values())
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, birthday, values)
+
+    def __iter__(self): 
+        data = DDB.at(f"{self.file_name}").read()       
+        keys = data.keys()
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, values)
+
     
-
-    @abstractmethod
-    def __iter__(self):
-        """
-        Get the iterator for this storage, should yield tuple of (key, value)
-        """
-
-
-
 class ForgetfulStorage(Storage):
     def __init__(self, ttl=604800):
         """
@@ -108,10 +122,5 @@ class ForgetfulStorage(Storage):
         return zip(ikeys, ivalues)
 
 
-storage = Storage('data')
 
-storage['hola'] = 'mar'
-storage['pe']={'1':'d','2':'f'}
-
-print(storage['pe'])
  
