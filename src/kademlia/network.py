@@ -9,7 +9,7 @@ import uuid
 
 from kademlia.protocol import KademliaProtocol
 from kademlia.utils import digest
-from kademlia.storage import Storage
+from kademlia.storage import Storage, ForgetfulStorage
 from kademlia.node import Node
 from kademlia.crawling import ValueSpiderCrawl
 from kademlia.crawling import NodeSpiderCrawl
@@ -40,7 +40,7 @@ class Server:
         self.id = uuid.uuid4()
         self.ksize = ksize
         self.alpha = alpha
-        self.storage = storage or Storage(self.id)
+        self.storage = Storage(self.id)
         self.node = Node(node_id or digest(random.getrandbits(255)))
         self.transport = None
         self.protocol = None
@@ -90,6 +90,7 @@ class Server:
         """
         results = []
         for node_id in self.protocol.get_refresh_ids():
+            print(f"NODE ID: {node_id}")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
@@ -101,6 +102,7 @@ class Server:
 
         # now republish keys older than one hour
         for dkey, value in self.storage.iter_older_than(3600):
+            print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 
     def bootstrappable_neighbors(self):
@@ -258,6 +260,7 @@ def check_dht_value_type(value):
         float,
         bool,
         str,
-        bytes
+        bytes,
+        dict
     ]
     return type(value) in typeset  # pylint: disable=unidiomatic-typecheck

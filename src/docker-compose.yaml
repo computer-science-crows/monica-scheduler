@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  start_network:
+    build: ./network_actions/start_network
+    volumes:
+      - ./network_actions/start_network:/dock_server
+
+  connect_node:
+    build: ./network_actions/connect_node
+    volumes:
+      - ./network_actions/connect_node:/dock_server
+
+  set:
+    build: ./network_actions/set
+    volumes:
+      - ./network_actions/set:/dock_server
+
+  get:
+    build: ./network_actions/get
+    volumes:
+      - ./network_actions/get:/dock_server

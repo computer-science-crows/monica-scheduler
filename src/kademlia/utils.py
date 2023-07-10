@@ -39,3 +39,6 @@ def shared_prefix(args):
 def bytes_to_bit_string(bites):
     bits = [bin(bite)[2:].rjust(8, '0') for bite in bites]
     return "".join(bits)
+
+
+print(digest("my-key"))

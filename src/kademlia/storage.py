@@ -4,9 +4,12 @@ import operator
 from collections import OrderedDict
 from abc import abstractmethod, ABC
 import dictdatabase as DDB
+import json
+import pickle
 
-DDB.config.storage_directory = "src/database"
-#DDB.config.use_compression = True 
+
+# DDB.config.use_compression = True
+
 
 class Storage:
     """
@@ -15,24 +18,26 @@ class Storage:
     """
 
     def __init__(self, file_name, ttl=604800):
-
         self.file_name = file_name
         self.ttl = ttl
 
-        if not DDB.at(f"{file_name}").exists():
-            DDB.at(f"{file_name}").create({})
-  
-    
+        DDB.config.storage_directory = "database"
+
+        database = DDB.at(f"{self.file_name}")
+        if not database.exists():
+            print("!!!!!!! NEW DATABASE CREATION !!!!!!!!")
+            database.create({})
+        else:
+            print("!!!!!!! DATABASE ALREADY EXISTS !!!!!!!!")
+
     def __setitem__(self, key, value):
         """
         Set a key to the given value.
         """
-       
-        with DDB.at(f"{self.file_name}").session() as (session, file):
-            file[f"{key}"] = (time.monotonic(), value) 
-            session.write()     
 
-        
+        with DDB.at(f"{self.file_name}").session() as (session, file):
+            file[f"{key}"] = (time.monotonic(), value)
+            session.write()
 
     def __getitem__(self, key):
         """
@@ -40,16 +45,16 @@ class Storage:
         """
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
-        
-    
+
     def get(self, key, default=None):
         """
         Get given key.  If not found, return default.
         """
+        print(f"KEY {key}")
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+            print("HOLAAAAA")
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
         return default
-
 
     def iter_older_than(self, seconds_old):
         min_birthday = time.monotonic() - seconds_old
@@ -64,13 +69,13 @@ class Storage:
         values = map(operator.itemgetter(1), data.values())
         return zip(keys, birthday, values)
 
-    def __iter__(self): 
-        data = DDB.at(f"{self.file_name}").read()       
+    def __iter__(self):
+        data = DDB.at(f"{self.file_name}").read()
         keys = data.keys()
         values = map(operator.itemgetter(1), data.values())
         return zip(keys, values)
 
-    
+
 class ForgetfulStorage(Storage):
     def __init__(self, ttl=604800):
         """
@@ -122,5 +127,4 @@ class ForgetfulStorage(Storage):
         return zip(ikeys, ivalues)
 
 
-
- 
+# storage = Storage('data')

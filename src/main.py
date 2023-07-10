@@ -4,6 +4,12 @@ import asyncio
 
 from kademlia.network import Server
 
+from network_actions.start_network.start_network import create_bootstrap_node
+from network_actions.connect_node.connect_node import connect_to_bootstrap_node
+from network_actions.set.set import set
+from network_actions.get.get import get
+
+
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -11,8 +17,6 @@ handler.setFormatter(formatter)
 log = logging.getLogger('kademlia')
 log.addHandler(handler)
 log.setLevel(logging.INFO)
-
-server = Server()
 
 
 def parse_arguments():
@@ -32,74 +36,20 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def connect_to_bootstrap_node(args):
-    print("CONNECT NODE")
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-
-    loop.run_until_complete(server.listen(8468))
-    bootstrap_node = (args.ip, int(args.port))
-    print(bootstrap_node)
-    loop.run_until_complete(server.bootstrap([bootstrap_node]))
-
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.stop()
-        loop.close()
-
-
-def create_bootstrap_node():
-    print("NEW NETWORK")
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-
-    loop.run_until_complete(server.listen(8468))
-
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.stop()
-        loop.close()
-
-
-async def set(args):
-    server = Server()
-    await server.listen(8469)
-    bootstrap_node = (args.ip, int(args.port))
-    await server.bootstrap([bootstrap_node])
-    await server.set(args.key, args.value)
-    server.stop()
-
-
-async def get(args):
-    server = Server()
-    await server.listen(8469)
-    bootstrap_node = (args.ip, int(args.port))
-    await server.bootstrap([bootstrap_node])
-
-    result = await server.get(args.key)
-    print("Get result:", result)
-    server.stop()
-
-
 def main():
+    server = Server()
     args = parse_arguments()
 
     if args.operation == 'set':
         if args.key and args.value and args.ip and args.port:
-            asyncio.run(set(args))
-    if args.operation == 'get':
+            asyncio.run(set(server, args))
+    elif args.operation == 'get':
         if args.key and args.value and args.ip and args.port:
-            asyncio.run(get(args))
+            asyncio.run(get(server, args))
     elif args.ip and args.port:
-        connect_to_bootstrap_node(args)
+        connect_to_bootstrap_node(server, args)
     else:
-        create_bootstrap_node()
+        create_bootstrap_node(server)
 
 
 if __name__ == "__main__":
