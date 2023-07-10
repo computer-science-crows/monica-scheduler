@@ -40,6 +40,10 @@ class Workspace(ABC):
     def remove_user(self, user: User):
         pass
 
+    @abstractclassmethod
+    def change_workspace_type(self):
+        pass
+
     def permission_to_remove(self,user):
         pass        
 
@@ -54,6 +58,12 @@ class Workspace(ABC):
                     return user
                 
         return None
+    
+    def __repr__(self) -> str:
+        return self.name
+    
+    def __str__(self) -> str:
+        return self.name
     
     
 
@@ -110,6 +120,7 @@ class FlatWorkspace(Workspace):
 
         return False
 
+    #TODO terminar esto
     def accepted_request(self, request_id):
         
         if request_id in self.requests.keys():
@@ -120,18 +131,35 @@ class FlatWorkspace(Workspace):
                 pass
             elif request_type == 'request':
                 pass
+            else:
+                new_workspace = HierarchicalWorkspace(self.name)
+
+                new_workspace.workspace_id = self.workspace_id
+                new_workspace.events = self.events
+                new_workspace.users = self.users
+                new_workspace.admins = self.requests[request_id].admins
+
+                return new_workspace
                 
     def rejected_request(self, request_id):
         pass
 
-        
-       
+    def change_workspace_type(self, from_user_id, admins):
+
+        request = WorkspaceRequest(self.workspace_id, from_user_id,admins)
+
+        for user in self.users:
+            user.set_request(request)
+
+        self.requests[request.request_id] = request
+
+    
 
 class HierarchicalWorkspace(Workspace):
 
     def __init__(self, name) -> None:
         super().__init__(name)
-        self.users_roles = {} 
+        self.admins = {} 
 
     def get_type(self):
         return 'hierarchical'
@@ -143,7 +171,7 @@ class HierarchicalWorkspace(Workspace):
         if user_collision != None:
             print(f"WARNING: User {user_collision} has an event that collides with the new event.")
 
-        if self.users_role[user.user_id] == 'admin':
+        if user.user_id in self.admins:
                 # tal vez verificar si hay colision dentro del workspace
                 self.events[event.event_id] = event
                 return True
@@ -154,7 +182,7 @@ class HierarchicalWorkspace(Workspace):
     
     def remove_event(self, event: Event, user: User):
 
-        if self.users_roles[user.user_id] == 'admin':
+        if user.user_id in self.admins:
             self.events.pop(event.event_id)
             return True
         
@@ -164,7 +192,7 @@ class HierarchicalWorkspace(Workspace):
     
     def add_user(self, from_user, user_to_add):
 
-        if self.users_roles[from_user.alias] == 'admin':
+        if from_user.user_id in self.admins:
             self.users[user_to_add.alias] = user_to_add
             return True
         
@@ -175,13 +203,28 @@ class HierarchicalWorkspace(Workspace):
 
     def remove_user(self, from_user, user_to_remove):
 
-        if self.users_roles[from_user.alias] == 'admin':
+        if from_user.user_id in self.admins:
             self.users.pop(user_to_remove.alias)
             return True
         
         print(f"User {from_user} cannot delete user because it is not administrator of the workspace {self}")
         
         return False
+    
+    def change_workspace_type(self, from_user_id, admins):
+
+        if from_user_id not in self.admins:
+            return None
+        
+        new_workspace = FlatWorkspace(self.name)
+
+        new_workspace.workspace_id = self.workspace_id
+        new_workspace.events = self.events
+        new_workspace.users = self.users
+        
+        return new_workspace
+
+
     
     
 

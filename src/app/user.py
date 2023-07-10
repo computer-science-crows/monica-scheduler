@@ -64,6 +64,12 @@ class User:
         return False
 
 
+    def __repr__(self) -> str:
+        return self.alias
+    
+    def __str__(self) -> str:
+        return self.alias
+
 
 
         
