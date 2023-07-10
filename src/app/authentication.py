@@ -1,5 +1,5 @@
-from app.domain.user import get_user, set_user
-from app.user import User
+from app.user import get_user, set_user
+from domain.user import User
 
 class Auth:
 

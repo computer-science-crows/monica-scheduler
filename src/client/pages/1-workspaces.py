@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title = "Monica")
 
 st.markdown("# Workspaces")
-st.sidebar.markdown("# Workspaces")
+
 
 def change():
     st.text('change')
