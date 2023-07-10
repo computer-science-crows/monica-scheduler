@@ -17,6 +17,9 @@ class Event:
         if isinstance(other_event, Event):
             return self.date == self.date and (self.start_time > other_event.start_time or self.end_time < other_event.end_time)
         return False
+    
+    def __repr__(self) -> str:
+        return f"Title: {self.title}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n User: {self.user}\n"
         
         
 

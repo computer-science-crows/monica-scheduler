@@ -12,6 +12,12 @@ class Request(ABC):
 
     def get_type(self):
         return 'request'
+    
+    def __repr__(self) -> str:
+        return f"Type: {self.get_type}\n User: {self.from_user_id}\n Workspace: {self.workspace_id}"
+    
+    def __str__(self) -> str:
+        return f"Type: {self.get_type}, User: {self.from_user_id} Workspace: {self.workspace_id}"
 
 
 class EventRequest(Request):
