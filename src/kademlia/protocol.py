@@ -39,8 +39,8 @@ class KademliaProtocol(RPCProtocol):
     def rpc_store(self, sender, nodeid, key, value):
         source = Node(nodeid, sender[0], sender[1])
         self.welcome_if_new(source)
-        print('AQUIIIIIIIIIIIIIIIII')
-        print(key)
+        # print('AQUIIIIIIIIIIIIIIIII')
+        # print(key)
         log.debug("got a store request from %s, storing '%s'='%s'",
                   sender, key, value)
         self.storage[key] = value
@@ -73,7 +73,7 @@ class KademliaProtocol(RPCProtocol):
         address = (node_to_ask.ip, node_to_ask.port)
         result = await self.find_value(address, self.source_node.id,
                                        node_to_find.id)
-        print(f"!!!!!!!!!!! CALL FIND VALUE !!!!!!!!!!! {result}")
+        # print(f"!!!!!!!!!!! CALL FIND VALUE !!!!!!!!!!! {result}")
         return self.handle_call_response(result, node_to_ask)
 
     async def call_ping(self, node_to_ask):

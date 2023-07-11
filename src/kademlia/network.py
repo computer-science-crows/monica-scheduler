@@ -90,7 +90,7 @@ class Server:
         """
         results = []
         for node_id in self.protocol.get_refresh_ids():
-            print(f"NODE ID: {node_id}")
+            # print(f"NODE ID: {node_id}")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
@@ -102,7 +102,7 @@ class Server:
 
         # now republish keys older than one hour
         for dkey, value in self.storage.iter_older_than(3600):
-            print(f"NODE DKEY: {dkey}")
+            # print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 
     def bootstrappable_neighbors(self):
@@ -150,12 +150,12 @@ class Server:
         dkey = digest(key)
         # if this node has it, return it
         if self.storage.get(dkey) is not None:
-            print('1')
+            # print('1')
             return self.storage.get(dkey)
         node = Node(dkey)
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
-            print('2')
+            # print('2')
             log.warning("There are no known neighbors to get key %s", key)
             return None
         spider = ValueSpiderCrawl(self.protocol, node, nearest,

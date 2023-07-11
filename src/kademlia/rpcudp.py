@@ -39,7 +39,7 @@ class RPCProtocol(asyncio.DatagramProtocol):
         self.transport = transport
 
     def datagram_received(self, data, addr):
-        print(f'!!!!! {data}')
+        # print(f'!!!!! {data}')
         LOG.debug("received datagram from %s", addr)
         asyncio.ensure_future(self._solve_datagram(data, addr))
 
@@ -51,7 +51,7 @@ class RPCProtocol(asyncio.DatagramProtocol):
 
         msg_id = datagram[1:21]
         data = umsgpack.unpackb(datagram[21:])
-        print(f'!!!!!!!!!! HERE !!!!!!!!!! {data}')
+        # print(f'!!!!!!!!!! HERE !!!!!!!!!! {data}')
 
         if datagram[:1] == b'\x00':
             # schedule accepting request and returning the result

@@ -1,9 +1,9 @@
 import asyncio
 
 
-def create_bootstrap_node(server):
+def create_bootstrap_node(server, loop):
     print("NEW NETWORK")
-    loop = asyncio.get_event_loop()
+    # loop = asyncio.get_event_loop()
     loop.set_debug(True)
 
     loop.run_until_complete(server.listen(8468))

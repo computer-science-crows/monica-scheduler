@@ -1,14 +1,14 @@
 import socket
 
 
-def bc_server():
+def bc_server(t):
     host = '0.0.0.0'
     port = 8888
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_socket.bind((host, port))
 
-    while True:
+    while t.is_alive():
         print("broadcast server")
         data, addr = server_socket.recvfrom(1024)
         print(f"Received: {data}, from: {addr}")

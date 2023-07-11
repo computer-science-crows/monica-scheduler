@@ -18,7 +18,7 @@ class Storage:
     """
 
     def __init__(self, file_name, ttl=604800):
-        print('init')
+        # print('init')
         self.file_name = file_name
         self.ttl = ttl
 
@@ -26,16 +26,17 @@ class Storage:
 
         database = DDB.at(f"{self.file_name}")
         if not database.exists():
-            print("!!!!!!! NEW DATABASE CREATION !!!!!!!!")
+            # print("!!!!!!! NEW DATABASE CREATION !!!!!!!!")
             database.create({})
         else:
-            print("!!!!!!! DATABASE ALREADY EXISTS !!!!!!!!")
+            # print("!!!!!!! DATABASE ALREADY EXISTS !!!!!!!!")
+            pass
 
     def __setitem__(self, key, value):
         """
         Set a key to the given value.
         """
-        print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
+        # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
         with DDB.at(f"{self.file_name}").session() as (session, file):
             file[f"{key}"] = (time.monotonic(), value)
             session.write()
@@ -44,7 +45,7 @@ class Storage:
         """
         Get the given key.  If item doesn't exist, raises C{KeyError}
         """
-        print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
+        # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
 
@@ -54,10 +55,10 @@ class Storage:
         """
 
             
-        print(f"KEY {key}")
-        print(DDB.at(f"{self.file_name}").read())
+        # print(f"KEY {key}")
+        # print(DDB.at(f"{self.file_name}").read())
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
-            print("HOLAAAAA")
+            # print("HOLAAAAA")
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
         return default
 
@@ -101,7 +102,7 @@ class ForgetfulStorage(Storage):
 
     def get(self, key, default=None):
         self.cull()
-        print(f"!!!!!!! {self.data} !!!!!!!")
+        # print(f"!!!!!!! {self.data} !!!!!!!")
         if key in self.data:
             return self[key]
         return default

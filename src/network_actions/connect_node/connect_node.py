@@ -1,13 +1,13 @@
 import asyncio
 
 
-def connect_to_bootstrap_node(server, args):
+def connect_to_bootstrap_node(server, ip, port, loop):
     print("CONNECT NODE")
-    loop = asyncio.get_event_loop()
+    # loop = asyncio.get_event_loop()
     loop.set_debug(True)
 
     loop.run_until_complete(server.listen(8468))
-    bootstrap_node = (args.ip, int(args.port))
+    bootstrap_node = (ip, int(port))
     print(bootstrap_node)
     loop.run_until_complete(server.bootstrap([bootstrap_node]))
 
