@@ -43,20 +43,25 @@ def create_container(image_name, params=[]):
     container = client.containers.run(
         image_name, command=params, network='my-network', detach=True)
 
-    if 'get' in params:
+    if len(params) > 0:
         container.wait()
-        logs = container.logs().decode().split('\n')
+        lines = container.logs().decode().split('\n')
+        logs = lines
+        if 'set' in params:
+            logs = [line for line in lines if 'DEBUG' in line or 'INFO' in line]
         last_line = logs[-2] if len(logs) > 1 else logs[0]
+        print(f'!!!!!!!!!!!!!!!! {last_line}')
         container.stop()
         container.remove()
         return last_line
 
-    if 'set' in params:
-        container.wait()
-        container.stop()
-        container.remove()
-
     return container
+
+
+def remove_container(container):
+    container.stop()
+    container.remove()
+    print('Container removed')
 
 
 # print(build_image(cwd, 'script'))

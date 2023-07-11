@@ -8,10 +8,11 @@ import subprocess
 from kademlia.network import Server
 # from kademlia.broadcast import bc_server
 
-from network_actions.start_network import create_bootstrap_node
-from network_actions.connect_node import connect_to_bootstrap_node
-from network_actions.set import set
-from network_actions.get import get
+from network_actions import start_network, connect_node, set, get
+# from network_actions.start_network import start_network
+# from network_actions.connect_node import connect_node
+# from network_actions.set import set
+# from network_actions.get import get
 
 
 handler = logging.StreamHandler()
@@ -40,8 +41,8 @@ def bc_server():
     while not stop_thread:
         try:
             data, addr = server_socket.recvfrom(1024)
-            print(f"Received: {data}, from: {addr}")
             if addr[0] != container_ip:
+                print(f"Received: {data}, from: {addr}")
                 server_socket.sendto(b"OK...hello", addr)
         except:
             pass
@@ -91,20 +92,20 @@ def main(loop):
     port = 8468
 
     if ip == None:
-        create_bootstrap_node(server, loop)
+        start_network(server, loop)
     elif args.operation == 'set':
         if args.key and args.value:
             asyncio.run(set(server, ip, port, args))
             stop_thread = True
-            print('ending')
             return
     elif args.operation == 'get':
         if args.key:
             result = asyncio.run(get(server, ip, port, args))
             stop_thread = True
+            print(result)
             return result
     else:
-        connect_to_bootstrap_node(server, ip, port, loop)
+        connect_node(server, ip, port, loop)
 
 
 if __name__ == "__main__":
