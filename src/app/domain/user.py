@@ -1,20 +1,25 @@
 import uuid
-from src.domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
-from src.domain.event import Event
-from src.domain.request import Request
+from domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
+from domain.event import Event
+from domain.request import Request
+from kademlia.utils import digest
 
 class User:
 
     '''Represents a user of the distributed calendar.'''
 
     def __init__(self, alias, full_name, password):
-        self.user_id = uuid.uuid4()
         self.alias = alias
         self.full_name = full_name
         self.password = password
         self.requests = {}
         self.workspaces = {}  
-        self.active = False            
+        self.active = False 
+
+    
+    def id(self):
+        return digest(self.dicc())
+
 
     def logged(self):
         self.active = True
@@ -62,6 +67,14 @@ class User:
             return True
         
         return False
+    
+    def dicc(self):
+        return {'alias':self.alias,
+                'full_name':self.full_name,
+                'password':self.password,
+                'logged':self.active, 
+                'inbox':self.requests, 
+                'workspaces':self.workspaces}
 
 
     def __repr__(self) -> str:

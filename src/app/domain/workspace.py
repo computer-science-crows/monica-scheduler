@@ -1,7 +1,6 @@
 import uuid
-from src.domain.event import Event
-from src.domain.user import User
-from src.domain.request import Request, EventRequest, WorkspaceRequest
+from .event import Event
+from .request import Request, EventRequest, WorkspaceRequest
 from abc import abstractclassmethod, ABC
 
 
@@ -19,7 +18,7 @@ class Workspace(ABC):
         pass    
 
     @abstractclassmethod
-    def add_event(self, user:User, event: Event):
+    def add_event(self, user, event: Event):
         pass                
 
     @abstractclassmethod
@@ -27,7 +26,7 @@ class Workspace(ABC):
         pass
 
     @abstractclassmethod
-    def add_user(self, from_user, user_to_add: User):
+    def add_user(self, from_user, user_to_add):
         pass
 
     @abstractclassmethod
@@ -37,7 +36,7 @@ class Workspace(ABC):
             self.add_user
 
     @abstractclassmethod
-    def remove_user(self, user: User):
+    def remove_user(self, user):
         pass
 
     @abstractclassmethod
@@ -47,7 +46,7 @@ class Workspace(ABC):
     def permission_to_remove(self,user):
         pass        
 
-    def send_request(self, request, user:User):
+    def send_request(self, request, user):
         user.set_request(request) 
 
     def is_valid_event(self, event:Event):
@@ -92,7 +91,7 @@ class FlatWorkspace(Workspace):
         self.requests[request.request_id] = request
         self.waiting_events[event.event_id] = event
 
-    def remove_event(self, event: Event, user: User):
+    def remove_event(self, event: Event, user):
 
         if event.user.alias == user.alias:
             self.events.pop(event.event_id)
@@ -180,7 +179,7 @@ class HierarchicalWorkspace(Workspace):
 
         return False
     
-    def remove_event(self, event: Event, user: User):
+    def remove_event(self, event: Event, user):
 
         if user.user_id in self.admins:
             self.events.pop(event.event_id)
