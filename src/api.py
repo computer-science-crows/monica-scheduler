@@ -20,6 +20,8 @@ class API():
 
     def remove_servers(self):
         to_remove = random.choices(self.containers)
+        if len(to_remove) == len(self.containers):
+            print("BE AWARE: All servers are going down")
         print(to_remove)
         for container in to_remove:
             remove_container(container)
