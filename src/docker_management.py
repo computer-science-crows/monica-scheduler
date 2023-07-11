@@ -3,26 +3,32 @@ import os
 
 cwd = os.getcwd()
 print(cwd)
+client = docker.from_env()
 
 
 def create_network(net_name):
-    client = docker.from_env()
     return client.networks.create(net_name)
 
 
 def build_image(path_to_dckrfile, image_name):
-    client = docker.from_env()
-    if image_name in client.images.list(all=True):
+    image_names = [image.tags[0] for image in client.images.list(
+        all=True) if image.tags]
+    print(image_names)
+    image = client.images.build(path=path_to_dckrfile, tag=image_name)
+    print('builded')
+    if f'{image_name}:latest' in image_names:
+        client.images.prune(filters={'dangling': True})
+        print('dangling')
         for container in client.containers.list(all=True):
-            if container.image.tags[0] == image_name:
+            print(f'{container} : {container.image.tags}')
+            if len(container.image.tags) == 0 or container.image.tags[0] == image_name:
+                print('ok')
                 container.stop()
                 container.remove()
-        client.images.remove(image_name)
-    return client.images.build(path=path_to_dckrfile, tag=image_name)
+    return image
 
 
 def create_container(image_name, params=[]):
-    client = docker.from_env()
     container = client.containers.run(
         image_name, command=params, network='my-network', detach=True)
 
@@ -42,8 +48,8 @@ def create_container(image_name, params=[]):
     return container
 
 
-# print(build_image(cwd, 'script'))
-# print(create_container('script'))
+print(build_image(cwd, 'script'))
+print(create_container('script'))
 print(create_container('script', ["-o", "connect"]))
 print(create_container('script', ["-o", "set",
       "-k", "my-keyy", "-v", "my awesome value"]))

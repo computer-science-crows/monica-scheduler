@@ -8,10 +8,10 @@ import subprocess
 from kademlia.network import Server
 # from kademlia.broadcast import bc_server
 
-from network_actions.start_network.start_network import create_bootstrap_node
-from network_actions.connect_node.connect_node import connect_to_bootstrap_node
-from network_actions.set.set import set
-from network_actions.get.get import get
+from network_actions.start_network import create_bootstrap_node
+from network_actions.connect_node import connect_to_bootstrap_node
+from network_actions.set import set
+from network_actions.get import get
 
 
 handler = logging.StreamHandler()
