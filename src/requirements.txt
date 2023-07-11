@@ -7,6 +7,4 @@ pytest-cov>=2.8.1
 wheel>=0.36.2
 umsgpack
 dictdatabase
-streamlit
 docker
-

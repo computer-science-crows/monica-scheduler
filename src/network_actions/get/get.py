@@ -1,4 +1,5 @@
 from kademlia.utils import digest
+import asyncio
 
 
 async def get(server, args):
@@ -9,3 +10,4 @@ async def get(server, args):
     result = await server.get(args.key)
     print("Get result:", result)
     server.stop()
+    return result

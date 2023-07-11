@@ -91,10 +91,13 @@ class ValueSpiderCrawl(SpiderCrawl):
         for peerid, response in responses.items():
             response = RPCFindResponse(response)
             if not response.happened():
+                print('no response')
                 toremove.append(peerid)
             elif response.has_value():
+                print('value returned')
                 found_values.append(response.get_value())
             else:
+                print('not re')
                 peer = self.nearest.get_node(peerid)
                 self.nearest_without_value.push(peer)
                 self.nearest.push(response.get_node_list())
@@ -114,11 +117,13 @@ class ValueSpiderCrawl(SpiderCrawl):
         make sure we tell the nearest node that *didn't* have
         the value to store it.
         """
+        print(f'!!!!!!!!! VALUES !!!!!!!!!!!! {values}')
         value_counts = Counter(values)
         if len(value_counts) != 1:
             log.warning("Got multiple values for key %i: %s",
                         self.node.long_id, str(values))
         value = value_counts.most_common(1)[0][0]
+        print(f'!!!!!! HANDLE FOUND VALUES: {value} !!!!!!')
 
         peer = self.nearest_without_value.popleft()
         if peer:
@@ -173,7 +178,8 @@ class RPCFindResponse:
         return isinstance(self.response[1], dict)
 
     def get_value(self):
-        return self.response[1]['value']
+        print(self.response)
+        return self.response[1]['value'][1]
 
     def get_node_list(self):
         """

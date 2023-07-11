@@ -40,7 +40,7 @@ class Server:
         self.id = uuid.uuid4()
         self.ksize = ksize
         self.alpha = alpha
-        self.storage = Storage(self.id)
+        self.storage = Storage('data')
         self.node = Node(node_id or digest(random.getrandbits(255)))
         self.transport = None
         self.protocol = None
@@ -150,10 +150,12 @@ class Server:
         dkey = digest(key)
         # if this node has it, return it
         if self.storage.get(dkey) is not None:
+            print('1')
             return self.storage.get(dkey)
         node = Node(dkey)
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
+            print('2')
             log.warning("There are no known neighbors to get key %s", key)
             return None
         spider = ValueSpiderCrawl(self.protocol, node, nearest,
@@ -182,13 +184,13 @@ class Server:
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
             log.warning("There are no known neighbors to set key %s",
-                        dkey.hex())
+                        dkey)
             return False
 
         spider = NodeSpiderCrawl(self.protocol, node, nearest,
                                  self.ksize, self.alpha)
         nodes = await spider.find()
-        log.info("setting '%s' on %s", dkey.hex(), list(map(str, nodes)))
+        log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
 
         # if this node is close too, then store here as well
         biggest = max([n.distance_to(node) for n in nodes])

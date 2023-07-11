@@ -18,6 +18,7 @@ class Storage:
     """
 
     def __init__(self, file_name, ttl=604800):
+        print('init')
         self.file_name = file_name
         self.ttl = ttl
 
@@ -34,7 +35,7 @@ class Storage:
         """
         Set a key to the given value.
         """
-
+        print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
         with DDB.at(f"{self.file_name}").session() as (session, file):
             file[f"{key}"] = (time.monotonic(), value)
             session.write()
@@ -43,14 +44,18 @@ class Storage:
         """
         Get the given key.  If item doesn't exist, raises C{KeyError}
         """
+        print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
 
-    def get(self, key, default=None):
+    def get(self, key: str, default=None):
         """
         Get given key.  If not found, return default.
         """
+
+            
         print(f"KEY {key}")
+        print(DDB.at(f"{self.file_name}").read())
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             print("HOLAAAAA")
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
@@ -96,6 +101,7 @@ class ForgetfulStorage(Storage):
 
     def get(self, key, default=None):
         self.cull()
+        print(f"!!!!!!! {self.data} !!!!!!!")
         if key in self.data:
             return self[key]
         return default
