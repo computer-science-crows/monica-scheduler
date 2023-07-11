@@ -1,6 +1,10 @@
 import argparse
 from user import get_user, set_user
+from workspace import get_workspace, set_workspace
 from domain.user import User
+import json
+import dictdatabase as DDB
+from request import get_request,set_request
 
 
 class AgendaParser:
@@ -12,13 +16,14 @@ class AgendaParser:
         self._user_subparser()
         self._workspaces_subparsers()
         self.logged_user=None
+        self._last_user_logged()
 
         self.commands = {'login':lambda:self._login(),
                     'register':lambda:self._register(),
                     'logout':lambda:self._logout(),
                     'inbox':lambda:self._inbox(),
-                    'workspace':lambda:self._workspaces(),
-                    'edit_user':lambda:self._edit_user(),
+                    'workspaces':lambda:self._workspaces(),
+                    'edit_profile':lambda:self._edit_user(),
                     'create_workspace':lambda:self._create_workspace(),
                     'remove_workspace':lambda:self._remove_workspace(),
                     'add_user':lambda:self._add_user(),
@@ -34,30 +39,26 @@ class AgendaParser:
         self.args = self.parser.parse_args()
 
                     
-    def act(self):
-        
+    def act(self):        
         self.commands[f'{self.args.command}']()
 
+    def _last_user_logged(self):
 
+        DDB.config.storage_directory = "log"
+        database = DDB.at(f"log")
+        if not database.exists():
+            database.create({})
 
-        
-        
+        data = database.read()
+        if len(list(data.keys())) > 0:
+            self.logged_user = data[list(data.keys())[0]]
 
-        # if self.args.command == 'create-event':
-        #     event_name = self.args.event_name
-        #     # Perform the 'create-event' action
-        #     print(f"Creating event: {event_name}")
-
-        # elif self.args.command == 'create-workspace':
-        #     workspace_name = self.args.workspace_name
-        #     users = self.args.users
-        #     events = self.args.events if self.args.events else []
-        #     # Perform the 'create-workspace' action
-        #     print(f"Creating workspace: {workspace_name}")
-        #     print(f"Users: {users}")
-        #     print(f"Events: {events}")
-
-
+    def _update_user_logger(self, user):
+        DDB.config.storage_directory = "log"
+        with DDB.at("log").session() as (session, file):
+            file[f"{user.alias}"] = user.dicc()
+            session.write()
+     
     def _login(self):
 
         print("login")
@@ -80,14 +81,15 @@ class AgendaParser:
         # if user not in DB, register
         if user == None:
             print('You are not register into the app.')
-            return
-        
+            return        
                 
         # if alias and password match with user's, logged
-        if user.alias == alias and user.password:
+        if user.alias == alias and user.password == password:
             user.logged()
-            set_user(user)
+            set_user(user.alias, user.dicc())
             self.logged_user = user
+
+            self._update_user_logger(user)
             print(f"Welcome to Monica Scheduler {user.alias}!")
             
         else:
@@ -95,7 +97,6 @@ class AgendaParser:
             
         return
             
-   
     def _register(self):
 
         print("register")
@@ -130,30 +131,214 @@ class AgendaParser:
         self.logged_user = new_user
         set_user(new_user.alias,new_user.dicc())
 
+        self._update_user_logger(new_user)
+
+       
+        print("Succesfully register")
 
     def _logout(self):
-        pass
 
+        print('logout')
+        print(self._already_logged())
+        print(self.logged_user)
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        user = get_user(self.logged_user["alias"])
+        print(f"User {user}")
+        user.active = False
+        set_user(user.alias,user.dicc())
+        self.logged_user = None
+
+        DDB.config.storage_directory = "log"
+        DDB.at("log").delete()
+
+        print("Bye!")
+
+    # TODO
     def _inbox(self):
-        pass
 
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        user = get_user(self.logged_user['alias'])
+        requests = []
+
+        for req in user.requests:
+            requests.append(get_request(req))
+
+        print(f"Inbox:")
+        for r in requests:
+            print(f"- {r}")
+        
+        
     def _workspaces(self):
-        pass
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        user = get_user(self.logged_user['alias'])
+
+        workspaces = []
+
+        for w in user.workspaces:
+            workspaces.append(get_workspace(w))
+
+        print(f"Workspaces:")
+        for i,w in enumerate(workspaces):
+            print(f"{i+1}. {w}")
 
     def _edit_user(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        alias = self.args.alias
+        name = self.args.name
+        password = self.args.password
+
+        if alias == None and name == None and password == None:
+            return
+        
+                
+        user = get_user(self.logged_user['alias'])
+
+        same_alias_user = None
+
+        if alias != None:
+            same_alias_user = get_user(alias)
+        
+        if same_alias_user != None:
+            print(f"User with alias {alias} already exists")
+            return
+        
+
+        new_user = User(alias or user.alias, name or user.full_name, password or user.password)
+        new_user.requests = user.requests
+        new_user.active = user.active
+        new_user.workspaces = user.workspaces
+
+        set_user(new_user.alias,new_user.dicc())
+
+        DDB.config.storage_directory = "log"
+
+        # se puede hacer mejor
+        DDB.at("log").delete()
+
+        self._last_user_logged()
+
+        self._update_user_logger(new_user)
+
+        print(f'Profile edited.')
 
     def _create_workspace(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        title = self.args.title
+        type = self.args.type
+
+        if type == 'f':
+            type = 'flat'
+        else:
+            type = 'hierarchical'
+
+        user = get_user(self.logged_user['alias'])
+
+        new_workspace = user.create_workspace(title,type)
+        set_user(user.alias,user.dicc())
+        set_workspace(new_workspace.workspace_id,new_workspace.dicc())
+
+        self._update_user_logger(user)
+
+        print(f"Worspace {new_workspace.workspace_id} was created.")
 
     def _remove_workspace(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.id
+
+        user = get_user(self.logged_user['alias'])
+        remove = user.remove_workspace(workspace_id)
+
+        if remove:
+            set_user(user.alias,user.dicc())
+            self._update_user_logger(user)
+            print(f"Succesfully removed workspace")
+        else:
+            print(f"User {user} does not belong to worksoace {workspace_id}")
 
     def _add_user(self):
-        pass
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
+        user_alias = self.args.user_alias
+
+        user = get_user(self.logged_user['alias'])
+        user_to_add = get_user(user_alias)
+        workspace = get_workspace(workspace_id)
+        
+        if user_to_add == None:
+            print(f"User {user_alias} is not register into the app")
+            return
+        if workspace == None or workspace_id not in user.workspaces:
+            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+            return
+        
+
+        request = workspace.add_user(user.alias, user_to_add)
+
+        if workspace.get_type() == 'flat' and request:
+            set_request(request.request_id,request.dicc())
+
+        set_user(user.alias,user.dicc())
+        set_user(user_to_add.alias,user_to_add.dicc())
+        set_workspace(workspace_id,workspace.dicc())
 
     def _remove_user(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
+        user_alias = self.args.user_alias
+
+        user = get_user(self.logged_user['alias'])
+        user_to_remove = get_user(user_alias)
+        workspace = get_workspace(workspace_id)
+        
+        if user_to_remove == None:
+            print(f"User {user_alias} is not register into the app")
+            return
+        if workspace == None or workspace_id not in user.workspaces:
+            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+            return
+        
+        remove = workspace.remove_user(user.alias, user_to_remove)
+
+        if remove:
+            set_user(user.alias,user.dicc())
+            set_user(user_to_remove.alias,user_to_remove.dicc())
+            set_workspace(workspace_id,workspace.dicc())
+
+        
+        
+
+        
 
     def _get_user(self):
         pass
@@ -205,7 +390,7 @@ class AgendaParser:
         workspaces = self.subparsers.add_parser('workspaces', help='Get list of all workspaces of the user')
         
         # edit profile
-        edit_user = self.subparsers.add_parser('edit_user', help='Edit user profile', )
+        edit_user = self.subparsers.add_parser('edit_profile', help='Edit user profile', )
         edit_user.add_argument('--alias', help='Edit alias', type=str, default=None)
         edit_user.add_argument('--name', help='Edit name', type=str, default=None)
         edit_user.add_argument('--password', help='Edit password', type=str, default=None)
@@ -215,7 +400,7 @@ class AgendaParser:
         # create workspace
         create_workspace = self.subparsers.add_parser('create_workspace', help='Create new workspace')
         create_workspace.add_argument('title', help='Title of workspace', default=None)
-        create_workspace.add_argument('type',choices=['flat', 'hierarchical'],help='Type of workspace', default=None)
+        create_workspace.add_argument('type',choices=['f', 'h'],help='Type of workspace', default=None)
         
         # remove workspace
         remove_workspace = self.subparsers.add_parser('remove_workspace',help='Remove workspace')
@@ -242,7 +427,7 @@ class AgendaParser:
 
         # remove event    
         remove_event = self.subparsers.add_parser('remove_event', help='Remove event from workspace')
-        remove_user.add_argument('event_id', help='id of event', default=None)
+        remove_event.add_argument('event_id', help='id of event', default=None)
         remove_event.add_argument('workspace_id', help='id of workspace', default=None)
         
         # get events
@@ -266,47 +451,10 @@ class AgendaParser:
 
 def main():    
 
-    # # Step 1: Create an ArgumentParser object
-    # parser = argparse.ArgumentParser(description='Command-line parser for creating events and workspaces')
-
-    # # Step 2: Define the command-line arguments
-    # subparsers = parser.add_subparsers(dest='command', help='Available commands')
-
-    # # Create the 'create-event' command
-    # create_event_parser = subparsers.add_parser('create-event', help='Create a new event')
-    # create_event_parser.add_argument('event_name', help='Name of the event')
-
-    # # Create the 'create-workspace' command
-    # create_workspace_parser = subparsers.add_parser('create-workspace', help='Create a new workspace')
-    # create_workspace_parser.add_argument('workspace_name', help='Name of the workspace')
-    # create_workspace_parser.add_argument('users', nargs='+', help='List of users (separated by spaces)')
-    # create_workspace_parser.add_argument('--events', nargs='+', help='List of events (separated by spaces)')
-
-    # # Step 3: Parse the command-line arguments
-    # args = parser.parse_args()
-
-    # # Step 4: Access the values of the arguments and perform the corresponding actions
-    # if args.command == 'create-event':
-    #     event_name = args.event_name
-    #     # Perform the 'create-event' action
-    #     print(f"Creating event: {event_name}")
-
-    # elif args.command == 'create-workspace':
-    #     workspace_name = args.workspace_name
-    #     users = args.users
-    #     events = args.events if args.events else []
-    #     # Perform the 'create-workspace' action
-    #     print(f"Creating workspace: {workspace_name}")
-    #     print(f"Users: {users}")
-    #     print(f"Events: {events}")
-
-   
    parser = AgendaParser()
    parser.parse_arguments()
    parser.act()
    
-
-
 
 if __name__ == "__main__":
     main()

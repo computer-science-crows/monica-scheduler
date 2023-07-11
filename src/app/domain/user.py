@@ -12,13 +12,19 @@ class User:
         self.alias = alias
         self.full_name = full_name
         self.password = password
-        self.requests = {}
-        self.workspaces = {}  
+        self.requests = []
+        self.workspaces = []  
         self.active = False 
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, User):
+            return self.alias == other.alias
+        return False
+        
+
     
-    def id(self):
-        return digest(self.dicc())
+    #def id(self):
+    #    return digest(self.dicc())
 
 
     def logged(self):
@@ -27,49 +33,64 @@ class User:
     def create_event(self, workspace: Workspace, event: Event):
         new_event = workspace.add_event(self,event)
     
-    def create_workspace(self, workspace_name, workspace_type, workspace_users):
+    def create_workspace(self, workspace_name, workspace_type):
         new_workspace = None
 
         if workspace_type == 'flat':
             new_workspace = FlatWorkspace(workspace_name)
-            new_workspace.add_users(workspace_users)
-            self.workspaces[new_workspace.workspace_id] = new_workspace
+            new_workspace.users.append(self.alias)
+            self.workspaces.append(new_workspace.workspace_id)
         else:
-            pass
+            new_workspace = HierarchicalWorkspace(workspace_name)
+            new_workspace.users.append(self.alias)
+            new_workspace.admins.append(self.alias)
+            self.workspaces.append(new_workspace.workspace_id)
+            
         
-        
+        return new_workspace
+    
+    def add_to_workspace(self,workspace_id):
+        if workspace_id not in self.workspaces:
+            self.workspaces.append(workspace_id)
+
+    def remove_from_workspace(self,workspace_id):
+        if workspace_id in self.workspaces:
+            self.workspaces.remove(workspace_id)
 
     def remove_event(self, workspace: Workspace, event: Event):
         event = workspace.remove_event(event)
 
-    def remove_workspace(self, workspace):
-        pass
+    def remove_workspace(self, workspace_id):
+        if workspace_id in self.workspaces:
+            self.workspaces.remove(workspace_id)
+            return True
+        return False
 
     def set_request(self, request):
-        self.requests[request.request_id] = request        
 
-    def accept_request(self, request : Request):
+        self.requests.append(request.request_id)       
+
+    def accept_request(self, request : Request, workspace):
         
-        if request.request_id in self.requests.keys():
-            request_workspace = self.workspaces[request.workspace_id]
-            request_workspace.accepted_request(request.request_id)
-            self.requests.pop(request.request_id)
+        if request.request_id in self.requests:
+            workspace.accepted_request(request.request_id)
+            self.requests.remove(request)
             return True
         
         return False
     
-    def reject_request(self, request: Request):
+    def reject_request(self, request: Request, workspace):
         
         if request.request_id in self.requests.keys():
-            request_workspace = self.workspaces[request.workspace_id]
-            request_workspace.reject_request(request.request_id)
-            self.requests.pop(request.request_id)
+            workspace.reject_request(request.request_id)
+            self.requests.remove(request)
             return True
         
         return False
     
     def dicc(self):
-        return {'alias':self.alias,
+        return {'class': 'user',
+                'alias':self.alias,
                 'full_name':self.full_name,
                 'password':self.password,
                 'logged':self.active, 

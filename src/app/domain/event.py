@@ -2,8 +2,8 @@ import uuid
 
 class Event:
 
-    def __init__(self, title, description, date, place, start_time, end_time, user):
-        self.event_id = uuid.uuid4()
+    def __init__(self, title, description, date, place, start_time, end_time, user, id=None):
+        self.event_id = id or uuid.uuid4()
         self.title = title
         self.description = description
         self.date = date
@@ -15,7 +15,7 @@ class Event:
     def __eq__(self, other_event) -> bool:
 
         if isinstance(other_event, Event):
-            return self.date == self.date and (self.start_time > other_event.start_time or self.end_time < other_event.end_time)
+            return self.event_id == other_event.event_id
         return False
     
     def __repr__(self) -> str:

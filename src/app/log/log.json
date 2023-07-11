@@ -1,0 +1,15 @@
+{
+  "laura_01": {
+    "alias": "laura_01",
+    "class": "user",
+    "full_name": "laura",
+    "inbox": [
+      "fac660f0-f668-4f6e-b122-a3f53c0679ba"
+    ],
+    "logged": true,
+    "password": "123",
+    "workspaces": [
+      "02d1046f-9888-437d-bd6d-d7c1669f1ae1"
+    ]
+  }
+}

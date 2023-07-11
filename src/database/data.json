@@ -1,0 +1,76 @@
+{
+  "06670ed85dde6d702614e077cc446e7ae9cb1e11": {
+    "count": 0,
+    "from_user_alias": "marie_01",
+    "id": "fac660f0-f668-4f6e-b122-a3f53c0679ba",
+    "max": 1,
+    "type": "join",
+    "workspace_id": "8a239000-1abe-4f36-96a4-5e658b913a17"
+  },
+  "12dbfae82fdf7e682fed1c7dff17017686a05556": {
+    "events": [],
+    "id": "8a239000-1abe-4f36-96a4-5e658b913a17",
+    "name": "my_workspace4",
+    "requests": [
+      "fac660f0-f668-4f6e-b122-a3f53c0679ba"
+    ],
+    "type": "flat",
+    "users": [
+      "marie_01"
+    ],
+    "waiting_events": [],
+    "waiting_users": [
+      "laura_01"
+    ]
+  },
+  "867b6c518fa515cdb126c30f894e7f28a76e2dc4": {
+    "alias": "laura_01",
+    "class": "user",
+    "full_name": "laura",
+    "inbox": [
+      "fac660f0-f668-4f6e-b122-a3f53c0679ba"
+    ],
+    "logged": true,
+    "password": "123",
+    "workspaces": [
+      "02d1046f-9888-437d-bd6d-d7c1669f1ae1"
+    ]
+  },
+  "a3c737083ce28f03ec401b6d24c38a029d348021": {
+    "alias": "marie_01",
+    "class": "user",
+    "full_name": "marie",
+    "inbox": [],
+    "logged": false,
+    "password": "123",
+    "workspaces": [
+      "8a239000-1abe-4f36-96a4-5e658b913a17",
+      "02d1046f-9888-437d-bd6d-d7c1669f1ae1"
+    ]
+  },
+  "ce7fd3db4c064cd936e805f76b35ab7cb04f5903": {
+    "admins": [
+      "marie_01"
+    ],
+    "events": [],
+    "id": "02d1046f-9888-437d-bd6d-d7c1669f1ae1",
+    "name": "my_workspace",
+    "type": "hierarchical",
+    "users": [
+      "marie_01",
+      "laura_01"
+    ]
+  },
+  "f820fb0395daeeeb00f40f712470d014142b9691": {
+    "events": [],
+    "id": "201163ec-5570-4096-9e94-8b38d893bacb",
+    "name": "my_workspace_0",
+    "requests": [],
+    "type": "flat",
+    "users": [
+      "marie_01"
+    ],
+    "waiting_events": [],
+    "waiting_users": []
+  }
+}
