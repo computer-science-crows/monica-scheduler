@@ -10,6 +10,17 @@ def create_network(net_name):
     return client.networks.create(net_name)
 
 
+def remove_dangling():
+    client.images.prune(filters={'dangling': True})
+    print('dangling')
+    for container in client.containers.list(all=True):
+        print(f'{container} : {container.image.tags}')
+        if len(container.image.tags) == 0:
+            print('ok')
+            container.stop()
+            container.remove()
+
+
 def build_image(path_to_dckrfile, image_name):
     image_names = [image.tags[0] for image in client.images.list(
         all=True) if image.tags]
@@ -21,7 +32,7 @@ def build_image(path_to_dckrfile, image_name):
         print('dangling')
         for container in client.containers.list(all=True):
             print(f'{container} : {container.image.tags}')
-            if len(container.image.tags) == 0 or container.image.tags[0] == image_name:
+            if len(container.image.tags) == 0 or container.image.tags[0] == f'{image_name}:latest':
                 print('ok')
                 container.stop()
                 container.remove()
@@ -48,9 +59,14 @@ def create_container(image_name, params=[]):
     return container
 
 
-print(build_image(cwd, 'script'))
-print(create_container('script'))
-print(create_container('script', ["-o", "connect"]))
-print(create_container('script', ["-o", "set",
-      "-k", "my-keyy", "-v", "my awesome value"]))
-print(create_container('script', ["-o", "get", "-k", "my-keyy"]))
+# print(build_image(cwd, 'script'))
+# remove_dangling()
+# print(create_container('script'))
+# remove_dangling()
+# print(create_container('script', ["-o", "connect"]))
+# remove_dangling()
+# print(create_container('script', ["-o", "set",
+#       "-k", "my-keyy", "-v", "my awesome value"]))
+# remove_dangling()
+# print(create_container('script', ["-o", "get", "-k", "my-keyy"]))
+# remove_dangling()
