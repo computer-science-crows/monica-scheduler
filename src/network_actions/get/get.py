@@ -8,6 +8,6 @@ async def get(server, ip, port, args):
     await server.bootstrap([bootstrap_node])
     # print(f"KEY FROM GET {args.key}")
     result = await server.get(args.key)
-    print("Get result:", result)
+    print(result)
     server.stop()
     return result

@@ -66,12 +66,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Optional arguments
-    parser.add_argument(
-        "-i", "--ip", help="IP address of existing node", type=str, default=None)
-    parser.add_argument(
-        "-p", "--port", help="port number of existing node", type=int, default=None)
-    parser.add_argument(
-        "-o", "--operation", help="desired data operation to perform (get or set)", type=str, default=None)
+    parser.add_argument("-o", "--operation", help="desired data operation to perform (get or set)",
+                        type=str, default=None, choices=['get', 'set', 'connect', 'start'])
     parser.add_argument(
         "-k", "--key", help="key of the data", type=str, default=None)
     parser.add_argument(
@@ -87,19 +83,19 @@ def main(loop):
     port = 8468
 
     if args.operation == 'set':
-        if args.key and args.value and args.ip and args.port:
+        if args.key and args.value:
             ip = bc_client()
             asyncio.run(set(server, ip, port, args))
             stop_thread = True
             print('ending')
             return
     elif args.operation == 'get':
-        if args.key and args.value and args.ip and args.port:
+        if args.key:
             ip = bc_client()
             result = asyncio.run(get(server, ip, port, args))
             stop_thread = True
             return result
-    elif args.ip and args.port:
+    elif args.operation == 'connect':
         ip = bc_client()
         connect_to_bootstrap_node(server, ip, port, loop)
     else:
@@ -108,6 +104,7 @@ def main(loop):
 
 if __name__ == "__main__":
     # main()
+    print('ok')
 
     # Create a new loop
     new_loop = asyncio.new_event_loop()
