@@ -20,7 +20,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 log = logging.getLogger('kademlia')
 log.addHandler(handler)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 
 container_ip = subprocess.check_output(
@@ -54,12 +54,19 @@ def bc_client():
 
     client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-    msg = "Where are you at?"
-    print("Waiting for response of other servers")
-    client_socket.sendto(msg.encode('utf-8'), (host, port))
-    data, addr = client_socket.recvfrom(1024)
-    print(f"Received: {data}, from: {addr}")
-    return addr[0]
+    client_socket.settimeout(10.0)
+
+    try:
+        msg = "Where are you at?"
+        print("Waiting for response of other servers")
+        client_socket.sendto(msg.encode('utf-8'), (host, port))
+        data, addr = client_socket.recvfrom(1024)
+        print(f"Received: {data}, from: {addr}")
+        return addr[0]
+    except:
+        log.info("No server responded, proceeding to start network")
+        print("No server responded, proceeding to start network")
+        return None
 
 
 def parse_arguments():
@@ -67,7 +74,7 @@ def parse_arguments():
 
     # Optional arguments
     parser.add_argument("-o", "--operation", help="desired data operation to perform (get or set)",
-                        type=str, default=None, choices=['get', 'set', 'connect', 'start'])
+                        type=str, default=None, choices=['get', 'set'])
     parser.add_argument(
         "-k", "--key", help="key of the data", type=str, default=None)
     parser.add_argument(
@@ -80,26 +87,24 @@ def main(loop):
     server = Server()
     args = parse_arguments()
 
+    ip = bc_client()
     port = 8468
 
-    if args.operation == 'set':
+    if ip == None:
+        create_bootstrap_node(server, loop)
+    elif args.operation == 'set':
         if args.key and args.value:
-            ip = bc_client()
             asyncio.run(set(server, ip, port, args))
             stop_thread = True
             print('ending')
             return
     elif args.operation == 'get':
         if args.key:
-            ip = bc_client()
             result = asyncio.run(get(server, ip, port, args))
             stop_thread = True
             return result
-    elif args.operation == 'connect':
-        ip = bc_client()
-        connect_to_bootstrap_node(server, ip, port, loop)
     else:
-        create_bootstrap_node(server, loop)
+        connect_to_bootstrap_node(server, ip, port, loop)
 
 
 if __name__ == "__main__":

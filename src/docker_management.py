@@ -63,8 +63,6 @@ def create_container(image_name, params=[]):
 # remove_dangling()
 # print(create_container('script'))
 # remove_dangling()
-# print(create_container('script', ["-o", "connect"]))
-# remove_dangling()
 # print(create_container('script', ["-o", "set",
 #       "-k", "my-keyy", "-v", "my awesome value"]))
 # remove_dangling()
