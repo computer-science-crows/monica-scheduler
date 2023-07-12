@@ -5,6 +5,13 @@ import threading
 import socket
 import subprocess
 
+# Inside script1.py
+import sys
+import os
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from kademlia.network import Server
 # from kademlia.broadcast import bc_server
 

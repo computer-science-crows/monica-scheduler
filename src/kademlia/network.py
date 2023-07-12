@@ -40,7 +40,7 @@ class Server:
         self.id = uuid.uuid4()
         self.ksize = ksize
         self.alpha = alpha
-        self.storage = Storage(self.id)
+        self.storage = Storage('data')
         self.node = Node(node_id or digest(random.getrandbits(255)))
         self.transport = None
         self.protocol = None
