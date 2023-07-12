@@ -5,60 +5,37 @@ from app.domain.request import Request
 import dictdatabase as DDB
 import hashlib
 
+from kademlia.network import Server
+
 def digest(string):
     if not isinstance(string, bytes):
         string = str(string).encode('utf8')
     return hashlib.sha1(string).hexdigest()
 
-file_name = 'data'
 
-def database():
-    DDB.config.storage_directory = "../database"
-    database = DDB.at(f"{file_name}")
-    if not database.exists():
-        database.create({})
-
-
-def get_workspace(workspace_id):
-     
-    database()  
-
+async def get_workspace(workspace_id, server: Server):
     key = digest(workspace_id)
+    data = await server.get(key)
     
+    workspace = None
+    if data['type'] == 'flat':
+        workspace = FlatWorkspace(data['name'],data['id'])
+        workspace.events = data['events']
+        workspace.users = data['users']
+        workspace.requests = data['requests']
+        workspace.waiting_events = data['waiting_events']
+        workspace.waiting_users = data['waiting_users']
+    else:
+        workspace = HierarchicalWorkspace(data['name'],data['id'])
+        workspace.events = data['events']
+        workspace.users = data['users']
+        workspace.requests = data['requests']
+        workspace.waiting_users = data['waiting_users']
+        workspace.admins = data['admins']
     
-    if DDB.at(f"{file_name}", key=f"{key}").exists():
-        data = DDB.at(f"{file_name}", key=f"{key}").read()
-        workspace = None
-        if data['type'] == 'flat':
-            workspace = FlatWorkspace(data['name'],data['id'])
-            workspace.events = data['events']
-            workspace.users = data['users']
-            workspace.requests = data['requests']
-            workspace.waiting_events = data['waiting_events']
-            workspace.waiting_users = data['waiting_users']
-        else:
-            workspace = HierarchicalWorkspace(data['name'],data['id'])
-            workspace.events = data['events']
-            workspace.users = data['users']
-            workspace.requests = data['requests']
-            workspace.waiting_users = data['waiting_users']
-            workspace.admins = data['admins']
-        
-        return workspace
-        
-    
-    return None
+    return workspace
 
 
-def set_workspace(workspace_id, dicc):
-        
-    database()
-
+def set_workspace(workspace_id, dicc, server: Server):
     key = digest(workspace_id)
-    value = dicc
-    
-    with DDB.at(f"{file_name}").session() as (session, file):
-        file[f"{key}"] = value
-        session.write()
-
-
+    server.set(key, dicc)
