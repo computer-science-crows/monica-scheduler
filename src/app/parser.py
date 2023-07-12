@@ -16,9 +16,10 @@ class AgendaParser:
         self.subparsers = self.parser.add_subparsers(dest='command', help='Available commands')
         self._user_subparser()
         self._workspaces_subparsers()
+        self._server_subparsers()
         self.logged_user=None
         self.api = api
-        # self._last_user_logged()
+        
 
         self.commands = {'login':lambda:self._login(),
                     'register':lambda:self._register(),
@@ -37,7 +38,8 @@ class AgendaParser:
                     'events':lambda:self._events(),
                     'set_event':lambda:self._set_event(),
                     'change_wokspace_type':lambda:self._change_workspace_type(),
-                    'exit_workspace':lambda:self._exit_workspace()}
+                    'exit_workspace':lambda:self._exit_workspace(),
+                    'sudo':lambda:self._sudo()}
 
     def parse_arguments(self, args):
         self.args = self.parser.parse_args(args)
@@ -45,23 +47,7 @@ class AgendaParser:
     def act(self):        
         self.commands[f'{self.args.command}']()
 
-    # def _last_user_logged(self):
-
-    #     DDB.config.storage_directory = "log"
-    #     database = DDB.at(f"log")
-    #     if not database.exists():
-    #         database.create({})
-
-    #     data = database.read()
-    #     if len(list(data.keys())) > 0:
-    #         self.logged_user = data[list(data.keys())[0]]
-
-    # def _update_user_logger(self, user):
-    #     DDB.config.storage_directory = "log"
-    #     with DDB.at("log").session() as (session, file):
-    #         file[f"{user.alias}"] = user.dicc()
-    #         session.write()
-     
+        
     def _login(self):
 
         print("login")
@@ -547,6 +533,20 @@ class AgendaParser:
         set_user(user.alias, user.dicc(), self.api)
         set_workspace(workspace.workspace_id, workspace.dicc(), self.api)
 
+    def _sudo(self):
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        action = self.args.action
+
+        if action == 'create':
+            self.api.create_servers()
+        else:
+            self.api.remove_servers()
+
+
     def _already_logged(self):
         return self.logged_user != None
 
@@ -646,6 +646,12 @@ class AgendaParser:
         change_workspace.add_argument('workspace_id', help='id of workspace', default=None)
         change_workspace.add_argument('--admins',help='Administrators of workspace',type=list, default=None)
 
+    def _server_subparsers(self):
+
+        sudo = self.subparsers.add_parser('sudo',help='Network actions')
+        sudo.add_argument('action', choices=['create','remove'], help='Creates or remove servers')
+
+        
 
 
 def main():    
