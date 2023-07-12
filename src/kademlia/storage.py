@@ -3,47 +3,94 @@ from itertools import takewhile
 import operator
 from collections import OrderedDict
 from abc import abstractmethod, ABC
+import dictdatabase as DDB
+import json
+import pickle
 
 
-class IStorage(ABC):
+DDB.config.use_compression = True
+
+
+class Storage:
     """
     Local storage for this node.
-    IStorage implementations of get must return the same type as put in by set
+    Storage implementations of get must return the same type as put in by set
     """
 
-    @abstractmethod
+    def __init__(self, file_name, ttl=604800):
+        # print('init')
+        self.file_name = file_name
+        self.ttl = ttl
+
+        DDB.config.storage_directory = "database"
+
+        database = DDB.at(f"{self.file_name}")
+        if not database.exists():
+            # print("!!!!!!! NEW DATABASE CREATION !!!!!!!!")
+            database.create({})
+        else:
+            # print("!!!!!!! DATABASE ALREADY EXISTS !!!!!!!!")
+            pass
+
     def __setitem__(self, key, value):
         """
         Set a key to the given value.
         """
+        # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
+        with DDB.at(f"{self.file_name}").session() as (session, file):
+            file[f"{key}"] = (time.monotonic(), value)
+            session.write()
 
-    @abstractmethod
+    def cull(self):
+        with DDB.at(f"{self.file_name}").session() as (session, data):
+            print(self.iter_older_than(self.ttl))
+            for id, _ in self.iter_older_than(self.ttl):
+                del data[id]
+            session.write()
+
     def __getitem__(self, key):
         """
         Get the given key.  If item doesn't exist, raises C{KeyError}
         """
+        # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
+        if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+            return DDB.at(f"{self.file_name}", key=f"{key}").read()[1]
 
-    @abstractmethod
-    def get(self, key, default=None):
+    def get(self, key: str, default=None):
         """
         Get given key.  If not found, return default.
         """
+        # print(f"KEY {key}")
+        # print(DDB.at(f"{self.file_name}").read())
+        if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+            # print("HOLAAAAA")
+            return DDB.at(f"{self.file_name}", key=f"{key}").read()
+        return default
 
-    @abstractmethod
     def iter_older_than(self, seconds_old):
-        """
-        Return the an iterator over (key, value) tuples for items older
-        than the given secondsOld.
-        """
+        min_birthday = time.monotonic() - seconds_old
+        zipped = self._triple_iter()
+        matches = takewhile(lambda r: min_birthday >= r[1], zipped)
+        return list(map(operator.itemgetter(0, 2), matches))
 
-    @abstractmethod
+    def _triple_iter(self):
+        data = DDB.at(f"{self.file_name}").read()
+        keys = data.keys()
+        birthday = map(operator.itemgetter(0), data.values())
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, birthday, values)
+
     def __iter__(self):
-        """
-        Get the iterator for this storage, should yield tuple of (key, value)
-        """
+        data = DDB.at(f"{self.file_name}").read()
+        keys = data.keys()
+        values = map(operator.itemgetter(1), data.values())
+        return zip(keys, values)
+
+    def __repr__(self):
+        return repr(DDB.at(f"{self.file_name}").read())
 
 
-class ForgetfulStorage(IStorage):
+class ForgetfulStorage(Storage):
     def __init__(self, ttl=604800):
         """
         By default, max age is a week.
@@ -63,6 +110,7 @@ class ForgetfulStorage(IStorage):
 
     def get(self, key, default=None):
         self.cull()
+        # print(f"!!!!!!! {self.data} !!!!!!!")
         if key in self.data:
             return self[key]
         return default
@@ -92,3 +140,7 @@ class ForgetfulStorage(IStorage):
         ikeys = self.data.keys()
         ivalues = map(operator.itemgetter(1), self.data.values())
         return zip(ikeys, ivalues)
+
+
+# storage = Storage('data')
+# storage.cull()

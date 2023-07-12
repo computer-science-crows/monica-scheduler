@@ -22,7 +22,7 @@ class Node:
         self.id = node_id  # pylint: disable=invalid-name
         self.ip = ip  # pylint: disable=invalid-name
         self.port = port
-        self.long_id = int(node_id.hex(), 16)
+        self.long_id = int(node_id, 16)
 
     def same_home_as(self, node):
         return self.ip == node.ip and self.port == node.port

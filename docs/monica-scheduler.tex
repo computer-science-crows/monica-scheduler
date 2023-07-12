@@ -167,12 +167,23 @@
 		\href{https://github.com/computer-science-crows/monica-scheduler}{https://github.com/computer-science-crows/monica-scheduler}
 	\end{center}
 
-	\section{Definici\'on inicial del problema} 
+	Implementación de una Agenda Electrónica como Sistema Distribuido con DHT Kademlia
 	
-	El tiempo es un recurso de vital importancia. Una de las estrategias más comunes para su gestión es el uso de una agenda, para la cual existen diversas opciones que abarcan desde el formato tradicional en papel hasta las versiones electrónicas modernas. Sin embargo, debido a la naturaleza intrínseca de las interacciones humanas, una agenda personal a menudo resulta insuficiente. En numerosas ocasiones, es imprescindible coordinarla con otras personas para llevar a cabo actividades conjuntas. Este proceso implica la identificación de horarios compartidos y la detección de intervalos de tiempo libres. Además, estas planificaciones pueden verse alteradas por eventos imprevistos a los que se debe asistir, lo que conlleva la necesidad de modificar la agenda nuevamente.
+	\section{Introducción}
 	
-	Este proyecto consiste en crear una agenda distribuida como herramienta de gest\'ion del tiempo para eventos personales o grupales. Los requisitos clave para este sistema son:
-	\begin{enumerate}
+	El tiempo es un recurso invaluable y su gestión eficiente es esencial para la productividad y el bienestar personal. Una estrategia comúnmente utilizada para la gestión del tiempo es el uso de una agenda. Sin embargo, en muchas ocasiones, es necesario coordinar dicha agenda con otras personas para llevar a cabo actividades conjuntas. Este proceso implica la identificación de horarios compartidos y la detección de intervalos de tiempo libres. Además, estas planificaciones pueden verse alteradas por eventos imprevistos que requieren asistencia, lo que conlleva la necesidad de modificar la agenda nuevamente.
+	
+	Para abordar estos desafíos, este proyecto propone la creación de una agenda electrónica distribuida como herramienta de gestión del tiempo para eventos personales o grupales. El sistema se diseñó e implementó como un sistema distribuido, utilizando la tecnología de contenedores Docker para simular múltiples servidores y la Tabla Hash Distribuida (DHT) de Kademlia para la gestión de datos.
+	
+	\section{Arquitectura del Sistema}
+	
+	El sistema se compone de dos partes fundamentales: la lógica del negocio y el uso del DHT Kademlia.
+	
+	\subsection{Lógica del Negocio}
+	
+	Este proyecto consiste en crear una agenda distribuida como herramienta de gestión del tiempo para eventos personales o grupales. Los requisitos clave para este sistema son:
+	
+	\begin{itemize}
 		\item \textbf{Arquitectura Distribuida}: El sistema debe ser diseñado e implementado como un sistema distribuido. Esto significa que el sistema debe ser capaz de funcionar en múltiples máquinas mientras se presenta a los usuarios como un sistema coherente único.
 		
 		\item \textbf{Mecanismo de Autenticación e Identificación}: El sistema debe ser capaz de autenticar e identificar a cada usuario. Esto asegura que solo los usuarios autorizados puedan acceder al sistema y realizar ciertas acciones.
@@ -184,124 +195,25 @@
 		\item \textbf{Actualizaciones Automáticas de la Agenda}: Cuando se crea, modifica o elimina una cita, los cambios deben reflejarse automáticamente en las agendas de los usuarios relevantes.
 		
 		\item \textbf{Identificación de Conflictos}: El sistema debe ser capaz de identificar conflictos en las agendas locales. Por ejemplo, si un usuario tiene programadas dos citas al mismo tiempo, el sistema debe señalar esto como un conflicto.
-		
-		\item \textbf{Visualización de la Agenda}: Los usuarios deben poder ver las agendas de un grupo de personas durante un período de tiempo determinado. El sistema debe respetar la privacidad de la información del usuario y los niveles jerárquicos al mostrar esta información.
-	\end{enumerate}
-	
-	\section{Modelaci\'on del problema}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=10cm]{merx.png}
-		\caption{text}
-	\end{figure}
-	
-	\section{Herramientas utilizadas}
-	
-	\begin{itemize}
-		\item docker
-		\item MongoDB
-		\item FastAPI
-		\item React
 	\end{itemize}
 	
-	\section{Arquitectura: Microservicios}
+	\subsection{Uso del DHT Kademlia}
 	
-	Microservices architecture, also known simply as microservices, is an architectural style that structures an application as a collection of small autonomous services, modeled around a business domain.
+	El DHT Kademlia se utiliza para la gestión de datos en el sistema. Kademlia es un protocolo de red para sistemas distribuidos peer-to-peer que utiliza una tabla hash distribuida para el almacenamiento y recuperación de datos. 
 	
-	Services definition:
-	Technology stack:
+	El proceso de ingreso de un nodo a la red Kademlia se realiza mediante un mecanismo de broadcast. Cuando un nuevo nodo se quiere unir a la red, envía un mensaje de broadcast a todos los nodos existentes. Si hay algun servidor escuchando este devolvera su ip, lo cual permitira al nodo poder conectarse a la red. Los nodos existentes actualizan sus tablas de enrutamiento para incluir al nuevo nodo. 
 	
-	\section{DHT}
+	\section{Implementación con Docker}
 	
-	Una DHT (Tabla Hash Distribuida) es una estructura de datos que se utiliza en sistemas distribuidos para almacenar pares de clave-valor de manera eficiente.
+	Para simular distintos servidores en un sistema distribuido, utilizamos Docker. Cada contenedor Docker puede considerarse como un nodo en el sistema distribuido, capaz de ejecutar su propio sistema operativo, tener su propia configuración de red y ejecutar las aplicaciones como si estuviera en una máquina separada. Esto permite simular un sistema distribuido en una sola máquina física, lo que facilita el desarrollo y las pruebas del sistema.
 	
-	Propiedades:
+	\section{Pruebas del Sistema}
 	
-	\begin{itemize}
-		\item  Distribución: Los datos se distribuyen entre todos los nodos de la red, lo que significa que no hay un único punto de fallo y que la red puede escalar a un gran número de nodos.
-		
-		\item  Descentralización: No hay un nodo central o coordinador en una DHT. Cada nodo puede funcionar de manera independiente y sólo necesita saber sobre un pequeño número de otros nodos.
-		
-		\item  Eficiencia: Las DHT pueden realizar operaciones de búsqueda, inserción y eliminación de datos en un tiempo logarítmico con respecto al número de nodos en la red.
-		
-		\item Resistencia a fallos: Las DHT suelen ser resistentes a fallos, lo que significa que pueden seguir funcionando incluso cuando algunos nodos de la red fallan o se desconectan.
-	\end{itemize}
+	Para la presentación y prueba del sistema, se desarrolló una interfaz de línea de comandos (CLI). Los usuarios pueden interactuar con el sistema a través de la CLI, lo que permite una interacción flexible y eficiente con el sistema.
 	
-	\subsection{Kademlia}
+	\section{Conclusiones y trabajo futuro}
 	
-	La implementación de una Tabla Hash Distribuida (DHT) de Kademlia implica varios componentes clave. 
-	
-	Descripción general de elementos a implementar:
-	
-	\subsubsection{Nodo}
-	
-	\subsubsection{IDs de Nodo}
-	
-	Cada nodo en la red debe tener un identificador único. En Kademlia, este suele ser un número de 160 bits, a menudo generado usando una función hash como SHA-1.
-	
-	\subsubsection{Almacenamiento de Clave-Valor} 
-	
-	Cada nodo debe mantener un almacenamiento local de clave-valor. Estos son los datos de los que el nodo es responsable en la DHT.
-	
-	\subsubsection{Tabla de Enrutamiento}
-	
-	 Cada nodo debe mantener una lista de otros nodos en la red, ordenados por la distancia entre sus IDs de nodo y el suyo propio. Kademlia utiliza una estructura de datos específica llamada k-bucket para hacer esto.
-	
-	\subsubsection{Operaciones de Red} 
-	
-	Necesitarás implementar varias operaciones que los nodos pueden realizar a través de la red:
-	
-	\begin{itemize}
-		\item  `PING`: Verificar si otro nodo está en línea.
-		\item  `STORE`: Almacenar un par clave-valor en un nodo.
-		\item  `FIND\_NODE`: Encontrar los k nodos más cercanos a una clave dada.
-		\item  `FIND\_VALUE`: Recuperar un valor por su clave si el nodo lo tiene, o los k nodos más cercanos a la clave en caso contrario.
-	\end{itemize}
-	
-	\subsubsection{Proceso de Ingreso de Nodo} 
-	
-	Cuando un nuevo nodo se une a la red, necesita poblar su tabla de enrutamiento. Hace esto realizando una operación `FIND\_NODE` en su propia ID.
-	
-	\subsubsection{Replicación y Republicación de Valores} 
-	
-	Para asegurar que los datos no se pierdan cuando los nodos abandonan la red, Kademlia almacena múltiples copias de cada par clave-valor en diferentes nodos. Necesitarás implementar esta replicación, así como un proceso para que los nodos republiquen periódicamente sus pares clave-valor.
-	
-	\subsubsection{Manejo de Fallos de Nodo} 
-	
-	Los nodos necesitan verificar periódicamente si sus pares aún están en línea y actualizar sus tablas de enrutamiento en consecuencia.
-	
-	\subsubsection{Concurrencia} 
-	
-	Kademlia utiliza muchas operaciones concurrentes para acelerar las operaciones de red y hacer la red más robusta. Tendrás que manejar esto en tu implementación.
-	
-	\subsubsection{Comunicaci\'on: RPCs}
-	
-	\subsubsection{Consistencia y Replicaci\'on: Active replication}
-	
-	Active replication, also known as state machine replication, is a strategy where each operation is performed on all replicas. This ensures that all replicas have the same state at any given time. Here's a basic outline of how it could work in your distributed agenda system:
-	
-	1. **Operation Invocation**: When a client wants to perform an operation (like creating a new event in the agenda), it sends a request to a designated component in your system. This could be a load balancer, a leader node in a consensus protocol, or any other component that's responsible for coordinating requests.
-	
-	2. **Broadcast to Replicas**: The coordinating component then broadcasts the operation to all replicas. This could be done through a variety of methods, such as multicast or a publish-subscribe system. The important part is that all replicas receive the operation.
-	
-	3. **Perform Operation**: Each replica independently performs the operation. Since all replicas are identical and receive the same sequence of operations, they should all arrive at the same state. For example, if the operation was to create a new event, each replica would add that event to its copy of the agenda.
-	
-	4. **Response to Client**: After performing the operation, each replica sends a response back to the coordinating component. Once the coordinator has received responses from all replicas (or a sufficient number of them), it sends a final response back to the client.
-	
-	5. **Error Handling**: If any replica fails to perform the operation, the system needs to handle this error. This could involve retrying the operation, removing the faulty replica, or other error recovery strategies.
-	
-	Remember, the key to active replication is ensuring that all replicas perform every operation in the same order. This often requires careful coordination and can introduce significant complexity into your system. But when done correctly, it can provide a high degree of reliability and fault tolerance.
-	
-	\subsubsection{Tolerancia a Fallas}
-	
-	\section{Seguridad}
-	
-	Security in distributed systems is concerned with the prevention and detection of unauthorized actions by users of a system. The security of a distributed system can be divided into two main parts: secure channels and secure processes. Secure channels are used to protect data from being intercepted or tampered with during transmission. Secure processes are used to ensure that only authorized users can access and manipulate data.
-		
-	\subsection{Autenticaci\'on}
-	
-	\subsection{Autorizaci\'on}
+	La implementación de una agenda electrónica como sistema distribuido presenta numerosos desafíos, pero también ofrece muchas ventajas. La capacidad de gestionar el tiempo de manera eficiente y coordinar actividades con otros usuarios es crucial en el mundo moderno. Con la arquitectura distribuida, el mecanismo de autenticación e identificación, la formación dinámica de grupos, la gestión de citas grupales, las actualizaciones automáticas de la agenda, la identificación de conflictos y la visualización de la agenda, nuestro sistema proporciona una solución robusta y flexible para la gestión del tiempo.
 	
 	\bibliography{refs} 
 \end{document}

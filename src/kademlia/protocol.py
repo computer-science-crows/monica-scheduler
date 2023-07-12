@@ -2,7 +2,7 @@ import random
 import asyncio
 import logging
 
-from rpcudp.protocol import RPCProtocol
+from kademlia.rpcudp import RPCProtocol
 
 from kademlia.node import Node
 from kademlia.routing import RoutingTable
@@ -39,14 +39,16 @@ class KademliaProtocol(RPCProtocol):
     def rpc_store(self, sender, nodeid, key, value):
         source = Node(nodeid, sender[0], sender[1])
         self.welcome_if_new(source)
+        # print('AQUIIIIIIIIIIIIIIIII')
+        # print(key)
         log.debug("got a store request from %s, storing '%s'='%s'",
-                  sender, key.hex(), value)
+                  sender, key, value)
         self.storage[key] = value
         return True
 
     def rpc_find_node(self, sender, nodeid, key):
         log.info("finding neighbors of %i in local table",
-                 int(nodeid.hex(), 16))
+                 int(nodeid, 16))
         source = Node(nodeid, sender[0], sender[1])
         self.welcome_if_new(source)
         node = Node(key)
@@ -71,6 +73,7 @@ class KademliaProtocol(RPCProtocol):
         address = (node_to_ask.ip, node_to_ask.port)
         result = await self.find_value(address, self.source_node.id,
                                        node_to_find.id)
+        # print(f"!!!!!!!!!!! CALL FIND VALUE !!!!!!!!!!! {result}")
         return self.handle_call_response(result, node_to_ask)
 
     async def call_ping(self, node_to_ask):

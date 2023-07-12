@@ -5,10 +5,11 @@ import random
 import pickle
 import asyncio
 import logging
+import uuid
 
 from kademlia.protocol import KademliaProtocol
 from kademlia.utils import digest
-from kademlia.storage import ForgetfulStorage
+from kademlia.storage import Storage, ForgetfulStorage
 from kademlia.node import Node
 from kademlia.crawling import ValueSpiderCrawl
 from kademlia.crawling import NodeSpiderCrawl
@@ -36,9 +37,10 @@ class Server:
             storage: An instance that implements the interface
                      :class:`~kademlia.storage.IStorage`
         """
+        self.id = uuid.uuid4()
         self.ksize = ksize
         self.alpha = alpha
-        self.storage = storage or ForgetfulStorage()
+        self.storage = Storage('data')
         self.node = Node(node_id or digest(random.getrandbits(255)))
         self.transport = None
         self.protocol = None
@@ -69,6 +71,8 @@ class Server:
                                                local_addr=(interface, port))
         log.info("Node %i listening on %s:%i",
                  self.node.long_id, interface, port)
+        self.node.ip = interface
+        self.node.port = port
         self.transport, self.protocol = await listen
         # finally, schedule refreshing table
         self.refresh_table()
@@ -86,6 +90,7 @@ class Server:
         """
         results = []
         for node_id in self.protocol.get_refresh_ids():
+            # print(f"NODE ID: {node_id}")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
@@ -97,6 +102,7 @@ class Server:
 
         # now republish keys older than one hour
         for dkey, value in self.storage.iter_older_than(3600):
+            # print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 
     def bootstrappable_neighbors(self):
@@ -144,10 +150,12 @@ class Server:
         dkey = digest(key)
         # if this node has it, return it
         if self.storage.get(dkey) is not None:
+            # print('1')
             return self.storage.get(dkey)
         node = Node(dkey)
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
+            # print('2')
             log.warning("There are no known neighbors to get key %s", key)
             return None
         spider = ValueSpiderCrawl(self.protocol, node, nearest,
@@ -176,13 +184,13 @@ class Server:
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
             log.warning("There are no known neighbors to set key %s",
-                        dkey.hex())
+                        dkey)
             return False
 
         spider = NodeSpiderCrawl(self.protocol, node, nearest,
                                  self.ksize, self.alpha)
         nodes = await spider.find()
-        log.info("setting '%s' on %s", dkey.hex(), list(map(str, nodes)))
+        log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
 
         # if this node is close too, then store here as well
         biggest = max([n.distance_to(node) for n in nodes])
@@ -254,6 +262,7 @@ def check_dht_value_type(value):
         float,
         bool,
         str,
-        bytes
+        bytes,
+        dict
     ]
     return type(value) in typeset  # pylint: disable=unidiomatic-typecheck
