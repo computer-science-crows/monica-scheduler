@@ -23,7 +23,7 @@ class API():
         # print("      \U00002705 Done ")
         print()
 
-    def create_servers(self, number_of_servers=5):
+    def create_servers(self, number_of_servers=2):
         for i in range(number_of_servers):
             self.containers.append(create_container(self.image_name))
             time.sleep(10)
@@ -37,6 +37,7 @@ class API():
         for container in to_remove:
             remove_container(container)
             remove_dangling()
+        print(f'{len(to_remove)} container(s) removed')
 
     def set_value(self, key, value):
         result = create_container(
