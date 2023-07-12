@@ -54,9 +54,16 @@ class User:
         if workspace_id not in self.workspaces:
             self.workspaces.append(workspace_id)
 
+    def exit_workspace(self,workspace):
+        if workspace.workspace_id in self.workspaces:
+            self.workspaces.remove(workspace.workspace_id)
+            workspace.exit_workspace(self.alias)
+
+
     def remove_from_workspace(self,workspace_id):
         if workspace_id in self.workspaces:
             self.workspaces.remove(workspace_id)
+            
 
     def remove_event(self, workspace: Workspace, event: Event):
         event = workspace.remove_event(self.alias, event)

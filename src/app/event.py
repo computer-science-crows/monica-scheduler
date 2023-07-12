@@ -22,6 +22,7 @@ def get_event(event_id):
 
     if DDB.at(f"{file_name}", key=f"{key}").exists():
         data = DDB.at(f"{file_name}", key=f"{key}").read()
+        print(f"DTA {data}")
         event = Event(data['from_user'], data['title'],data['date'],data['place'],data['start_time'],data['end_time'],data['workspace_id'], data['id'])
 
         return event

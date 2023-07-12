@@ -482,11 +482,7 @@ class AgendaParser:
 
         set_user(user.alias,user.dicc())
         set_workspace(workspace.workspace_id,workspace.dicc())
-        
-
-        
-
-
+ 
     def _events(self):
         
         if not self._already_logged():
@@ -508,7 +504,6 @@ class AgendaParser:
         for i,e in enumerate(workspace.events):
             print(f"{i+1}. {get_event(e)}")
     
-
     def _set_event(self):
 
         if not self._already_logged():
@@ -542,12 +537,13 @@ class AgendaParser:
         if new_event != None:
             set_event(new_event.event_id, new_event.dicc())
 
-        
-
-        
-
     def _change_workspace_type(self):
-        pass
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+
 
     def _exit_workspace(self):
         
@@ -559,6 +555,11 @@ class AgendaParser:
 
         user = get_user(self.logged_user['alias'])
         workspace = get_workspace(workspace_id) 
+
+        user.exit_workspace(workspace)
+
+        set_user(user.alias, user.dicc())
+        set_workspace(workspace.workspace_id, workspace.dicc())
 
     def _already_logged(self):
         return self.logged_user != None

@@ -50,8 +50,9 @@ class Workspace(ABC):
         pass
 
 
-    def permission_to_remove(self,user):
-        pass        
+    def exit_workspace(self, user_alias):
+        if user_alias in self.users:
+            self.users.remove(user_alias)
 
     def send_request(self, request, user):
         user.set_request(request) 
@@ -112,12 +113,12 @@ class FlatWorkspace(Workspace):
 
     def remove_event(self, user, event):
 
-        if event.user.alias == user and event.event_id in self.events:
+        if event.from_user == user and event.event_id in self.events:
             self.events.remove(event.event_id)
             print(f"Event {event.event_id} succesfully removed from workspace {self.workspace_id}")            
             return True
         
-        print(f"User {user} cannot delete an event from workspace {self} because he is not the one who created it.")
+        print(f"User {user} cannot delete an event from workspace {self.workspace_id} because he is not the one who created it.")
 
         return False
     
