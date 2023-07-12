@@ -44,22 +44,22 @@ class AgendaParser:
     def act(self):        
         self.commands[f'{self.args.command}']()
 
-    def _last_user_logged(self):
+    # def _last_user_logged(self):
 
-        DDB.config.storage_directory = "log"
-        database = DDB.at(f"log")
-        if not database.exists():
-            database.create({})
+    #     DDB.config.storage_directory = "log"
+    #     database = DDB.at(f"log")
+    #     if not database.exists():
+    #         database.create({})
 
-        data = database.read()
-        if len(list(data.keys())) > 0:
-            self.logged_user = data[list(data.keys())[0]]
+    #     data = database.read()
+    #     if len(list(data.keys())) > 0:
+    #         self.logged_user = data[list(data.keys())[0]]
 
-    def _update_user_logger(self, user):
-        DDB.config.storage_directory = "log"
-        with DDB.at("log").session() as (session, file):
-            file[f"{user.alias}"] = user.dicc()
-            session.write()
+    # def _update_user_logger(self, user):
+    #     DDB.config.storage_directory = "log"
+    #     with DDB.at("log").session() as (session, file):
+    #         file[f"{user.alias}"] = user.dicc()
+    #         session.write()
      
     def _login(self):
 
@@ -89,9 +89,8 @@ class AgendaParser:
         if user.alias == alias and user.password == password:
             user.logged()
             set_user(user.alias, user.dicc())
-            self.logged_user = user
+            self.logged_user = user.alias
 
-            self._update_user_logger(user)
             print(f"Welcome to Monica Scheduler {user.alias}!")
             
         else:
@@ -112,11 +111,7 @@ class AgendaParser:
         password=self.args.password
         confirmation = self.args.confirmation
 
-        # Missing args
-        if alias == None or full_name == None or password == None or confirmation == None:
-            print(f'Missing arguments')
-            return
-        
+                
         # Password and confirmation not matching
         if password != confirmation:
             print("Wrong password.")
@@ -130,11 +125,10 @@ class AgendaParser:
         
         new_user = User(alias,full_name, password)
         new_user.logged()
-        self.logged_user = new_user
+        self.logged_user = new_user.alias
         set_user(new_user.alias,new_user.dicc())
 
-        self._update_user_logger(new_user)
-       
+              
         print("Succesfully register")
 
     def _logout(self):
@@ -147,14 +141,11 @@ class AgendaParser:
             print("There is no user logged")
             return
         
-        user = get_user(self.logged_user["alias"])
+        user = get_user(self.logged_user)
         print(f"User {user}")
         user.active = False
         set_user(user.alias,user.dicc())
         self.logged_user = None
-
-        DDB.config.storage_directory = "log"
-        DDB.at("log").delete()
 
         print("Bye!")
 
@@ -227,7 +218,7 @@ class AgendaParser:
             return
         
                 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
 
         same_alias_user = None
 
@@ -246,14 +237,7 @@ class AgendaParser:
 
         set_user(new_user.alias,new_user.dicc())
 
-        DDB.config.storage_directory = "log"
-
-        # se puede hacer mejor
-        DDB.at("log").delete()
-
-        self._last_user_logged()
-
-        self._update_user_logger(new_user)
+        self.logged_user=new_user.alias
 
         print(f'Profile edited.')
 
