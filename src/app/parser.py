@@ -10,14 +10,14 @@ from app.event import get_event, set_event
 
 class AgendaParser:
 
-    def __init__(self) -> None:
+    def __init__(self, server) -> None:
 
         self.parser = argparse.ArgumentParser(description='Command-line parser for the Monica Scheduler distributed agenda')
         self.subparsers = self.parser.add_subparsers(dest='command', help='Available commands')
         self._user_subparser()
         self._workspaces_subparsers()
         self.logged_user=None
-        # self._last_user_logged()
+        self.server = server
 
         self.commands = {'login':lambda:self._login(),
                     'register':lambda:self._register(),
