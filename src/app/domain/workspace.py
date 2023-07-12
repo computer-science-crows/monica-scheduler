@@ -78,8 +78,7 @@ class FlatWorkspace(Workspace):
 
     def get_type(self):
         return 'flat'
-    
-       
+      
     def add_event(self,from_user_id,title,date,place,start_time,end_time, users):
 
         event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id)
@@ -95,9 +94,25 @@ class FlatWorkspace(Workspace):
 
         return event, request
 
-    def remove_event(self,user, event):
+    def set_event(self, event, **fields):
+        if fields['user'] != event.from_user:
+            print(f"User {fields['user']} cannot modify event {event.event_id}")
+            return None
+        return Event(
+            from_user=fields['user'] or event.from_user,
+            title=fields['title'] or event.title,
+            date=fields['date'] or event.date,
+            place=fields['place'] or event.place,
+            start_time=fields['start_time'] or event.start_time,
+            end_time=fields['end_time'] or event.end_time,
+            workspace_id=self.workspace_id,
+            id=event.event_id
+        )
 
-        if event.user.alias == user.alias and event.event_id in self.events:
+
+    def remove_event(self, user, event):
+
+        if event.user.alias == user and event.event_id in self.events:
             self.events.remove(event.event_id)
             print(f"Event {event.event_id} succesfully removed from workspace {self.workspace_id}")            
             return True
@@ -254,14 +269,30 @@ class HierarchicalWorkspace(Workspace):
 
         return None, None
     
-    def remove_event(self, event: Event, user):
+    def set_event(self, event, **fields):
+        if not fields['user'] in self.admins:
+            print(f"User {fields['user']} cannot modify event {event.event_id}")
+            return None
+        return Event(
+            from_user=fields['user'] or event.from_user,
+            title=fields['title'] or event.title,
+            date=fields['date'] or event.date,
+            place=fields['place'] or event.place,
+            start_time=fields['start_time'] or event.start_time,
+            end_time=fields['end_time'] or event.end_time,
+            workspace_id=self.workspace_id,
+            id=event.event_id
+        )
 
-        if user.user_id in self.admins and event.event_id in self.events:
+
+    def remove_event(self, user, event: Event):
+
+        if user in self.admins and event.event_id in self.events:
             self.events.remove(event)
             print(f"Event {event.event_id} succesfully removed from workspace {self.workspace_id}") 
             return True
         
-        print(f"User {user} cannot delete event because it is not administrator of the workspace {self}")
+        print(f"User {user} cannot delete event because it is not administrator of the workspace {self.workspace_id}")
 
         return False
     

@@ -24,7 +24,7 @@
     "id": "3faf7863-2ab1-4904-93cd-8306515fb644",
     "place": "aqui",
     "start_time": "1",
-    "title": "hola",
+    "title": "pedro",
     "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
   },
   "5b41b0bd60c1d96bb730ed482862255bd02cbc09": {
@@ -78,7 +78,7 @@
     "inbox": [
       "4d8d3410-aef7-42f9-b457-7be9c2fded29"
     ],
-    "logged": false,
+    "logged": true,
     "password": "123",
     "workspaces": [
       "8a598544-60ed-44e1-b43b-c9cef2537391",
@@ -93,7 +93,7 @@
       "ff6ffe76-106e-45e0-8106-659ca1cafc93",
       "febced08-18e6-476a-bbd7-58a3672696ad"
     ],
-    "logged": true,
+    "logged": false,
     "password": "123",
     "workspaces": [
       "8a598544-60ed-44e1-b43b-c9cef2537391"

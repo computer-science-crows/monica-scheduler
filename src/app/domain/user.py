@@ -59,13 +59,16 @@ class User:
             self.workspaces.remove(workspace_id)
 
     def remove_event(self, workspace: Workspace, event: Event):
-        event = workspace.remove_event(event)
+        event = workspace.remove_event(self.alias, event)
 
     def remove_workspace(self, workspace_id):
         if workspace_id in self.workspaces:
             self.workspaces.remove(workspace_id)
             return True
         return False
+    
+    def set_event(self, event, workspace, **fields):
+        return workspace.set_event(event, user=self.alias, **fields)
 
     def set_request(self, request_id):
         self.requests.append(request_id)       

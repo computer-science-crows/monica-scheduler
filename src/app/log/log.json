@@ -1,17 +1,16 @@
 {
-  "b": {
-    "alias": "b",
+  "c": {
+    "alias": "c",
     "class": "user",
-    "full_name": "b",
+    "full_name": "c",
     "inbox": [
-      "ff6ffe76-106e-45e0-8106-659ca1cafc93",
-      "febced08-18e6-476a-bbd7-58a3672696ad",
       "4d8d3410-aef7-42f9-b457-7be9c2fded29"
     ],
     "logged": true,
     "password": "123",
     "workspaces": [
-      "8a598544-60ed-44e1-b43b-c9cef2537391"
+      "8a598544-60ed-44e1-b43b-c9cef2537391",
+      "71ef94cf-8ab4-4d0f-b052-229df44dfc70"
     ]
   }
 }

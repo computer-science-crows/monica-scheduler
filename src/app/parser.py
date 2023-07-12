@@ -471,6 +471,20 @@ class AgendaParser:
             print("There is no user logged")
             return
         
+        event_id = self.args.event_id
+
+
+        user = get_user(self.logged_user['alias'])
+        event = get_event(event_id)        
+        workspace= get_workspace(event.workspace_id)
+
+        user.remove_event(workspace,event)
+
+        set_user(user.alias,user.dicc())
+        set_workspace(workspace.workspace_id,workspace.dicc())
+        
+
+        
 
 
     def _events(self):
@@ -493,15 +507,43 @@ class AgendaParser:
         print(f"Events of workspace {workspace_id}:")
         for i,e in enumerate(workspace.events):
             print(f"{i+1}. {get_event(e)}")
-            
-
-        
+    
 
     def _set_event(self):
 
         if not self._already_logged():
             print("There is no user logged")
             return
+        
+        event_id = self.args.id
+        title = self.args.title
+        date = self.args.date
+        place = self.args.place
+        start_time = self.args.start_time
+        end_time = self.args.end_time
+
+        user = get_user(self.logged_user['alias'])
+
+        event = get_event(event_id)
+        
+        workspace= get_workspace(event.workspace_id)
+        
+        
+        new_event = user.set_event(
+            event=event, 
+            workspace=workspace,
+            title = title,
+            date = date,
+            place = place,
+            end_time = end_time,
+            start_time = start_time
+        )
+
+        if new_event != None:
+            set_event(new_event.event_id, new_event.dicc())
+
+        
+
         
 
     def _change_workspace_type(self):
@@ -598,8 +640,7 @@ class AgendaParser:
         # remove event    
         remove_event = self.subparsers.add_parser('remove_event', help='Remove event from workspace')
         remove_event.add_argument('event_id', help='id of event', default=None)
-        remove_event.add_argument('workspace_id', help='id of workspace', default=None)
-        
+                
         # get events
         events = self.subparsers.add_parser('events', help='Get list of events of a workspace')
         events.add_argument('workspace_id', help='id of workspace', default=None)
