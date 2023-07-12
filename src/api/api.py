@@ -1,4 +1,4 @@
-from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
+from docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 import time
 import random
 
@@ -47,10 +47,10 @@ class API():
         result = create_container(
             self.image_name, ["-o", "get", "-k", str(key)])
         remove_dangling()
-        return (True, result) if result != None else (False, result)
+        return (True, result) if result != 'None' else (False, None)
 
 
-# api = API()
+api = API()
 # # api.remove_servers()
-# print(api.set_value("my-key", "my-awesome-value"))
-# print(api.get_value("my-key"))
+print(api.set_value("my-key", "my-awesome-value"))
+print(api.get_value("my-key"))

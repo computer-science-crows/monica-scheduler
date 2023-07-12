@@ -8,7 +8,7 @@ import json
 import pickle
 
 
-# DDB.config.use_compression = True
+DDB.config.use_compression = True
 
 
 class Storage:
@@ -41,20 +41,25 @@ class Storage:
             file[f"{key}"] = (time.monotonic(), value)
             session.write()
 
+    def cull(self):
+        with DDB.at(f"{self.file_name}").session() as (session, data):
+            print(self.iter_older_than(self.ttl))
+            for id, _ in self.iter_older_than(self.ttl):
+                del data[id]
+            session.write()
+
     def __getitem__(self, key):
         """
         Get the given key.  If item doesn't exist, raises C{KeyError}
         """
         # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
-            return DDB.at(f"{self.file_name}", key=f"{key}").read()
+            return DDB.at(f"{self.file_name}", key=f"{key}").read()[1]
 
     def get(self, key: str, default=None):
         """
         Get given key.  If not found, return default.
         """
-
-            
         # print(f"KEY {key}")
         # print(DDB.at(f"{self.file_name}").read())
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
@@ -80,6 +85,9 @@ class Storage:
         keys = data.keys()
         values = map(operator.itemgetter(1), data.values())
         return zip(keys, values)
+
+    def __repr__(self):
+        return repr(DDB.at(f"{self.file_name}").read())
 
 
 class ForgetfulStorage(Storage):
@@ -135,3 +143,4 @@ class ForgetfulStorage(Storage):
 
 
 # storage = Storage('data')
+# storage.cull()
