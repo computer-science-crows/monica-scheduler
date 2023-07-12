@@ -1,52 +1,35 @@
 import hashlib
 from app.domain.request import JoinRequest, EventRequest, WorkspaceRequest
 import dictdatabase as DDB
-
-def digest(string):
-    if not isinstance(string, bytes):
-        string = str(string).encode('utf8')
-    return hashlib.sha1(string).hexdigest()
+from kademlia.network import Server
 
 
-file_name = 'data'
+async def get_request(request_id, server: Server):
+      
+    data = await server.get(request_id)  
 
-def database():
-    DDB.config.storage_directory = "../database"
-    database = DDB.at(f"{file_name}")
-    if not database.exists():
-        database.create({})
+    request = None
+    id = data['id']
+    type = data['type']
+    workspace_id = data['workspace_id']
+    from_user_alias = data['from_user_alias']        
+    max = data['max']
+    count = data['count']
+    if type == 'join':
+        to_user_alias = data['to_user']
+        request = JoinRequest(workspace_id,from_user_alias,max,to_user_alias,id,count)
+    elif type == 'event':
+        event = data['event']
+        request = EventRequest(workspace_id,from_user_alias,max,event,id,count)
+    else:
+        admins = data['admins']
+        request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count,)
 
-def get_request(request_id):
-    database()  
-    key = digest(request_id)   
+    return request
 
-    if DDB.at(f"{file_name}", key=f"{key}").exists():
-        data = DDB.at(f"{file_name}", key=f"{key}").read()
-        request = None
-        id = data['id']
-        type = data['type']
-        workspace_id = data['workspace_id']
-        from_user_alias = data['from_user_alias']        
-        max = data['max']
-        count = data['count']
-        if type == 'join':
-            to_user_alias = data['to_user']
-            request = JoinRequest(workspace_id,from_user_alias,max,to_user_alias,id,count)
-        elif type == 'event':
-            event = data['event']
-            request = EventRequest(workspace_id,from_user_alias,max,event,id,count)
-        else:
-            admins = data['admins']
-            request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count,)
+def set_request(request_id,request_dicc, server:Server):
 
-        return request
+    server.set(request_id,request_dicc)
+    
 
-def set_request(request_id,request_dicc):
-    database()
-
-    key = digest(request_id)
-    value = request_dicc
-
-    with DDB.at(f"{file_name}").session() as (session, file):
-        file[f"{key}"] = value
-        session.write()
+   
