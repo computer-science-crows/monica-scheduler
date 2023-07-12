@@ -8,7 +8,7 @@ class Workspace(ABC):
 
     def __init__(self, name, id=None) -> None:
         
-        self.workspace_id = id or uuid.uuid4()
+        self.workspace_id = id or str(uuid.uuid4())
         self.name = name
         self.events = []
         self.users = []    

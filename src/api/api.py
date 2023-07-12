@@ -23,7 +23,7 @@ class API():
         # print("      \U00002705 Done ")
         print()
 
-    def create_servers(self, number_of_servers=2):
+    def create_servers(self, number_of_servers=5):
         for i in range(number_of_servers):
             self.containers.append(create_container(self.image_name))
             time.sleep(10)
@@ -51,7 +51,7 @@ class API():
         return (True, result) if result != 'None' else (False, None)
 
 
-api = API()
-# # api.remove_servers()
-print(api.set_value("my-key", "my-awesome-value"))
-print(api.get_value("my-key"))
+# api = API()
+# # # api.remove_servers()
+# print(api.set_value("my-key", "my-awesome-value"))
+# print(api.get_value("my-key"))

@@ -13,9 +13,10 @@ def handle_command(args, api):
 
 def main():
     # Create the top-level parser
-    agenda_parser = AgendaParser()
+    
 
-    # api = API()
+    api = API()
+    agenda_parser = AgendaParser(api=api)
 
     print("\U0001F499 Monica Scheduler \U0001F499")
     print("Enter 'quit' to exit.")
