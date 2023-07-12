@@ -38,8 +38,8 @@ class AgendaParser:
                     'change_wokspace_type':lambda:self._change_workspace_type(),
                     'exit_workspace':lambda:self._exit_workspace()}
 
-    def parse_arguments(self):
-        self.args = self.parser.parse_args()
+    def parse_arguments(self, args):
+        self.args = self.parser.parse_args(args)
 
                     
     def act(self):        
