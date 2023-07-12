@@ -17,7 +17,7 @@ class AgendaParser:
         self._user_subparser()
         self._workspaces_subparsers()
         self.logged_user=None
-        self._last_user_logged()
+        # self._last_user_logged()
 
         self.commands = {'login':lambda:self._login(),
                     'register':lambda:self._register(),
@@ -159,7 +159,7 @@ class AgendaParser:
         handle_request = self.args.handle_request
         req_id = self.args.req_id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         requests = {}
 
         for req in user.requests:
@@ -193,7 +193,7 @@ class AgendaParser:
             print("There is no user logged")
             return
         
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
 
         workspaces = []
 
@@ -254,14 +254,16 @@ class AgendaParser:
             type = 'flat'
         else:
             type = 'hierarchical'
-
-        user = get_user(self.logged_user['alias'])
+        
+        print('BEFORE')
+        user = get_user(self.logged_user)
+        print("AFTER")
 
         new_workspace = user.create_workspace(title,type)
         set_user(user.alias,user.dicc())
         set_workspace(new_workspace.workspace_id,new_workspace.dicc())
 
-        self._update_user_logger(user)
+        # self._update_user_logger(user)
 
         print(f"Worspace {new_workspace.workspace_id} was created.")
 
@@ -273,12 +275,12 @@ class AgendaParser:
         
         workspace_id = self.args.id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         remove = user.remove_workspace(workspace_id)
 
         if remove:
             set_user(user.alias,user.dicc())
-            self._update_user_logger(user)
+            # self._update_user_logger(user)
             print(f"Succesfully removed workspace")
         else:
             print(f"User {user} does not belong to worksoace {workspace_id}")
@@ -292,7 +294,7 @@ class AgendaParser:
         workspace_id = self.args.workspace_id
         user_alias = self.args.user_alias
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         user_to_add = get_user(user_alias)
         workspace = get_workspace(workspace_id)
         
@@ -322,7 +324,7 @@ class AgendaParser:
         workspace_id = self.args.workspace_id
         user_alias = self.args.user_alias
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         user_to_remove = get_user(user_alias)
         workspace = get_workspace(workspace_id)
         
@@ -348,7 +350,7 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
 
         if workspace_id in user.workspaces:
             workspace = get_workspace(workspace_id)
@@ -368,7 +370,7 @@ class AgendaParser:
         user_alias = self.args.user_alias
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         
         if workspace_id not in user.workspaces:
             print(f"User {user.alias} does not belong to workspace {workspace_id}")
@@ -400,7 +402,7 @@ class AgendaParser:
         start_time = self.args.start_time
         end_time = self.args.end_time
 
-        user_get = get_user(self.logged_user['alias'])
+        user_get = get_user(self.logged_user)
 
         if workspace_id not in user_get.workspaces:
             print(f"User {user_get.alias} does not belong to workspace {workspace_id}")
@@ -457,7 +459,7 @@ class AgendaParser:
         event_id = self.args.event_id
 
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         event = get_event(event_id)        
         workspace= get_workspace(event.workspace_id)
 
@@ -474,7 +476,7 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
 
         if workspace_id not in user.workspaces:
             print(f"User {user.alias} does not belong to workspace {workspace_id}")
@@ -500,7 +502,7 @@ class AgendaParser:
         start_time = self.args.start_time
         end_time = self.args.end_time
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
 
         event = get_event(event_id)
         
@@ -536,7 +538,7 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user['alias'])
+        user = get_user(self.logged_user)
         workspace = get_workspace(workspace_id) 
 
         user.exit_workspace(workspace)
