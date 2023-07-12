@@ -77,7 +77,7 @@ class AgendaParser:
             print(f'Missing username or password')
             return
         
-        user = get_user(alias)
+        user = get_user(alias, self.server)
         print(user)
         
         # if user not in DB, register
@@ -88,7 +88,7 @@ class AgendaParser:
         # if alias and password match with user's, logged
         if user.alias == alias and user.password == password:
             user.logged()
-            set_user(user.alias, user.dicc())
+            set_user(user.alias, user.dicc(),self.server)
             self.logged_user = user.alias
 
             print(f"Welcome to Monica Scheduler {user.alias}!")
@@ -117,7 +117,7 @@ class AgendaParser:
             print("Wrong password.")
             return
         
-        user = get_user(alias)
+        user = get_user(alias,self.server)
 
         if user != None:
             print(f"User with alias {alias} already exists")
@@ -126,7 +126,7 @@ class AgendaParser:
         new_user = User(alias,full_name, password)
         new_user.logged()
         self.logged_user = new_user.alias
-        set_user(new_user.alias,new_user.dicc())
+        set_user(new_user.alias,new_user.dicc(),self.server)
 
               
         print("Succesfully register")
@@ -141,10 +141,10 @@ class AgendaParser:
             print("There is no user logged")
             return
         
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
         print(f"User {user}")
         user.active = False
-        set_user(user.alias,user.dicc())
+        set_user(user.alias,user.dicc(),self.server)
         self.logged_user = None
 
         print("Bye!")
@@ -159,11 +159,11 @@ class AgendaParser:
         handle_request = self.args.handle_request
         req_id = self.args.req_id
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
         requests = {}
 
         for req in user.requests:
-            requests[req] = get_request(req)
+            requests[req] = get_request(req,self.server)
         
         if handle_request == None and req_id == None:
             print(f"Inbox:")
@@ -174,7 +174,7 @@ class AgendaParser:
             print(f"{requests[req_id]}")
         elif handle_request != None and req_id != None:
 
-            workspace = get_workspace(requests[req_id].workspace_id)
+            workspace = get_workspace(requests[req_id].workspace_id,self.server)
 
             if handle_request == 'accept':                
                 new = user.accept_request(requests[req_id],workspace)
@@ -183,9 +183,9 @@ class AgendaParser:
             else:
                 user.reject_request(requests[req_id],workspace)
 
-            set_user(user.alias, user.dicc())
-            set_workspace(workspace.workspace_id, workspace.dicc())
-            set_request(req_id, requests[req_id].dicc())
+            set_user(user.alias, user.dicc(),self.server)
+            set_workspace(workspace.workspace_id, workspace.dicc(),self.server)
+            set_request(req_id, requests[req_id].dicc(),self.server)
 
     def _workspaces(self):
         
@@ -193,12 +193,12 @@ class AgendaParser:
             print("There is no user logged")
             return
         
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
 
         workspaces = []
 
         for w in user.workspaces:
-            workspaces.append(get_workspace(w))
+            workspaces.append(get_workspace(w),self.server)
 
         print(f"Workspaces:")
         for i,w in enumerate(workspaces):
@@ -218,12 +218,12 @@ class AgendaParser:
             return
         
                 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
 
         same_alias_user = None
 
         if alias != None:
-            same_alias_user = get_user(alias)
+            same_alias_user = get_user(alias,self.server)
         
         if same_alias_user != None:
             print(f"User with alias {alias} already exists")
@@ -235,7 +235,7 @@ class AgendaParser:
         new_user.active = user.active
         new_user.workspaces = user.workspaces
 
-        set_user(new_user.alias,new_user.dicc())
+        set_user(new_user.alias,new_user.dicc(),self.server)
 
         self.logged_user=new_user.alias
 
@@ -256,12 +256,12 @@ class AgendaParser:
             type = 'hierarchical'
         
         print('BEFORE')
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
         print("AFTER")
 
         new_workspace = user.create_workspace(title,type)
-        set_user(user.alias,user.dicc())
-        set_workspace(new_workspace.workspace_id,new_workspace.dicc())
+        set_user(user.alias,user.dicc(),self.server)
+        set_workspace(new_workspace.workspace_id,new_workspace.dicc(),self.server)
 
         # self._update_user_logger(user)
 
@@ -275,11 +275,11 @@ class AgendaParser:
         
         workspace_id = self.args.id
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
         remove = user.remove_workspace(workspace_id)
 
         if remove:
-            set_user(user.alias,user.dicc())
+            set_user(user.alias,user.dicc(),self.server)
             # self._update_user_logger(user)
             print(f"Succesfully removed workspace")
         else:
@@ -294,9 +294,9 @@ class AgendaParser:
         workspace_id = self.args.workspace_id
         user_alias = self.args.user_alias
 
-        user = get_user(self.logged_user)
-        user_to_add = get_user(user_alias)
-        workspace = get_workspace(workspace_id)
+        user = get_user(self.logged_user,self.server)
+        user_to_add = get_user(user_alias,self.server)
+        workspace = get_workspace(workspace_id,self.server)
         
         if user_to_add == None:
             print(f"User {user_alias} is not register into the app")
@@ -309,11 +309,11 @@ class AgendaParser:
         request = workspace.add_user(user.alias, user_to_add)
 
         if request:
-            set_request(request.request_id,request.dicc())
+            set_request(request.request_id,request.dicc(),self.server)
 
-        set_user(user.alias,user.dicc())
-        set_user(user_to_add.alias,user_to_add.dicc())
-        set_workspace(workspace_id,workspace.dicc())
+        set_user(user.alias,user.dicc(),self.server)
+        set_user(user_to_add.alias,user_to_add.dicc(),self.server)
+        set_workspace(workspace_id,workspace.dicc(),self.server)
 
     def _remove_user(self):
 
@@ -324,9 +324,9 @@ class AgendaParser:
         workspace_id = self.args.workspace_id
         user_alias = self.args.user_alias
 
-        user = get_user(self.logged_user)
-        user_to_remove = get_user(user_alias)
-        workspace = get_workspace(workspace_id)
+        user = get_user(self.logged_user,self.server)
+        user_to_remove = get_user(user_alias,self.server)
+        workspace = get_workspace(workspace_id,self.server)
         
         if user_to_remove == None:
             print(f"User {user_alias} is not register into the app")
@@ -338,9 +338,9 @@ class AgendaParser:
         remove = workspace.remove_user(user.alias, user_to_remove)
 
         if remove:
-            set_user(user.alias,user.dicc())
-            set_user(user_to_remove.alias,user_to_remove.dicc())
-            set_workspace(workspace_id,workspace.dicc())
+            set_user(user.alias,user.dicc(),self.server)
+            set_user(user_to_remove.alias,user_to_remove.dicc(),self.server)
+            set_workspace(workspace_id,workspace.dicc(),self.server)
 
     def _get_user(self):
         
@@ -350,10 +350,10 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
 
         if workspace_id in user.workspaces:
-            workspace = get_workspace(workspace_id)
+            workspace = get_workspace(workspace_id,self.server)
             print(f"Users of workspace {workspace_id}:")
             for u in workspace.users:
                 print(f"- {u}")
@@ -370,14 +370,14 @@ class AgendaParser:
         user_alias = self.args.user_alias
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
         
         if workspace_id not in user.workspaces:
             print(f"User {user.alias} does not belong to workspace {workspace_id}")
             return
         
-        user_to_change = get_user(user_alias)
-        workspace = get_workspace(workspace_id)
+        user_to_change = get_user(user_alias,self.server)
+        workspace = get_workspace(workspace_id,self.server)
 
         if workspace.get_type() == 'flat':
             print(f"Workspace {workspace_id} does not have roles")
@@ -385,9 +385,9 @@ class AgendaParser:
 
         workspace.change_role(user.alias,user_alias)
 
-        set_user(user.alias,user.dicc())
-        set_user(user_to_change.alias,user_to_change.dicc())
-        set_workspace(workspace.workspace_id,workspace.dicc())
+        set_user(user.alias,user.dicc(),self.server)
+        set_user(user_to_change.alias,user_to_change.dicc(),self.server)
+        set_workspace(workspace.workspace_id,workspace.dicc(),self.server)
 
     def _create_event(self):
         
@@ -402,24 +402,24 @@ class AgendaParser:
         start_time = self.args.start_time
         end_time = self.args.end_time
 
-        user_get = get_user(self.logged_user)
+        user_get = get_user(self.logged_user,self.server)
 
         if workspace_id not in user_get.workspaces:
             print(f"User {user_get.alias} does not belong to workspace {workspace_id}")
 
-        workspace_get = get_workspace(workspace_id)
+        workspace_get = get_workspace(workspace_id,self.server)
         users = []
 
         for u in workspace_get.users:
-            users.append(get_user(u))
+            users.append(get_user(u,self.server))
         
         users_collision = []
         print(f"DATE {date}")
         for user in users:
             for workspace_id in user.workspaces:    
-                workspace = get_workspace(workspace_id)            
+                workspace = get_workspace(workspace_id,self.server)            
                 for event_id in workspace.events:
-                    event = get_event(event_id)
+                    event = get_event(event_id,self.server)
                     print(event)
                     if date == event.date and (start_time <= event.start_time or end_time >= event.end_time):
                         users_collision.append(user)
@@ -437,18 +437,18 @@ class AgendaParser:
 
         print(f"EVENT {event}")
         if event != None:
-            set_event(event.event_id, event.dicc())
+            set_event(event.event_id, event.dicc(),self.server)
 
         print(f"REQUEST {request}")
         if request != None:
-            set_request(request.request_id, request.dicc())
+            set_request(request.request_id, request.dicc(),self.server)
 
-        set_user(user_get.alias,user_get.dicc())
+        set_user(user_get.alias,user_get.dicc(),self.server)
 
         for u in users:
-            set_user(u.alias,u.dicc())
+            set_user(u.alias,u.dicc(),self.server)
 
-        set_workspace(workspace_get.workspace_id,workspace_get.dicc())
+        set_workspace(workspace_get.workspace_id,workspace_get.dicc(),self.server)
 
     def _remove_event(self):
         
@@ -459,14 +459,14 @@ class AgendaParser:
         event_id = self.args.event_id
 
 
-        user = get_user(self.logged_user)
-        event = get_event(event_id)        
-        workspace= get_workspace(event.workspace_id)
+        user = get_user(self.logged_user,self.server)
+        event = get_event(event_id,self.server)        
+        workspace= get_workspace(event.workspace_id,self.server)
 
         user.remove_event(workspace,event)
 
-        set_user(user.alias,user.dicc())
-        set_workspace(workspace.workspace_id,workspace.dicc())
+        set_user(user.alias,user.dicc(),self.server)
+        set_workspace(workspace.workspace_id,workspace.dicc(),self.server)
  
     def _events(self):
         
@@ -476,18 +476,18 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
 
         if workspace_id not in user.workspaces:
             print(f"User {user.alias} does not belong to workspace {workspace_id}")
             return
         
         
-        workspace = get_workspace(workspace_id)
+        workspace = get_workspace(workspace_id,self.server)
 
         print(f"Events of workspace {workspace_id}:")
         for i,e in enumerate(workspace.events):
-            print(f"{i+1}. {get_event(e)}")
+            print(f"{i+1}. {get_event(e,self.server)}")
     
     def _set_event(self):
 
@@ -502,11 +502,11 @@ class AgendaParser:
         start_time = self.args.start_time
         end_time = self.args.end_time
 
-        user = get_user(self.logged_user)
+        user = get_user(self.logged_user,self.server)
 
-        event = get_event(event_id)
+        event = get_event(event_id,self.server)
         
-        workspace= get_workspace(event.workspace_id)
+        workspace= get_workspace(event.workspace_id,self.server)
         
         
         new_event = user.set_event(
@@ -520,7 +520,7 @@ class AgendaParser:
         )
 
         if new_event != None:
-            set_event(new_event.event_id, new_event.dicc())
+            set_event(new_event.event_id, new_event.dicc(),self.server)
 
     def _change_workspace_type(self):
         
@@ -538,13 +538,13 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
-        user = get_user(self.logged_user)
-        workspace = get_workspace(workspace_id) 
+        user = get_user(self.logged_user,self.server)
+        workspace = get_workspace(workspace_id,self.server) 
 
         user.exit_workspace(workspace)
 
-        set_user(user.alias, user.dicc())
-        set_workspace(workspace.workspace_id, workspace.dicc())
+        set_user(user.alias, user.dicc(),self.server)
+        set_workspace(workspace.workspace_id, workspace.dicc(),self.server)
 
     def _already_logged(self):
         return self.logged_user != None
