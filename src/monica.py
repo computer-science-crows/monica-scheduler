@@ -14,8 +14,6 @@ def handle_command(args, api):
 def main():
     # Create the top-level parser
     agenda_parser = AgendaParser()
-    agenda_parser.parser.add_argument(
-        'command', help='The command to execute')
 
     # api = API()
 
@@ -29,7 +27,11 @@ def main():
             break
 
         # Parse the arguments
-        args = agenda_parser.parser.parse_args(line.split())
+        try:
+            agenda_parser.parse_arguments(line.split())
+            agenda_parser.act()
+            
+        except:...
 
         # Handle the command
         # handle_command(args, api)

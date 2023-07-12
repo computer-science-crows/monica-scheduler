@@ -40,7 +40,6 @@ class AgendaParser:
 
     def parse_arguments(self, args):
         self.args = self.parser.parse_args(args)
-
                     
     def act(self):        
         self.commands[f'{self.args.command}']()
