@@ -50,7 +50,7 @@ class AgendaParser:
 
     def _login(self):
 
-        print("login")
+        # print("login")
 
         if self._already_logged():
             print(f"There is a user logged already.")
@@ -65,7 +65,7 @@ class AgendaParser:
             return
 
         user = get_user(alias, self.api)
-        print(user)
+        # print(user)
 
         # if user not in DB, register
         if user == None:
@@ -87,7 +87,7 @@ class AgendaParser:
 
     def _register(self):
 
-        print("register")
+        # print("register")
 
         if self._already_logged():
             print(f"There is a user logged. You cannot register.")
@@ -114,25 +114,25 @@ class AgendaParser:
         self.logged_user = new_user.alias
         set_user(new_user.alias, new_user.dicc(), self.api)
 
-        print("Succesfully register")
+        print("Succesfully registered")
 
     def _logout(self):
 
-        print('logout')
-        print(self._already_logged())
-        print(self.logged_user)
+        # print('logout')
+        # print(self._already_logged())
+        # print(self.logged_user)
 
         if not self._already_logged():
             print("There is no user logged")
             return
 
         user = get_user(self.logged_user, self.api)
-        print(f"User {user}")
+        # print(f"User {user}")
         user.active = False
         set_user(user.alias, user.dicc(), self.api)
         self.logged_user = None
 
-        print("Bye!")
+        print(f"Bye {user.alias}!")
 
     def _inbox(self):
 
@@ -238,9 +238,9 @@ class AgendaParser:
         else:
             type = 'hierarchical'
 
-        print('BEFORE')
+        # print('BEFORE')
         user = get_user(self.logged_user, self.api)
-        print("AFTER")
+        # print("AFTER")
 
         new_workspace = user.create_workspace(title, type)
         set_user(user.alias, user.dicc(), self.api)
@@ -249,7 +249,7 @@ class AgendaParser:
 
         # self._update_user_logger(user)
 
-        print(f"Worspace {new_workspace.workspace_id} was created.")
+        print(f"Workspace {new_workspace.workspace_id} was created.")
 
     def _remove_workspace(self):
 
@@ -401,13 +401,13 @@ class AgendaParser:
             users.append(get_user(u, self.api))
 
         users_collision = []
-        print(f"DATE {date}")
+        # print(f"DATE {date}")
         for user in users:
             for workspace_id in user.workspaces:
                 workspace = get_workspace(workspace_id, self.api)
                 for event_id in workspace.events:
                     event = get_event(event_id, self.api)
-                    print(event)
+                    # print(event)
                     if date == event.date and (start_time <= event.start_time or end_time >= event.end_time):
                         users_collision.append(user)
 
@@ -424,11 +424,11 @@ class AgendaParser:
         event, request = user_get.create_event(
             workspace_get, title, date, place, start_time, end_time, users)
 
-        print(f"EVENT {event}")
+        # print(f"EVENT {event}")
         if event != None:
             set_event(event.event_id, event.dicc(), self.api)
 
-        print(f"REQUEST {request}")
+        # print(f"REQUEST {request}")
         if request != None:
             set_request(request.request_id, request.dicc(), self.api)
 
@@ -539,8 +539,8 @@ class AgendaParser:
 
         if action == 'create':
             if n_s:
-                print("hola")
-                print(n_s)
+                # print("hola")
+                # print(n_s)
                 self.api.create_servers(n_s)
                 print(f'{n_s} server(s) added')
         else:

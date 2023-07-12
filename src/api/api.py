@@ -52,7 +52,3 @@ class API():
         return (True, result) if result != 'None' else (False, None)
 
 
-# api = API()
-# # # api.remove_servers()
-# print(api.set_value("my-key", "my-awesome-value"))
-# print(api.get_value("my-key"))

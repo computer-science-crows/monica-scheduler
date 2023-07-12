@@ -13,7 +13,7 @@ class Workspace(ABC):
         self.events = []
         self.users = []    
 
-        print(f"WORSPACE Name: {name} Id: {self.workspace_id}")           
+        # print(f"WORSPACE Name: {name} Id: {self.workspace_id}")           
     
     @abstractclassmethod
     def get_type(self):
@@ -166,7 +166,7 @@ class FlatWorkspace(Workspace):
 
             if request.count == request.max_users:
                 if request_type == 'join':
-                    print("JOIN")
+                    # print("JOIN")
                     user_alias = request.to_user
                     self.users.append(user_alias)
                     self.waiting_users.remove(user_alias)
@@ -333,15 +333,15 @@ class HierarchicalWorkspace(Workspace):
         return False
     
     def accepted_request(self, request):
-        print(f"REQUESTS {self.requests}")
+        # print(f"REQUESTS {self.requests}")
         if request.request_id in self.requests:
-            print("HOLA")
+            # print("HOLA")
             request_type = request.get_type()
             request.count += 1
-            print(f"COUNT {request.count}")
-            print(f"MAX {request.max_users}")
+            # print(f"COUNT {request.count}")
+            # print(f"MAX {request.max_users}")
             if request.count == request.max_users: 
-                print("JOIN")               
+                # print("JOIN")               
                 user_alias = request.to_user
                 self.users.append(user_alias)
                 self.waiting_users.remove(user_alias)  

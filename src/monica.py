@@ -2,19 +2,7 @@ from api.api import API
 from app.parser import AgendaParser
 
 
-def handle_command(args, api):
-    # Handle the 'monica' command
-    if args.command == 'monica':
-        print("Running Monica command...")
-        # Insert your Monica command code here
-    else:
-        print(f"Unknown command: {args.command}")
-
-
 def main():
-    # Create the top-level parser
-    
-
     api = API()
     agenda_parser = AgendaParser(api=api)
 

@@ -11,13 +11,13 @@ def get_event(event_id, api):
         return 
 
     try:
-        print('try')
+        # print('try')
         data = eval(eval(data)[1])
-        print(f"first try {data}")
+        # print(f"first try {data}")
     except:
-        print('except')
+        # print('except')
         data = eval(data)
-        print(f"second try {data}")
+        # print(f"second try {data}")
 
     event = Event(data['from_user'], data['title'],data['date'],data['place'],data['start_time'],data['end_time'],data['workspace_id'], data['id'])
 
@@ -25,5 +25,6 @@ def get_event(event_id, api):
 
 
 def set_event(id,dicc, api):
-    print(api.set_value(id,dicc))
+    res = api.set_value(id,dicc)
+   # print(res[1])
     

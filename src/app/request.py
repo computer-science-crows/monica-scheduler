@@ -36,5 +36,6 @@ def get_request(request_id, api):
     return request
 
 def set_request(request_id,request_dicc, api):
-    print(api.set_value(request_id,request_dicc))
+    res = api.set_value(request_id,request_dicc)
+    # print(res[1])
     

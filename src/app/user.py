@@ -6,23 +6,23 @@ import hashlib
 def get_user(alias, api):
 
     data = api.get_value(alias)[1]
-    print(data)
+    # print(data)
 
     if data == None:
-        print("seras mongo?")
+        # print("seras mongo?")
         return
 
     try:
-        print('try')
+        # print('try')
         data = eval(eval(data)[1])
-        print(f"first try {data}")
+        # print(f"first try {data}")
     except:
-        print('except')
+        # print('except')
         data = eval(data)
-        print(f"second try {data}")
+        # print(f"second try {data}")
 
-    print(f"DATA {data}")
-    print(f"DICC {data['alias']}")
+    # print(f"DATA {data}")
+    # print(f"DICC {data['alias']}")
     user = User(data['alias'], data['full_name'], data['password'])
     user.active = data['logged']
     user.requests = data['inbox']
@@ -32,5 +32,6 @@ def get_user(alias, api):
 
 
 def set_user(alias, dicc, api):
-    print("SET")
-    print(api.set_value(alias, dicc))
+    # print("SET")
+    res = api.set_value(alias, dicc)
+    # print(res[1])

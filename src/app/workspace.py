@@ -37,4 +37,5 @@ def get_workspace(workspace_id, api):
 
 
 def set_workspace(workspace_id, dicc, api):
-    print(api.set_value(workspace_id, dicc))
+    res = api.set_value(workspace_id, dicc)
+    # print(res[1])
