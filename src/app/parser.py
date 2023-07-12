@@ -28,12 +28,14 @@ class AgendaParser:
                     'remove_workspace':lambda:self._remove_workspace(),
                     'add_user':lambda:self._add_user(),
                     'remove_user':lambda:self._remove_user(),
-                    'get_user':lambda:self._get_user(),
+                    'get_users':lambda:self._get_user(),
                     'change_role':lambda:self._change_role(),
+                    'create_event':lambda:self._create_event(),
                     'remove_event':lambda:self._remove_event(),
-                    'event':lambda:self._event(),
+                    'events':lambda:self._events(),
                     'set_event':lambda:self._set_event(),
-                    'change_wokspace_type':lambda:self._change_workspace_type()}
+                    'change_wokspace_type':lambda:self._change_workspace_type(),
+                    'exit_workspace':lambda:self._exit_workspace()}
 
     def parse_arguments(self):
         self.args = self.parser.parse_args()
@@ -132,7 +134,6 @@ class AgendaParser:
         set_user(new_user.alias,new_user.dicc())
 
         self._update_user_logger(new_user)
-
        
         print("Succesfully register")
 
@@ -157,24 +158,44 @@ class AgendaParser:
 
         print("Bye!")
 
-    # TODO
+    
     def _inbox(self):
 
         if not self._already_logged():
             print("There is no user logged")
             return
         
+        handle_request = self.args.handle_request
+        req_id = self.args.req_id
+
         user = get_user(self.logged_user['alias'])
-        requests = []
+        requests = {}
 
         for req in user.requests:
-            requests.append(get_request(req))
+            requests[req] = get_request(req)
+        
+        if handle_request == None and req_id == None:
+            print(f"Inbox:")
+            for r in requests.values():
+                print(f"- {r}")
+            
+        elif handle_request == None and req_id != None:
+            print(f"{requests[req_id]}")
+        elif handle_request != None and req_id != None:
 
-        print(f"Inbox:")
-        for r in requests:
-            print(f"- {r}")
-        
-        
+            workspace = get_workspace(requests[req_id].workspace_id)
+
+            if handle_request == 'accept':                
+                new = user.accept_request(requests[req_id],workspace)
+                if requests[req_id].get_type() == 'workspace' and new:
+                    workspace = new
+            else:
+                user.reject_request(requests[req_id],workspace)
+
+            set_user(user.alias, user.dicc())
+            set_workspace(workspace.workspace_id, workspace.dicc())
+            set_request(req_id, requests[req_id].dicc())
+
     def _workspaces(self):
         
         if not self._already_logged():
@@ -301,7 +322,7 @@ class AgendaParser:
 
         request = workspace.add_user(user.alias, user_to_add)
 
-        if workspace.get_type() == 'flat' and request:
+        if request:
             set_request(request.request_id,request.dicc())
 
         set_user(user.alias,user.dicc())
@@ -335,22 +356,89 @@ class AgendaParser:
             set_user(user_to_remove.alias,user_to_remove.dicc())
             set_workspace(workspace_id,workspace.dicc())
 
-        
-        
-
-        
-
     def _get_user(self):
-        pass
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
+
+        user = get_user(self.logged_user['alias'])
+
+        if workspace_id in user.workspaces:
+            workspace = get_workspace(workspace_id)
+            print(f"Users of workspace {workspace_id}:")
+            for u in workspace.users:
+                print(f"- {u}")
+            return
+
+        print(f"User {user.alias} does not belong to workspace {workspace_id}")
+
 
     def _change_role(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        user_alias = self.args.user_alias
+        workspace_id = self.args.workspace_id
+
+        user = get_user(self.logged_user['alias'])
+        
+        if workspace_id not in user.workspaces:
+            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+            return
+        
+        user_to_change = get_user(user_alias)
+        workspace = get_workspace(workspace_id)
+
+        if workspace.get_type() == 'flat':
+            print(f"Workspace {workspace_id} does not have roles")
+            return
+
+        workspace.change_role(user.alias,user_alias)
+
+        set_user(user.alias,user.dicc())
+        set_user(user_to_change.alias,user_to_change.dicc())
+        set_workspace(workspace.workspace_id,workspace.dicc())
+
+    def _create_event(self):
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
+        title = self.args.title
+        date = self.args.date
+        place = self.args.place
+        start_time = self.args.start_time
+        end_time = self.args.end_time
+
+        user = get_user(self.logged_user['alias'])
+
+        if workspace_id not in user.workspaces:
+            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+
+        workspace = get_workspace(workspace_id)
+
+        user.create_event(workspace, title, date,place, start_time, end_time)
 
     def _remove_event(self):
-        pass
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
 
-    def _event(self):
-        pass
+    def _events(self):
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
 
     def _set_event(self):
         pass
@@ -358,12 +446,22 @@ class AgendaParser:
     def _change_workspace_type(self):
         pass
 
+    def _exit_workspace(self):
+        
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = self.args.workspace_id
+
+        user = get_user(self.logged_user['alias'])
+        workspace = get_workspace(workspace_id) 
+
+        
+
+
     def _already_logged(self):
         return self.logged_user != None
-
-    
-
-    
 
     def _user_subparser(self):
         # login
@@ -394,6 +492,11 @@ class AgendaParser:
         edit_user.add_argument('--alias', help='Edit alias', type=str, default=None)
         edit_user.add_argument('--name', help='Edit name', type=str, default=None)
         edit_user.add_argument('--password', help='Edit password', type=str, default=None)
+
+        # exit workspace
+        exit_workspace = self.subparsers.add_parser('exit_workspace',help='Exit workspace')
+        exit_workspace.add_argument('workspace_id',help='if of workspace')
+
     
     def _workspaces_subparsers(self):
         
@@ -425,20 +528,30 @@ class AgendaParser:
         change_role.add_argument('user_alias', help='Alias of user', default=None)
         change_role.add_argument('workspace_id',help='id of workspace', default=None)
 
+        # create event 
+        create_event = self.subparsers.add_parser('create_event', help="Create an event in a workspace of the user")
+        create_event.add_argument('workspace_id',help='id of workspace')
+        create_event.add_argument('title',help='Title of event', default=None)
+        create_event.add_argument('date',help='Date of event', default=None)
+        create_event.add_argument('place', help='Place of the event', default=None)
+        create_event.add_argument('start_time', help='Start time', default=None)
+        create_event.add_argument('end_time',help='End time', default=None)
+
         # remove event    
         remove_event = self.subparsers.add_parser('remove_event', help='Remove event from workspace')
         remove_event.add_argument('event_id', help='id of event', default=None)
         remove_event.add_argument('workspace_id', help='id of workspace', default=None)
         
         # get events
-        events = self.subparsers.add_parser('event', help='Get list of events of a workspace')
+        events = self.subparsers.add_parser('events', help='Get list of events of a workspace')
         events.add_argument('workspace_id', help='id of workspace', default=None)
 
         # set event
         set_event = self.subparsers.add_parser('set_event',help='Edit event')
-        set_event.add_argument('--id', help='id of event', default=None)
+        set_event.add_argument('id', help='id of event', default=None)
         set_event.add_argument('--title',help='Title of event', default=None)
         set_event.add_argument('--date',help='Date of event', default=None)
+        set_event.add_argument('--place', help='Place of the event', default=None)
         set_event.add_argument('--start_time', help='Start time', default=None)
         set_event.add_argument('--end_time',help='End time', default=None)        
 

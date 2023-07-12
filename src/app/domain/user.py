@@ -30,8 +30,9 @@ class User:
     def logged(self):
         self.active = True
 
-    def create_event(self, workspace: Workspace, event: Event):
-        new_event = workspace.add_event(self,event)
+    def create_event(self, workspace: Workspace, time, date, start_time, end_time):
+        new_event = workspace.add_event(self,time,date,start_time,end_time)
+        return new_event
     
     def create_workspace(self, workspace_name, workspace_type):
         new_workspace = None
@@ -66,28 +67,30 @@ class User:
             return True
         return False
 
-    def set_request(self, request):
+    def set_request(self, request_id):
+        self.requests.append(request_id)       
 
-        self.requests.append(request.request_id)       
-
-    def accept_request(self, request : Request, workspace):
+    def accept_request(self, request, workspace):
         
         if request.request_id in self.requests:
-            workspace.accepted_request(request.request_id)
-            self.requests.remove(request)
+            new = workspace.accepted_request(request)
+            if request.get_type() == 'join':
+                self.workspaces.append(workspace.workspace_id)
+            self.requests.remove(request.request_id)
+            return new
+        
+        return None
+    
+    def reject_request(self, request, workspace):
+        
+        if request.request_id in self.requests:
+            workspace.rejected_request(request)
+            self.requests.remove(request.request_id)
             return True
         
         return False
     
-    def reject_request(self, request: Request, workspace):
-        
-        if request.request_id in self.requests.keys():
-            workspace.reject_request(request.request_id)
-            self.requests.remove(request)
-            return True
-        
-        return False
-    
+       
     def dicc(self):
         return {'class': 'user',
                 'alias':self.alias,

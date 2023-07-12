@@ -40,7 +40,7 @@ def set_user(alias, dicc):
     database()
 
     key = digest(alias)
-    value = dicc
+    value = dicc    
 
     with DDB.at(f"{file_name}").session() as (session, file):
         file[f"{key}"] = value

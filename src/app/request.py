@@ -1,5 +1,5 @@
 import hashlib
-from domain.request import Request, EventRequest, WorkspaceRequest
+from domain.request import JoinRequest, EventRequest, WorkspaceRequest
 import dictdatabase as DDB
 
 def digest(string):
@@ -26,17 +26,19 @@ def get_request(request_id):
         id = data['id']
         type = data['type']
         workspace_id = data['workspace_id']
-        user_alias = data['from_user_alias']
+        from_user_alias = data['from_user_alias']
+        
         max = data['max']
         count = data['count']
         if type == 'join':
-            request = Request(workspace_id,user_alias,max,id,count)
+            to_user_alias = data['to_user']
+            request = JoinRequest(workspace_id,from_user_alias,max,to_user_alias,id,count)
         elif type == 'event':
             event = data['event']
-            request = EventRequest(workspace_id,user_alias,max,event,id,count)
+            request = EventRequest(workspace_id,from_user_alias,max,event,id,count)
         else:
             admins = data['admins']
-            request = WorkspaceRequest(workspace_id,user_alias,max,admins,id,count,)
+            request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count,)
 
         return request
 

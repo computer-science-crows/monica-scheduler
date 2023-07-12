@@ -40,6 +40,8 @@ def get_workspace(workspace_id):
             workspace = HierarchicalWorkspace(data['name'],data['id'])
             workspace.events = data['events']
             workspace.users = data['users']
+            workspace.requests = data['requests']
+            workspace.waiting_users = data['waiting_users']
             workspace.admins = data['admins']
         
         return workspace

@@ -1,6 +1,6 @@
 import uuid
 from .event import Event
-from .request import Request, EventRequest, WorkspaceRequest
+from .request import JoinRequest, EventRequest, WorkspaceRequest
 from abc import abstractclassmethod, ABC
 from kademlia.utils import digest
 
@@ -96,12 +96,14 @@ class FlatWorkspace(Workspace):
     def get_type(self):
         return 'flat'
     
+       
     def add_event(self, user, event):
 
         user_collision = self._is_valid_event(event)
 
         if user_collision != []:
             print(f"WARNING: User/s {user_collision} has an event that collides with the new event.")
+            
         
         request = EventRequest(self.workspace_id,user.alias,len(self.users)-1,event.event_id)
         for user in self.users:
@@ -128,8 +130,8 @@ class FlatWorkspace(Workspace):
             print(f"User {from_user_alias} does not belong to workspace {self.workspace_id}")
             return None
 
-        request = Request(self.workspace_id, from_user_alias,1)
-        user_to_add.set_request(request)
+        request = JoinRequest(self.workspace_id, from_user_alias, 1,user_to_add.alias)
+        user_to_add.set_request(request.request_id)
 
         self.requests.append(request.request_id)
         self.waiting_users.append(user_to_add.alias)
@@ -151,27 +153,55 @@ class FlatWorkspace(Workspace):
 
         return False
 
-    #TODO terminar esto
+    
     def accepted_request(self, request):
-        
+
         if request.request_id in self.requests:
             request_type = request.get_type()
+            request.count += 1
 
-            if request_type == 'event':
-                pass
-            elif request_type == 'request':
-                pass
-            else:
-                new_workspace = HierarchicalWorkspace(self.name,self.workspace_id)
+            if request.count == request.max_users:
+                if request_type == 'join':
+                    print("JOIN")
+                    user_alias = request.to_user
+                    self.users.append(user_alias)
+                    self.waiting_users.remove(user_alias)
+                   
+                elif request_type == 'event':
+                    event_id = request.event_id
+                    self.events.append(event_id)
+                    self.waiting_events.remove(event_id) 
+                
+                else:
+                    new_workspace = HierarchicalWorkspace(self.name,self.workspace_id)
 
-                new_workspace.events = self.events
-                new_workspace.users = self.users
-                new_workspace.admins = request.admins
+                    new_workspace.events = self.events
+                    new_workspace.users = self.users
+                    new_workspace.admins = request.admins
 
-                return new_workspace
-         
-    def rejected_request(self, request_id):
-        pass
+                    return new_workspace
+
+       
+        return self
+
+
+    def rejected_request(self, request):
+
+        if request.request_id in self.requests:
+            request_type = request.get_type()
+                        
+            if request_type == 'join':
+                user_alias = request.to_user
+                self.waiting_users.remove(user_alias)
+               
+            elif request_type == 'event':
+                event_id = request.event_id
+                self.waiting_events.remove(event_id) 
+
+            return True
+          
+        return False
+        
 
     def change_workspace_type(self, from_user_id, admins):
 
@@ -198,6 +228,8 @@ class HierarchicalWorkspace(Workspace):
 
     def __init__(self, name, id=None) -> None:
         super().__init__(name,id)
+        self.requests = []
+        self.waiting_users = []
         self.admins = [] 
 
     def __str__(self) -> str:
@@ -207,8 +239,22 @@ class HierarchicalWorkspace(Workspace):
     def get_type(self):
         return 'hierarchical'
     
-    def add_event(self, user, event):
+    def change_role(self, from_user_alias, user_to_change):
+        
+        if from_user_alias not in self.admins:
+            print(f"User {from_user_alias} cannot change role of user {user_to_change} because it is not an administrator of the workspace")
+            return
+        
+        if user_to_change in self.admins:
+            self.admins.remove(user_to_change)
+        else:
+            self.admins.append(user_to_change)
 
+        
+    
+    def add_event(self, user, title, date,place, start_time, end_time):
+
+        event = Event(title,'',date,place,start_time,end_time, self.workspace_id)
         user_collision = self._is_valid_event(event)
 
         if user_collision != None:
@@ -239,31 +285,57 @@ class HierarchicalWorkspace(Workspace):
 
         if user_to_add.alias in self.users:
             print(f"User {user_to_add.alias} already belongs to workspace {self.workspace_id}")
-            return True
+            return None
 
         if from_user_alias in self.admins:
-            self.users.append(user_to_add.alias)
-            user_to_add.add_to_workspace(self.workspace_id)
-            print(f"User {user_to_add} succesfully added to workspace {self.workspace_id}")            
-            return True
+            request = JoinRequest(self.workspace_id, from_user_alias,1,user_to_add.alias)
+            user_to_add.set_request(request.request_id)
+
+            self.requests.append(request.request_id)
+            self.waiting_users.append(user_to_add.alias)
+
+            print(f"Join invitation sended to user {user_to_add.alias}")
+                       
+            return request
         
         print(f"User {from_user_alias} cannot add user because it is not administrator of the workspace {self}")
         
-        return False
+        return None
     
 
-    def remove_user(self, from_user, user_to_remove):
+    def remove_user(self, from_user_alias, user_to_remove):
 
-        if from_user.user_id in self.admins:
+        if from_user_alias in self.admins:
             self.users.remove(user_to_remove.alias)
             user_to_remove.remove_from_workspace(self.workspace_id)
             print(f"User {user_to_remove.alias} succesfully removed from workspace {self.workspace_id}") 
             
             return True
         
-        print(f"User {from_user} cannot delete user because it is not administrator of the workspace {self}")
+        print(f"User {from_user_alias} cannot delete user because it is not administrator of the workspace {self.workspace_id}")
         
         return False
+    
+    def accepted_request(self, request):
+        print(f"REQUESTS {self.requests}")
+        if request.request_id in self.requests:
+            print("HOLA")
+            request_type = request.get_type()
+            request.count += 1
+            print(f"COUNT {request.count}")
+            print(f"MAX {request.max_users}")
+            if request.count == request.max_users: 
+                print("JOIN")               
+                user_alias = request.to_user
+                self.users.append(user_alias)
+                self.waiting_users.remove(user_alias)  
+
+        return None
+    
+    def rejected_request(self, request):
+        if request.request_id in self.requests:
+            user_alias = request.to_user
+            self.waiting_users.remove(user_alias)
     
     def change_workspace_type(self, from_user_id, admins):
 
@@ -283,6 +355,8 @@ class HierarchicalWorkspace(Workspace):
                 "name":self.name,
                 'events':self.events,                
                 'users':self.users,
+                'requests': self.requests,
+                'waiting_users':self.waiting_users,
                 'admins':self.admins}
 
 

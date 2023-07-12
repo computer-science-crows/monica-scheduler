@@ -1,15 +1,16 @@
 {
-  "laura_01": {
-    "alias": "laura_01",
+  "marie_01": {
+    "alias": "marie_01",
     "class": "user",
-    "full_name": "laura",
-    "inbox": [
-      "fac660f0-f668-4f6e-b122-a3f53c0679ba"
-    ],
+    "full_name": "marie",
+    "inbox": [],
     "logged": true,
     "password": "123",
     "workspaces": [
-      "02d1046f-9888-437d-bd6d-d7c1669f1ae1"
+      "d5a5f8b8-07f9-41ea-bc3e-c6e9c03c7f2e",
+      "cf4f5a54-6f7b-486a-9a8b-f753bd92a5e6",
+      "be227fc7-a9f7-49e9-86b2-e24a231e829e",
+      "33caa79d-6a3e-4c83-8928-cfb5a92f4591"
     ]
   }
 }

@@ -2,7 +2,7 @@ import uuid
 
 class Event:
 
-    def __init__(self, title, description, date, place, start_time, end_time, user, id=None):
+    def __init__(self, title, description, date, place, start_time, end_time, workspace_id, id=None):
         self.event_id = id or uuid.uuid4()
         self.title = title
         self.description = description
@@ -10,7 +10,7 @@ class Event:
         self.place = place
         self.start_time = start_time
         self.end_time = end_time
-        self.user = user
+        self.workspace_id= workspace_id
 
     def __eq__(self, other_event) -> bool:
 
@@ -19,7 +19,7 @@ class Event:
         return False
     
     def __repr__(self) -> str:
-        return f"Title: {self.title}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n User: {self.user}\n"
+        return f"Title: {self.title}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n Workspace: {self.workspace_id}\n"
         
         
 
