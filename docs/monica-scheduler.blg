@@ -4,11 +4,11 @@ The top-level auxiliary file: monica-scheduler.aux
 Reallocating 'name_of_file' (item size: 1) to 7 items.
 The style file: ieeetr.bst
 Reallocating 'name_of_file' (item size: 1) to 5 items.
-I found no \citation commands---while reading file monica-scheduler.aux
 Database file #1: refs.bib
+Warning--I didn't find a database entry for "bibid"
 You've used 0 entries,
             1876 wiz_defined-function locations,
-            477 strings with 3486 characters,
+            478 strings with 3491 characters,
 and the built_in function-call counts, 20 in all, are:
 = -- 0
 > -- 0
@@ -47,4 +47,4 @@ warning$ -- 0
 while$ -- 0
 width$ -- 0
 write$ -- 2
-(There was 1 error message)
+(There was 1 warning)
