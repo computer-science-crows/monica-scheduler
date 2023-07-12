@@ -19,7 +19,7 @@ def main():
 
     api = API()
 
-    print("\U0001F499 Monica Scheduler\U0001F499")
+    print("\U0001F499 Monica Scheduler \U0001F499")
     print("Enter 'quit' to exit.")
     # print("\U000023F3 Hourglass")
     while True:
