@@ -41,3 +41,4 @@ def bytes_to_bit_string(bites):
     return "".join(bits)
 
 
+print(digest('0bee741d-f317-4ecb-a849-eb3b8b9159f7'))

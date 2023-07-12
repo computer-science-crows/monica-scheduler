@@ -2,25 +2,35 @@ import uuid
 
 class Event:
 
-    def __init__(self, title, description, date, place, start_time, end_time, user):
-        self.event_id = uuid.uuid4()
+    def __init__(self, from_user, title, date, place, start_time, end_time, workspace_id, id=None):
+        self.event_id = id or uuid.uuid4()
+        self.from_user = from_user
         self.title = title
-        self.description = description
         self.date = date
         self.place = place
         self.start_time = start_time
         self.end_time = end_time
-        self.user = user
+        self.workspace_id= workspace_id
 
     def __eq__(self, other_event) -> bool:
 
         if isinstance(other_event, Event):
-            return self.date == self.date and (self.start_time > other_event.start_time or self.end_time < other_event.end_time)
+            return self.event_id == other_event.event_id
         return False
     
-    def __repr__(self) -> str:
-        return f"Title: {self.title}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n User: {self.user}\n"
-        
+    def __str__(self) -> str:
+        return f"{self.title}\n ID:{self.event_id}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n Workspace: {self.workspace_id}\n"
+    
+    def dicc(self):
+        return {'id':self.event_id,
+                'from_user':self.from_user,
+                'title':self.title,
+                'date':self.date,
+                'place':self.place,
+                'start_time':self.start_time,
+                'end_time':self.end_time,
+                'workspace_id':self.workspace_id                
+        }
         
 
     
