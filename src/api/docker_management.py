@@ -67,14 +67,3 @@ def remove_container(container):
     container.stop()
     container.remove()
     print('Container removed')
-
-
-# print(build_image(cwd, 'script'))
-# remove_dangling()
-# print(create_container('script'))
-# remove_dangling()
-# print(create_container('script', ["-o", "set",
-#       "-k", "my-keyy", "-v", "my awesome value"]))
-# remove_dangling()
-# print(create_container('script', ["-o", "get", "-k", "my-keyy"]))
-# remove_dangling()

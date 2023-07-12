@@ -1,7 +1,7 @@
 import uuid
-from domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
-from domain.event import Event
-from domain.request import Request
+from app.domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
+from app.domain.event import Event
+from app.domain.request import Request
 from kademlia.utils import digest
 
 class User:

@@ -1,6 +1,6 @@
 import hashlib
 import dictdatabase as DDB
-from domain.event import Event
+from app.domain.event import Event
 
 def digest(string):
     if not isinstance(string, bytes):

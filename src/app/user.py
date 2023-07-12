@@ -1,5 +1,5 @@
 import dictdatabase as DDB
-from domain.user import User
+from app.domain.user import User
 import hashlib
 
 

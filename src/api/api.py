@@ -9,7 +9,7 @@ import os
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from docker_management import build_image, create_container, remove_dangling, remove_container, cwd
+from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 
 class API():
     def __init__(self):

@@ -1,11 +1,11 @@
 import argparse
-from user import get_user, set_user
-from workspace import get_workspace, set_workspace
-from domain.user import User
+from app.user import get_user, set_user
+from app.workspace import get_workspace, set_workspace
+from app.domain.user import User
 import json
 import dictdatabase as DDB
-from request import get_request,set_request
-from event import get_event, set_event
+from app.request import get_request,set_request
+from app.event import get_event, set_event
 
 
 class AgendaParser:

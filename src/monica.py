@@ -1,5 +1,5 @@
-import argparse
 from api.api import API
+from app.parser import AgendaParser
 
 
 def handle_command(args, api):
@@ -13,11 +13,11 @@ def handle_command(args, api):
 
 def main():
     # Create the top-level parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
+    agenda_parser = AgendaParser()
+    agenda_parser.parser.add_argument(
         'command', help='The command to execute')
 
-    api = API()
+    # api = API()
 
     print("\U0001F499 Monica Scheduler\U0001F499")
     print("Enter 'quit' to exit.")
@@ -29,10 +29,10 @@ def main():
             break
 
         # Parse the arguments
-        args = parser.parse_args(line.split())
+        args = agenda_parser.parser.parse_args(line.split())
 
         # Handle the command
-        handle_command(args, api)
+        # handle_command(args, api)
 
 
 if __name__ == '__main__':

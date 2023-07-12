@@ -1,6 +1,6 @@
 import uuid
-from .event import Event
-from .request import JoinRequest, EventRequest, WorkspaceRequest
+from app.domain.event import Event
+from app.domain.request import JoinRequest, EventRequest, WorkspaceRequest
 from abc import abstractclassmethod, ABC
 
 

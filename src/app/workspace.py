@@ -1,7 +1,7 @@
-from domain.user import User
-from domain.event import Event
-from domain.workspace import FlatWorkspace, HierarchicalWorkspace
-from domain.request import Request
+from app.domain.user import User
+from app.domain.event import Event
+from app.domain.workspace import FlatWorkspace, HierarchicalWorkspace
+from app.domain.request import Request
 import dictdatabase as DDB
 import hashlib
 

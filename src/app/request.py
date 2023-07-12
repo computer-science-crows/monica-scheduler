@@ -1,5 +1,5 @@
 import hashlib
-from domain.request import JoinRequest, EventRequest, WorkspaceRequest
+from app.domain.request import JoinRequest, EventRequest, WorkspaceRequest
 import dictdatabase as DDB
 
 def digest(string):
