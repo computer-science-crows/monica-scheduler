@@ -9,7 +9,7 @@ import os
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from docker_management import build_image, create_container, remove_dangling, remove_container, cwd
+from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 
 class API():
     def __init__(self):
@@ -37,6 +37,7 @@ class API():
         for container in to_remove:
             remove_container(container)
             remove_dangling()
+        print(f'{len(to_remove)} container(s) removed')
 
     def set_value(self, key, value):
         result = create_container(
@@ -51,7 +52,7 @@ class API():
         return (True, result) if result != 'None' else (False, None)
 
 
-api = API()
-# # api.remove_servers()
-print(api.set_value("my-key", "my-awesome-value"))
-print(api.get_value("my-key"))
+# api = API()
+# # # api.remove_servers()
+# print(api.set_value("my-key", "my-awesome-value"))
+# print(api.get_value("my-key"))

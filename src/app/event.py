@@ -1,39 +1,29 @@
 import hashlib
 import dictdatabase as DDB
-from domain.event import Event
-
-def digest(string):
-    if not isinstance(string, bytes):
-        string = str(string).encode('utf8')
-    return hashlib.sha1(string).hexdigest()
+from app.domain.event import Event
 
 
-file_name = 'data'
+def get_event(event_id, api):
+    
+    data = api.get_value(event_id)[1]
 
-def database():
-    DDB.config.storage_directory = "../database"
-    database = DDB.at(f"{file_name}")
-    if not database.exists():
-        database.create({})
+    if data == None:
+        return 
 
-def get_event(event_id):
-    database()  
-    key = digest(event_id)   
+    try:
+        print('try')
+        data = eval(eval(data)[1])
+        print(f"first try {data}")
+    except:
+        print('except')
+        data = eval(data)
+        print(f"second try {data}")
 
-    if DDB.at(f"{file_name}", key=f"{key}").exists():
-        data = DDB.at(f"{file_name}", key=f"{key}").read()
-        print(f"DTA {data}")
-        event = Event(data['from_user'], data['title'],data['date'],data['place'],data['start_time'],data['end_time'],data['workspace_id'], data['id'])
+    event = Event(data['from_user'], data['title'],data['date'],data['place'],data['start_time'],data['end_time'],data['workspace_id'], data['id'])
 
-        return event
+    return event
 
 
-def set_event(id,dicc):
-    database()
-
-    key = digest(id)
-    value = dicc
-
-    with DDB.at(f"{file_name}").session() as (session, file):
-        file[f"{key}"] = value
-        session.write()
+def set_event(id,dicc, api):
+    print(api.set_value(id,dicc))
+    

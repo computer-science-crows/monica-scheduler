@@ -1,6 +1,6 @@
 import uuid
-from .event import Event
-from .request import JoinRequest, EventRequest, WorkspaceRequest
+from app.domain.event import Event
+from app.domain.request import JoinRequest, EventRequest, WorkspaceRequest
 from abc import abstractclassmethod, ABC
 
 
@@ -8,7 +8,7 @@ class Workspace(ABC):
 
     def __init__(self, name, id=None) -> None:
         
-        self.workspace_id = id or uuid.uuid4()
+        self.workspace_id = id or str(uuid.uuid4())
         self.name = name
         self.events = []
         self.users = []    

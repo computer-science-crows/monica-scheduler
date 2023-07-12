@@ -1,64 +1,40 @@
-from domain.user import User
-from domain.event import Event
-from domain.workspace import FlatWorkspace, HierarchicalWorkspace
-from domain.request import Request
+from app.domain.user import User
+from app.domain.event import Event
+from app.domain.workspace import FlatWorkspace, HierarchicalWorkspace
+from app.domain.request import Request
 import dictdatabase as DDB
-import hashlib
-
-def digest(string):
-    if not isinstance(string, bytes):
-        string = str(string).encode('utf8')
-    return hashlib.sha1(string).hexdigest()
-
-file_name = 'data'
-
-def database():
-    DDB.config.storage_directory = "../database"
-    database = DDB.at(f"{file_name}")
-    if not database.exists():
-        database.create({})
 
 
-def get_workspace(workspace_id):
-     
-    database()  
+def get_workspace(workspace_id, api):
 
-    key = digest(workspace_id)
-    
-    
-    if DDB.at(f"{file_name}", key=f"{key}").exists():
-        data = DDB.at(f"{file_name}", key=f"{key}").read()
-        workspace = None
-        if data['type'] == 'flat':
-            workspace = FlatWorkspace(data['name'],data['id'])
-            workspace.events = data['events']
-            workspace.users = data['users']
-            workspace.requests = data['requests']
-            workspace.waiting_events = data['waiting_events']
-            workspace.waiting_users = data['waiting_users']
-        else:
-            workspace = HierarchicalWorkspace(data['name'],data['id'])
-            workspace.events = data['events']
-            workspace.users = data['users']
-            workspace.requests = data['requests']
-            workspace.waiting_users = data['waiting_users']
-            workspace.admins = data['admins']
-        
-        return workspace
-        
-    
-    return None
+    data = api.get_value(workspace_id)[1]
 
+    if data == None:
+        return
 
-def set_workspace(workspace_id, dicc):
-        
-    database()
+    try:
+        data = eval(eval(data)[1])
+    except:
+        data = eval(data)
 
-    key = digest(workspace_id)
-    value = dicc
-    
-    with DDB.at(f"{file_name}").session() as (session, file):
-        file[f"{key}"] = value
-        session.write()
+    workspace = None
+    if data['type'] == 'flat':
+        workspace = FlatWorkspace(data['name'], data['id'])
+        workspace.events = data['events']
+        workspace.users = data['users']
+        workspace.requests = data['requests']
+        workspace.waiting_events = data['waiting_events']
+        workspace.waiting_users = data['waiting_users']
+    else:
+        workspace = HierarchicalWorkspace(data['name'], data['id'])
+        workspace.events = data['events']
+        workspace.users = data['users']
+        workspace.requests = data['requests']
+        workspace.waiting_users = data['waiting_users']
+        workspace.admins = data['admins']
+
+    return workspace
 
 
+def set_workspace(workspace_id, dicc, api):
+    print(api.set_value(workspace_id, dicc))

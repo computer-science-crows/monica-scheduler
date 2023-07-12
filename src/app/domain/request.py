@@ -4,7 +4,7 @@ import uuid
 class Request(ABC):
 
     def __init__(self, workspace_id, from_user_id, max_users, id=None, count=0):
-        self.request_id = id or uuid.uuid4()
+        self.request_id = id or str(uuid.uuid4())
         self.workspace_id = workspace_id
         self.from_user_id = from_user_id
         self.max_users = max_users
