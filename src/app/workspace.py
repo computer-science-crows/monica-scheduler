@@ -24,7 +24,7 @@ def get_workspace(workspace_id):
     database()  
 
     key = digest(workspace_id)
-    print(f"KEY {key}")
+    
     
     if DDB.at(f"{file_name}", key=f"{key}").exists():
         data = DDB.at(f"{file_name}", key=f"{key}").read()

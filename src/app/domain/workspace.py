@@ -2,7 +2,6 @@ import uuid
 from .event import Event
 from .request import JoinRequest, EventRequest, WorkspaceRequest
 from abc import abstractclassmethod, ABC
-from kademlia.utils import digest
 
 
 class Workspace(ABC):
@@ -21,11 +20,11 @@ class Workspace(ABC):
         pass    
 
     @abstractclassmethod
-    def add_event(self, user, event: Event):
+    def add_event(self,from_user,title,date,place,start_time,end_time):
         pass                
 
     @abstractclassmethod
-    def remove_event(self, event: Event):
+    def remove_event(self, time,date,start_time,end_time, users):
         pass
 
     @abstractclassmethod
@@ -50,9 +49,6 @@ class Workspace(ABC):
     def dicc(self):
         pass
 
-    def update_key(self):
-        self.workspace_id = digest(self.dicc)
-
 
     def permission_to_remove(self,user):
         pass        
@@ -60,20 +56,7 @@ class Workspace(ABC):
     def send_request(self, request, user):
         user.set_request(request) 
 
-    def is_valid_event(self, new_event:Event):
 
-        users_with_conflict = []
-
-        for user in self.users:
-            for workspace in user.workspaces:                
-                for event in workspace.events:
-                    if new_event.date == event.data and (new_event.start_time <= event.start_time or new_event.end_time >= event.end_time):
-                        users_with_conflict.append(user)
-                
-        return users_with_conflict
-    
-    
-    
     def __repr__(self) -> str:
         return self.name
     
@@ -97,27 +80,26 @@ class FlatWorkspace(Workspace):
         return 'flat'
     
        
-    def add_event(self, user, event):
+    def add_event(self,from_user_id,title,date,place,start_time,end_time, users):
 
-        user_collision = self._is_valid_event(event)
-
-        if user_collision != []:
-            print(f"WARNING: User/s {user_collision} has an event that collides with the new event.")
-            
-        
-        request = EventRequest(self.workspace_id,user.alias,len(self.users)-1,event.event_id)
-        for user in self.users:
-            self.send_request(request, user)
+        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id)
+           
+        request = EventRequest(self.workspace_id,from_user_id,len(self.users)-1,event.event_id)
+        for user in users:
+            self.send_request(request.request_id, user)
 
         self.requests.append(request.request_id)
         self.waiting_events.append(event.event_id)
 
-        
+        print(f"Event invitation sended to users in workspace {self.workspace_id}")
 
-    def remove_event(self, event: Event, user):
+        return event, request
 
-        if event.user.alias == user.alias:
-            self.events.pop(event.event_id)            
+    def remove_event(self,user, event):
+
+        if event.user.alias == user.alias and event.event_id in self.events:
+            self.events.remove(event.event_id)
+            print(f"Event {event.event_id} succesfully removed from workspace {self.workspace_id}")            
             return True
         
         print(f"User {user} cannot delete an event from workspace {self} because he is not the one who created it.")
@@ -125,13 +107,19 @@ class FlatWorkspace(Workspace):
         return False
     
     def add_user(self, from_user_alias, user_to_add):
-        
+
+                
         if from_user_alias not in self.users:
             print(f"User {from_user_alias} does not belong to workspace {self.workspace_id}")
             return None
+        
+        if user_to_add.alias in self.users:
+            print(f"User {user_to_add.alias} already belongs to workspace {self.workspace_id}")
+            return None
+
 
         request = JoinRequest(self.workspace_id, from_user_alias, 1,user_to_add.alias)
-        user_to_add.set_request(request.request_id)
+        self.send_request(request.request_id,user_to_add)
 
         self.requests.append(request.request_id)
         self.waiting_users.append(user_to_add.alias)
@@ -208,7 +196,7 @@ class FlatWorkspace(Workspace):
         request = WorkspaceRequest(self.workspace_id, from_user_id,len(self.users)-1,admins)
 
         for user in self.users:
-            user.set_request(request)
+            self.send_request(request.request_id,)
 
         self.requests.append(request.request_id)
 
@@ -252,29 +240,25 @@ class HierarchicalWorkspace(Workspace):
 
         
     
-    def add_event(self, user, title, date,place, start_time, end_time):
+    def add_event(self, from_user_id, title, date,place, start_time, end_time, users):
 
-        event = Event(title,'',date,place,start_time,end_time, self.workspace_id)
-        user_collision = self._is_valid_event(event)
-
-        if user_collision != None:
-            print(f"WARNING: User {user_collision} has an event that collides with the new event.")
-
-        if user.user_id in self.admins:
+        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id)
+        
+        if from_user_id in self.admins:
                 # tal vez verificar si hay colision dentro del workspace
                 self.events.append(event.event_id)
-                
-                return True
+                print(f"Event {event.event_id} succesfully added to workspace {self.workspace_id}")                
+                return event, None
         else:
-            print(f"User {user} is not an a workspace administrator and therefore cannot create events.")
+            print(f"User {from_user_id} is not an a workspace administrator and therefore cannot create events.")
 
-        return False
+        return None, None
     
     def remove_event(self, event: Event, user):
 
-        if user.user_id in self.admins:
+        if user.user_id in self.admins and event.event_id in self.events:
             self.events.remove(event)
-            
+            print(f"Event {event.event_id} succesfully removed from workspace {self.workspace_id}") 
             return True
         
         print(f"User {user} cannot delete event because it is not administrator of the workspace {self}")

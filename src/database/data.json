@@ -1,150 +1,121 @@
 {
-  "438a6a160044c3e5023cef9dde3b7fb9793aea6c": {
-    "count": 1,
-    "from_user_alias": "marie_01",
-    "id": "14ed0c54-5f1f-4f89-ac8c-943eb6a9b5ee",
+  "048405be3a13de8291a50c5c329580c67499f8e6": {
+    "count": 0,
+    "from_user_alias": "c",
+    "id": "ff6ffe76-106e-45e0-8106-659ca1cafc93",
     "max": 1,
-    "to_user": "laura_01",
+    "to_user": "b",
     "type": "join",
-    "workspace_id": "d5a5f8b8-07f9-41ea-bc3e-c6e9c03c7f2e"
+    "workspace_id": "71ef94cf-8ab4-4d0f-b052-229df44dfc70"
   },
-  "483fa773169fe695a78b7509253af0da2e07797d": {
-    "admins": [
-      "marie_01"
-    ],
-    "events": [],
-    "id": "cf4f5a54-6f7b-486a-9a8b-f753bd92a5e6",
-    "name": "h",
-    "requests": [
-      "d3276bf5-9c20-4670-b524-85c6da4b2c49"
-    ],
-    "type": "hierarchical",
-    "users": [
-      "marie_01"
-    ],
-    "waiting_users": []
+  "1504c3884d51c3325fd30c209760635147f273fb": {
+    "count": 1,
+    "event": "3faf7863-2ab1-4904-93cd-8306515fb644",
+    "from_user_alias": "b",
+    "id": "febced08-18e6-476a-bbd7-58a3672696ad",
+    "max": 1,
+    "type": "event",
+    "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
   },
-  "6bc0fe902f2fbcd96e35d24fdfd232b98f8e693c": {
+  "27f79666ef9727b007de056a7ab5aaf97ab9c75f": {
+    "date": "23",
+    "end_time": "2",
+    "from_user": "b",
+    "id": "3faf7863-2ab1-4904-93cd-8306515fb644",
+    "place": "aqui",
+    "start_time": "1",
+    "title": "hola",
+    "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
+  },
+  "5b41b0bd60c1d96bb730ed482862255bd02cbc09": {
     "events": [],
-    "id": "be227fc7-a9f7-49e9-86b2-e24a231e829e",
-    "name": "flat2",
+    "id": "71ef94cf-8ab4-4d0f-b052-229df44dfc70",
+    "name": "f2",
     "requests": [
-      "4af86226-9160-41e1-8285-b1b43e3c0191"
+      "ff6ffe76-106e-45e0-8106-659ca1cafc93"
     ],
     "type": "flat",
     "users": [
-      "marie_01"
+      "c"
+    ],
+    "waiting_events": [],
+    "waiting_users": [
+      "b"
+    ]
+  },
+  "72ed564b8f5f3eb599fc553da0e2a346681f941c": {
+    "events": [
+      "3faf7863-2ab1-4904-93cd-8306515fb644"
+    ],
+    "id": "8a598544-60ed-44e1-b43b-c9cef2537391",
+    "name": "f1",
+    "requests": [
+      "238577cb-2f8d-49fd-8c14-bb65b37bcdcc",
+      "febced08-18e6-476a-bbd7-58a3672696ad",
+      "4d8d3410-aef7-42f9-b457-7be9c2fded29"
+    ],
+    "type": "flat",
+    "users": [
+      "b",
+      "c"
     ],
     "waiting_events": [],
     "waiting_users": []
   },
-  "867b6c518fa515cdb126c30f894e7f28a76e2dc4": {
-    "alias": "laura_01",
+  "8312729addc71e8c53ee732c4eabab56090eec13": {
+    "count": 1,
+    "from_user_alias": "b",
+    "id": "238577cb-2f8d-49fd-8c14-bb65b37bcdcc",
+    "max": 1,
+    "to_user": "c",
+    "type": "join",
+    "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
+  },
+  "84a516841ba77a5b4648de2cd0dfcb30ea46dbb4": {
+    "alias": "c",
     "class": "user",
-    "full_name": "laura",
-    "inbox": [],
+    "full_name": "c",
+    "inbox": [
+      "4d8d3410-aef7-42f9-b457-7be9c2fded29"
+    ],
     "logged": false,
     "password": "123",
     "workspaces": [
-      "33caa79d-6a3e-4c83-8928-cfb5a92f4591",
-      "1ff9623a-e449-4cab-9271-f3948c31e6d7"
+      "8a598544-60ed-44e1-b43b-c9cef2537391",
+      "71ef94cf-8ab4-4d0f-b052-229df44dfc70"
     ]
   },
-  "923d468d1f2d06cbfa9c5bc3b54f2a4fc5fa1b2c": {
-    "count": 1,
-    "from_user_alias": "marie_01",
-    "id": "622b361f-072c-4db7-91b8-8518d0714003",
-    "max": 1,
-    "to_user": "laura_01",
-    "type": "join",
-    "workspace_id": "33caa79d-6a3e-4c83-8928-cfb5a92f4591"
-  },
-  "92cafe6239bd17c3b542ffe1600abee9a6e6feca": {
-    "count": 0,
-    "from_user_alias": "marie_01",
-    "id": "4af86226-9160-41e1-8285-b1b43e3c0191",
-    "max": 1,
-    "to_user": "laura_01",
-    "type": "join",
-    "workspace_id": "be227fc7-a9f7-49e9-86b2-e24a231e829e"
-  },
-  "9cea6f70a792cdae2003efc50a12a4187451f0bf": {
-    "count": 1,
-    "from_user_alias": "marie_01",
-    "id": "d3276bf5-9c20-4670-b524-85c6da4b2c49",
-    "max": 1,
-    "to_user": "laura_01",
-    "type": "join",
-    "workspace_id": "cf4f5a54-6f7b-486a-9a8b-f753bd92a5e6"
-  },
-  "9d8c54539078a1cf35931e51911f3d1c451b83de": {
-    "count": 0,
-    "from_user_alias": "marie_01",
-    "id": "73fa808c-425d-441e-916f-71cda842b947",
-    "max": 1,
-    "to_user": "laura_01",
-    "type": "join",
-    "workspace_id": "33caa79d-6a3e-4c83-8928-cfb5a92f4591"
-  },
-  "a3c737083ce28f03ec401b6d24c38a029d348021": {
-    "alias": "marie_01",
+  "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98": {
+    "alias": "b",
     "class": "user",
-    "full_name": "marie",
-    "inbox": [],
+    "full_name": "b",
+    "inbox": [
+      "ff6ffe76-106e-45e0-8106-659ca1cafc93",
+      "febced08-18e6-476a-bbd7-58a3672696ad"
+    ],
     "logged": true,
     "password": "123",
     "workspaces": [
-      "d5a5f8b8-07f9-41ea-bc3e-c6e9c03c7f2e",
-      "cf4f5a54-6f7b-486a-9a8b-f753bd92a5e6",
-      "be227fc7-a9f7-49e9-86b2-e24a231e829e",
-      "33caa79d-6a3e-4c83-8928-cfb5a92f4591"
+      "8a598544-60ed-44e1-b43b-c9cef2537391"
     ]
   },
-  "b7e29902ebfea5f2e2d8b14a3fb022b5c0fd3abe": {
-    "admins": [
-      "marie_01",
-      "laura_01"
-    ],
-    "events": [],
-    "id": "33caa79d-6a3e-4c83-8928-cfb5a92f4591",
-    "name": "h2",
-    "requests": [
-      "73fa808c-425d-441e-916f-71cda842b947",
-      "622b361f-072c-4db7-91b8-8518d0714003"
-    ],
-    "type": "hierarchical",
-    "users": [
-      "marie_01",
-      "laura_01"
-    ],
-    "waiting_users": []
+  "ef73dc55a07a5aad9dd325eace6282d0a9826e32": {
+    "date": "23",
+    "end_time": "2",
+    "from_user": "c",
+    "id": "ce013441-c79f-4016-82e5-99d79cf8b95b",
+    "place": "aqui",
+    "start_time": "1",
+    "title": "hola",
+    "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
   },
-  "e7ed31f84ffe12c0018ff703cad693ee52250e97": {
-    "events": [],
-    "id": "d5a5f8b8-07f9-41ea-bc3e-c6e9c03c7f2e",
-    "name": "flat",
-    "requests": [
-      "14ed0c54-5f1f-4f89-ac8c-943eb6a9b5ee"
-    ],
-    "type": "flat",
-    "users": [
-      "marie_01"
-    ],
-    "waiting_events": [],
-    "waiting_users": []
-  },
-  "e9ca96f1c49c6b81a6511f1ef0ed4188bce3d226": {
-    "admins": [
-      "laura_01"
-    ],
-    "events": [],
-    "id": "1ff9623a-e449-4cab-9271-f3948c31e6d7",
-    "name": "h3",
-    "requests": [],
-    "type": "hierarchical",
-    "users": [
-      "laura_01"
-    ],
-    "waiting_users": []
+  "f8f7baf78f64e8745ae48701290303aa73403cb8": {
+    "count": 0,
+    "event": "ce013441-c79f-4016-82e5-99d79cf8b95b",
+    "from_user_alias": "c",
+    "id": "4d8d3410-aef7-42f9-b457-7be9c2fded29",
+    "max": 1,
+    "type": "event",
+    "workspace_id": "8a598544-60ed-44e1-b43b-c9cef2537391"
   }
 }

@@ -26,8 +26,7 @@ def get_request(request_id):
         id = data['id']
         type = data['type']
         workspace_id = data['workspace_id']
-        from_user_alias = data['from_user_alias']
-        
+        from_user_alias = data['from_user_alias']        
         max = data['max']
         count = data['count']
         if type == 'join':

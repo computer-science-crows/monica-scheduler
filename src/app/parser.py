@@ -5,6 +5,7 @@ from domain.user import User
 import json
 import dictdatabase as DDB
 from request import get_request,set_request
+from event import get_event, set_event
 
 
 class AgendaParser:
@@ -158,7 +159,7 @@ class AgendaParser:
 
         print("Bye!")
 
-    
+   
     def _inbox(self):
 
         if not self._already_logged():
@@ -375,7 +376,6 @@ class AgendaParser:
 
         print(f"User {user.alias} does not belong to workspace {workspace_id}")
 
-
     def _change_role(self):
 
         if not self._already_logged():
@@ -417,20 +417,61 @@ class AgendaParser:
         start_time = self.args.start_time
         end_time = self.args.end_time
 
-        user = get_user(self.logged_user['alias'])
+        user_get = get_user(self.logged_user['alias'])
 
-        if workspace_id not in user.workspaces:
-            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+        if workspace_id not in user_get.workspaces:
+            print(f"User {user_get.alias} does not belong to workspace {workspace_id}")
 
-        workspace = get_workspace(workspace_id)
+        workspace_get = get_workspace(workspace_id)
+        users = []
 
-        user.create_event(workspace, title, date,place, start_time, end_time)
+        for u in workspace_get.users:
+            users.append(get_user(u))
+        
+        users_collision = []
+        print(f"DATE {date}")
+        for user in users:
+            for workspace_id in user.workspaces:    
+                workspace = get_workspace(workspace_id)            
+                for event_id in workspace.events:
+                    event = get_event(event_id)
+                    print(event)
+                    if date == event.date and (start_time <= event.start_time or end_time >= event.end_time):
+                        users_collision.append(user)
+                
+        if users_collision != []:
+            print(f"WARNING: User {users_collision[0]} has an event that collides with the new event.")
+            while True:
+                confirmation = input("Do you want to continue? (y/n): ")
+                if confirmation.lower() == 'y':
+                    break
+                if confirmation.lower() == 'n':
+                    return 
+
+        event, request = user_get.create_event(workspace_get, title, date,place, start_time, end_time,users)
+
+        print(f"EVENT {event}")
+        if event != None:
+            set_event(event.event_id, event.dicc())
+
+        print(f"REQUEST {request}")
+        if request != None:
+            set_request(request.request_id, request.dicc())
+
+        set_user(user_get.alias,user_get.dicc())
+
+        for u in users:
+            set_user(u.alias,u.dicc())
+
+        set_workspace(workspace_get.workspace_id,workspace_get.dicc())
 
     def _remove_event(self):
         
         if not self._already_logged():
             print("There is no user logged")
             return
+        
+
 
     def _events(self):
         
@@ -440,8 +481,28 @@ class AgendaParser:
         
         workspace_id = self.args.workspace_id
 
+        user = get_user(self.logged_user['alias'])
+
+        if workspace_id not in user.workspaces:
+            print(f"User {user.alias} does not belong to workspace {workspace_id}")
+            return
+        
+        
+        workspace = get_workspace(workspace_id)
+
+        print(f"Events of workspace {workspace_id}:")
+        for i,e in enumerate(workspace.events):
+            print(f"{i+1}. {get_event(e)}")
+            
+
+        
+
     def _set_event(self):
-        pass
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
 
     def _change_workspace_type(self):
         pass
@@ -456,9 +517,6 @@ class AgendaParser:
 
         user = get_user(self.logged_user['alias'])
         workspace = get_workspace(workspace_id) 
-
-        
-
 
     def _already_logged(self):
         return self.logged_user != None
@@ -530,7 +588,7 @@ class AgendaParser:
 
         # create event 
         create_event = self.subparsers.add_parser('create_event', help="Create an event in a workspace of the user")
-        create_event.add_argument('workspace_id',help='id of workspace')
+        create_event.add_argument('workspace_id',help='id of workspace',default=None)
         create_event.add_argument('title',help='Title of event', default=None)
         create_event.add_argument('date',help='Date of event', default=None)
         create_event.add_argument('place', help='Place of the event', default=None)

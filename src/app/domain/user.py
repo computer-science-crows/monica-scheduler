@@ -30,9 +30,9 @@ class User:
     def logged(self):
         self.active = True
 
-    def create_event(self, workspace: Workspace, time, date, start_time, end_time):
-        new_event = workspace.add_event(self,time,date,start_time,end_time)
-        return new_event
+    def create_event(self, workspace: Workspace, title, date,place, start_time, end_time, users):
+        new_event, new_request = workspace.add_event(self.alias,title,date,place,start_time,end_time, users)
+        return new_event, new_request
     
     def create_workspace(self, workspace_name, workspace_type):
         new_workspace = None

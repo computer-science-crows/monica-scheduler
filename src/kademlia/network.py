@@ -102,7 +102,6 @@ class Server:
 
         # now republish keys older than one hour
         for dkey, value in self.storage.iter_older_than(3600):
-            print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 
     def bootstrappable_neighbors(self):

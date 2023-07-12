@@ -50,7 +50,7 @@ class Storage:
         """
         Get given key.  If not found, return default.
         """
-        print(f"KEY {key}")
+        
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             print("HOLAAAAA")
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
