@@ -13,6 +13,7 @@ async def gather_dict(dic):
 
 
 def digest(string):
+    print("HOLAAAAAAA")
     if not isinstance(string, bytes):
         string = str(string).encode('utf8')
     return hashlib.sha1(string).hexdigest()
@@ -41,4 +42,3 @@ def bytes_to_bit_string(bites):
     return "".join(bits)
 
 
-print(digest('0bee741d-f317-4ecb-a849-eb3b8b9159f7'))

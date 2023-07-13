@@ -68,6 +68,8 @@ class User:
     def remove_event(self, workspace: Workspace, event: Event):
         event = workspace.remove_event(self.alias, event)
 
+        return event
+
     def remove_workspace(self, workspace_id):
         if workspace_id in self.workspaces:
             self.workspaces.remove(workspace_id)

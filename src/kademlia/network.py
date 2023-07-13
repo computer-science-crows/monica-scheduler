@@ -90,7 +90,6 @@ class Server:
         """
         results = []
         for node_id in self.protocol.get_refresh_ids():
-            print(f"NODE ID: {node_id}")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
