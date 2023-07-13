@@ -12,10 +12,11 @@ import os
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from network_actions import start_network, connect_node, set, get
 from kademlia.network import Server
+
 # from kademlia.broadcast import bc_server
 
-from network_actions import start_network, connect_node, set, get
 # from network_actions.start_network import start_network
 # from network_actions.connect_node import connect_node
 # from network_actions.set import set
@@ -92,11 +93,12 @@ def parse_arguments():
 
 def main(loop):
     global stop_thread
-    server = Server()
     args = parse_arguments()
 
     ip = bc_client()
     port = 8468
+
+    server = Server(ip, port)
 
     if ip == None:
         start_network(server, loop)

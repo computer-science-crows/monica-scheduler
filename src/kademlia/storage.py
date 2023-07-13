@@ -8,7 +8,7 @@ import json
 import pickle
 
 
-DDB.config.use_compression = True
+# DDB.config.use_compression = True
 
 
 class Storage:
