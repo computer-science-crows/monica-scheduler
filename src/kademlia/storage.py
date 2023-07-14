@@ -88,7 +88,10 @@ class Storage:
 
     def __repr__(self):
         return repr(DDB.at(f"{self.file_name}").read())
-
+    
+    def __len__(self):
+        data = DDB.at(f"{self.file_name}").read()
+        return len(data)
 
 class ForgetfulStorage(Storage):
     def __init__(self, ttl=604800):
@@ -143,4 +146,11 @@ class ForgetfulStorage(Storage):
 
 
 # storage = Storage('data')
+# storage['1'] = 'hola'
+# storage['2'] = 'hola'
+# storage['3'] = 'hola'
+# storage['4'] = 'hola'
+# print(len(storage))
+# for i in storage:
+#     print(i)
 # storage.cull()

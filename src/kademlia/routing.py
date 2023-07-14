@@ -2,11 +2,13 @@ import heapq
 import time
 import operator
 import asyncio
+import logging
 
 from itertools import chain
 from collections import OrderedDict
 from kademlia.utils import shared_prefix, bytes_to_bit_string
 
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 class KBucket:
     def __init__(self, rangeLower, rangeUpper, ksize, replacementNodeFactor=5):
@@ -59,7 +61,9 @@ class KBucket:
         If the bucket is full, keep track of node in a replacement list,
         per section 4.1 of the paper.
         """
+        
         if node.id in self.nodes:
+            log.debug("NODE %s ALREADY IN BUCKET", node)
             del self.nodes[node.id]
             self.nodes[node.id] = node
         elif len(self) < self.ksize:

@@ -1,4 +1,5 @@
 
+from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 import time
 import random
 
@@ -9,7 +10,6 @@ import os
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 
 class API():
     def __init__(self):
@@ -37,6 +37,7 @@ class API():
         for container in to_remove:
             remove_container(container)
             remove_dangling()
+            self.containers.remove(container)
         print(f'{len(to_remove)} container(s) removed')
 
     def set_value(self, key, value):
@@ -50,5 +51,3 @@ class API():
             self.image_name, ["-o", "get", "-k", str(key)])
         remove_dangling()
         return (True, result) if result != 'None' else (False, None)
-
-

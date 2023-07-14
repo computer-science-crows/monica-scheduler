@@ -98,7 +98,7 @@ def main(loop):
     ip = bc_client()
     port = 8468
 
-    server = Server(ip, port)
+    server = Server(ip)
 
     if ip == None:
         start_network(server, loop)

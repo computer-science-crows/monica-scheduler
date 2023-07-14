@@ -24,7 +24,7 @@ class RPCProtocol(asyncio.DatagramProtocol):
     to handle async sending / recieving.
     """
 
-    def __init__(self, wait_timeout=60):
+    def __init__(self, wait_timeout=5):
         """
         Create a protocol instance.
 
