@@ -1,27 +1,14 @@
-import argparse
 import logging
 import asyncio
 import threading
 import socket
 import subprocess
 
-# Inside script1.py
 import sys
 import os
-
-# Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from network_actions import start_network, connect_node, set, get
-from kademlia.network import Server
-
-# from kademlia.broadcast import bc_server
-
-# from network_actions.start_network import start_network
-# from network_actions.connect_node import connect_node
-# from network_actions.set import set
-# from network_actions.get import get
-
+from network import Server
 
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
@@ -78,22 +65,62 @@ def bc_client():
         return None
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser()
+def start_network(server, loop):
+    print("NEW NETWORK")
+    # loop = asyncio.get_event_loop()
+    loop.set_debug(True)
 
-    # Optional arguments
-    parser.add_argument("-o", "--operation", help="desired data operation to perform (get or set)",
-                        type=str, default=None, choices=['get', 'set'])
-    parser.add_argument(
-        "-k", "--key", help="key of the data", type=str, default=None)
-    parser.add_argument(
-        "-v", "--value", help="value of the data", type=str, default=None)
-    return parser.parse_args()
+    loop.run_until_complete(server.listen(8468))
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+        loop.close()
 
 
-def main(loop):
+def connect_node(server, ip, port, loop):
+    print("CONNECT NODE")
+    # loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+
+    loop.run_until_complete(server.listen(8468))
+    bootstrap_node = (ip, int(port))
+    print(bootstrap_node)
+    loop.run_until_complete(server.bootstrap([bootstrap_node]))
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.stop()
+        loop.close()
+
+
+async def set(server, ip, port, key, value):
+    await server.listen(8469)
+    bootstrap_node = (ip, int(port))
+    await server.bootstrap([bootstrap_node])
+    await server.set(key, value)
+    server.stop()
+
+
+async def get(server, ip, port, key):
+    await server.listen(8469)
+    bootstrap_node = (ip, int(port))
+    await server.bootstrap([bootstrap_node])
+    # print(f"KEY FROM GET {args.key}")
+    result = await server.get(key)
+    print(result)
+    server.stop()
+    return result
+
+
+def main(loop, key, value):
     global stop_thread
-    args = parse_arguments()
 
     ip = bc_client()
     port = 8468
@@ -102,30 +129,25 @@ def main(loop):
 
     if ip == None:
         start_network(server, loop)
-    elif args.operation == 'set':
-        if args.key and args.value:
-            asyncio.run(set(server, ip, port, args))
-            stop_thread = True
-            return
-    elif args.operation == 'get':
-        if args.key:
-            result = asyncio.run(get(server, ip, port, args))
-            stop_thread = True
-            print(result)
-            return result
+    elif key and value:
+        asyncio.run(set(server, ip, port, key, value))
+        stop_thread = True
+        return
+    elif key:
+        result = asyncio.run(get(server, ip, port, key))
+        stop_thread = True
+        print(result)
+        return result
     else:
         connect_node(server, ip, port, loop)
 
 
-if __name__ == "__main__":
-    # main()
-    print('ok')
-
+def kad_controller(key=None, value=None):
     # Create a new loop
     new_loop = asyncio.new_event_loop()
 
     # Run the loop in a new thread
-    t = threading.Thread(target=main, args=(new_loop,))
+    t = threading.Thread(target=main, args=(new_loop, key, value,))
     t.start()
 
     # Do something with the loop
@@ -135,3 +157,5 @@ if __name__ == "__main__":
         pass
 
     t.join()
+
+kad_controller()

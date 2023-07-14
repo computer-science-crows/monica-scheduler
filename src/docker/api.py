@@ -1,13 +1,10 @@
 
-from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
+from docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 import time
 import random
 
-# Inside script1.py
 import sys
 import os
-
-# Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
