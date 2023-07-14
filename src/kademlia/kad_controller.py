@@ -8,7 +8,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from network import Server
+from .network import Server
 
 handler = logging.StreamHandler()
 formatter = logging.Formatter(

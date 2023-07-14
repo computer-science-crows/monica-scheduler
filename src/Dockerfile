@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["python3", "cli/cli.py"]
+CMD ["python3", "cli/cli.py"]

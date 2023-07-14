@@ -21,20 +21,23 @@ class Docker_Manager():
         self.image = self._build_image(cwd)
         self.containers = []
 
-        self.remove_dangling()
+        self._remove_dangling()
         self.create_servers()
 
         print()
 
-    def create_servers(self, number_of_servers=5):
+    def create_servers(self, number_of_servers=2):
         for i in range(number_of_servers):
-            self.containers.append(self._create_container(
-                self.image_name, i != number_of_servers-1))
+            send_bckgrd = i != number_of_servers-1
+            print(send_bckgrd)
+            self.containers.append(
+                self._create_container(send_bckgrd))
             time.sleep(10)
             self._remove_dangling()
 
     def remove_servers(self):
-        to_remove = random.choices(self.containers, k=random.randint(1, len(self.containers)-1))
+        to_remove = random.choices(
+            self.containers, k=random.randint(1, len(self.containers)-1))
         if len(to_remove) == len(self.containers):
             print("BE AWARE: All servers are going down")
         # print(to_remove)
@@ -45,6 +48,7 @@ class Docker_Manager():
         print(f'{len(to_remove)} container(s) removed')
 
     def _create_network(self):
+        client.networks.prune()
         return client.networks.create(self.net_name)
 
     def _build_image(self, path_to_dckrfile):
@@ -66,7 +70,7 @@ class Docker_Manager():
 
     def _create_container(self, send_bkgrd):
         return client.containers.run(
-            self.image, network=self.net_name, detach=send_bkgrd)
+            self.image_name, network=self.net_name, detach=send_bkgrd)
 
     def _remove_container(self, container):
         container.stop()
@@ -82,3 +86,6 @@ class Docker_Manager():
                 # print('ok')
                 container.stop()
                 container.remove()
+
+
+Docker_Manager()

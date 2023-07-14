@@ -9,17 +9,19 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from .factory import Factory
 from kademlia.kad_controller import kad_controller
 
+
 def digest(string):
     if not isinstance(string, bytes):
         string = str(string).encode('utf8')
     return hashlib.sha1(string).hexdigest()
+
 
 class Monica:
 
     def __init__(self) -> None:
         self.factory = Factory()
         self.logged_user = None
-        
+
         self.connect()
 
     def _already_logged(self):
@@ -535,5 +537,5 @@ class Monica:
     def set(self, key, value):
         kad_controller(key, value)
 
-    def connect():
+    def connect(self):
         kad_controller()
