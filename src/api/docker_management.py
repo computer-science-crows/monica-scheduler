@@ -66,4 +66,3 @@ def create_container(image_name, params=[]):
 def remove_container(container):
     container.stop()
     container.remove()
-    print('Container removed')

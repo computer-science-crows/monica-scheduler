@@ -1,5 +1,4 @@
 
-from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 import time
 import random
 
@@ -9,6 +8,8 @@ import os
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from api.docker_management import build_image, create_container, remove_dangling, remove_container, cwd
 
 
 class API():
@@ -29,8 +30,14 @@ class API():
             time.sleep(10)
             remove_dangling()
 
-    def remove_servers(self):
-        to_remove = random.choices(self.containers)
+    def remove_servers(self, cont_id=None):
+        to_remove = []
+        if cont_id:
+            to_remove = [self.containers[i] for i in range(len(self.containers)) if self.containers[i].id == cont_id] 
+        else:
+            to_remove = random.choices(
+                self.containers, k=random.randint(1, len(self.containers)))
+        print(to_remove)
         if len(to_remove) == len(self.containers):
             print("BE AWARE: All servers are going down")
         # print(to_remove)

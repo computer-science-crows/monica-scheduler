@@ -543,6 +543,9 @@ class AgendaParser:
                 # print(n_s)
                 self.api.create_servers(n_s)
                 print(f'{n_s} server(s) added')
+            else:
+                self.api.create_servers()
+                print(f'2 server(s) added')
         else:
             if not n_s:
                 self.api.remove_servers()
@@ -694,6 +697,8 @@ class AgendaParser:
                           'create', 'remove'], help='Creates or remove servers')
         sudo.add_argument('--number_of_servers', type=int,
                           help='Number of servers to connect to network')
+        sudo.add_argument('--container_id', type=int,
+                          help='Container to disconnect from network')
 
 
 def main():
