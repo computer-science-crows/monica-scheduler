@@ -20,7 +20,7 @@ class Workspace(ABC):
         pass    
 
     @abstractclassmethod
-    def add_event(self,from_user,title,date,place,start_time,end_time):
+    def add_event(self,from_user_id,title,date,place,start_time,end_time, users, id=None):
         pass                
 
     @abstractclassmethod
@@ -80,9 +80,9 @@ class FlatWorkspace(Workspace):
     def get_type(self):
         return 'flat'
       
-    def add_event(self,from_user_id,title,date,place,start_time,end_time, users):
+    def add_event(self,from_user_id,title,date,place,start_time,end_time, users, id=None):
 
-        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id)
+        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id,id)
            
         request = EventRequest(self.workspace_id,from_user_id,len(self.users)-1,event.event_id)
         for user in users:
@@ -270,9 +270,9 @@ class HierarchicalWorkspace(Workspace):
         print(f"User {user_to_change} is not in workspace {self.workspace_id}")
         
 
-    def add_event(self, from_user_id, title, date,place, start_time, end_time, users):
+    def add_event(self, from_user_id, title, date,place, start_time, end_time, users,id=None):
 
-        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id)
+        event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id,id)
         
         if from_user_id in self.admins:
                 # tal vez verificar si hay colision dentro del workspace

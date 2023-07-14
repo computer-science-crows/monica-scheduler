@@ -36,7 +36,8 @@ class AgendaParser:
                     'events':lambda args:self.monica.events(args),
                     'set_event':lambda args:self.monica.set_event(args),
                     'change_wokspace_type':lambda args:self.monica.change_workspace_type(args),
-                    'exit_workspace':lambda args:self.monica.exit_workspace(args)}
+                    'exit_workspace':lambda args:self.monica.exit_workspace(args),
+                    'sudo':lambda args:self.monica.sudo(args)}
 
     def parse_arguments(self, line):
         self.args = self.parser.parse_args(line)
@@ -86,6 +87,7 @@ class AgendaParser:
         create_workspace = self.subparsers.add_parser('create_workspace', help='Create new workspace')
         create_workspace.add_argument('title', help='Title of workspace', default=None)
         create_workspace.add_argument('type',choices=['f', 'h'],help='Type of workspace', default=None)
+        create_workspace.add_argument('--id',help='id of workspace', default=None)
         
         # remove workspace
         remove_workspace = self.subparsers.add_parser('remove_workspace',help='Remove workspace')
@@ -118,6 +120,7 @@ class AgendaParser:
         create_event.add_argument('start_time', help='Start time', default=None)
         create_event.add_argument('end_time',help='End time', default=None)
         create_event.add_argument('--place', help='Place of the event', default=None)
+        create_event.add_argument('--id',help='id of workspace', default=None)
 
         # remove event    
         remove_event = self.subparsers.add_parser('remove_event', help='Remove event from workspace')
@@ -141,7 +144,13 @@ class AgendaParser:
         change_workspace.add_argument('workspace_id', help='id of workspace', default=None)
         change_workspace.add_argument('--admins',help='Administrators of workspace',type=list, default=None)
 
+    def _server_subparsers(self):
 
+        sudo = self.subparsers.add_parser('sudo', help='Network actions')
+        sudo.add_argument('action', choices=[
+                          'create', 'remove'], help='Creates or remove servers')
+        sudo.add_argument('-n', type=int,
+                          help='Number of servers to connect to network')
 
 
 

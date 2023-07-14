@@ -1,0 +1,35 @@
+{
+  "21371c215aa1609f6f8dd55b74b66bf107e5ac0e": {
+    "class": "workspace",
+    "events": [],
+    "id": "ef17c198-20b3-4202-8069-7bba2926ed12",
+    "name": "w1",
+    "requests": [],
+    "type": "flat",
+    "users": [
+      "marie"
+    ],
+    "waiting_events": [],
+    "waiting_users": []
+  },
+  "94dd0a2905844473aae04a7319a0863bc76a8d96": {
+    "alias": "lau",
+    "class": "user",
+    "full_name": "lau",
+    "inbox": [],
+    "logged": false,
+    "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
+    "workspaces": []
+  },
+  "f0fd596f396d8fc32d5e4fe4c73c61fa2ac55c70": {
+    "alias": "marie",
+    "class": "user",
+    "full_name": "marie",
+    "inbox": [],
+    "logged": false,
+    "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
+    "workspaces": [
+      "ef17c198-20b3-4202-8069-7bba2926ed12"
+    ]
+  }
+}

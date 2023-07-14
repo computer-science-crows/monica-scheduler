@@ -42,10 +42,8 @@ class Monica:
             return 
         
         alias = args.alias
-        password = digest(args.password)
-        
+        password = digest(args.password) 
 
-              
         user = self.get(alias)
         
         
@@ -73,8 +71,7 @@ class Monica:
        
         if self._already_logged():
             print(f"There is a user logged. You cannot register.")
-            return 
-        
+            return        
         
         
         alias = args.alias
@@ -91,7 +88,6 @@ class Monica:
             return
         
         user = self.get(alias)
-
        
         if user != None:
             print(f"User with alias {alias} already exists")
@@ -111,7 +107,7 @@ class Monica:
         self.set(new_user.alias,new_user.dicc())
 
                
-        print("successfully registered")
+        print("Successfully registered")
         print(f"Welcome to Monica Scheduler {new_user.alias}!")
 
     def logout(self, args):
@@ -240,6 +236,7 @@ class Monica:
         
         title = args.title
         type = args.type
+        id = args.id
 
         if type == 'f':
             type = 'flat'
@@ -248,11 +245,9 @@ class Monica:
 
         user = self.get(self.logged_user)
 
-        new_workspace = user.create_workspace(title,type)
+        new_workspace = user.create_workspace(title,type,id)
         self.set(user.alias,user.dicc())
         self.set(new_workspace.workspace_id,new_workspace.dicc())
-
-       
 
         print(f"Worspace {new_workspace.workspace_id} was created.")
 
@@ -357,6 +352,7 @@ class Monica:
         
         user_alias = args.user_alias
         workspace_id = args.workspace_id
+        
 
         user = self.get(self.logged_user)
         
@@ -389,6 +385,7 @@ class Monica:
         place = args.place
         start_time = args.start_time
         end_time = args.end_time
+        id_event = args.id
 
         user_get = self.get(self.logged_user)
 
@@ -441,7 +438,7 @@ class Monica:
                 if confirmation.lower() == 'n':
                     return 
 
-        event, request = user_get.create_event(workspace_get, title, date,place, start_time, end_time,users)
+        event, request = user_get.create_event(workspace_get, title, date,place, start_time, end_time,users,id_event)
 
        
         if event != None:
@@ -553,6 +550,26 @@ class Monica:
         self.set(workspace.workspace_id, workspace.dicc())
 
         print(f"You have successfulle exited workspace {workspace_id}")
+
+    def _sudo(self, args):
+
+        action = self.args.action
+        n_s = self.args.number_of_servers
+
+        if action == 'create':
+            if n_s:
+                # print("hola")
+                # print(n_s)
+                self.api.create_servers(n_s)
+                print(f'{n_s} server(s) added')
+            else:
+                self.api.create_servers()
+                print(f'2 server(s) added')
+        else:
+            if not n_s:
+                self.api.remove_servers()
+            else:
+                print('This command removes a random number of servers')
 
     
     def get(self, key):

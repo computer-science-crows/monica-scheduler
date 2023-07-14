@@ -30,19 +30,19 @@ class User:
     def logged(self):
         self.active = True
 
-    def create_event(self, workspace: Workspace, title, date,place, start_time, end_time, users):
-        new_event, new_request = workspace.add_event(self.alias,title,date,place,start_time,end_time, users)
+    def create_event(self, workspace: Workspace, title, date,place, start_time, end_time, users, id=None):
+        new_event, new_request = workspace.add_event(self.alias,title,date,place,start_time,end_time, users, id)
         return new_event, new_request
     
-    def create_workspace(self, workspace_name, workspace_type):
+    def create_workspace(self, workspace_name, workspace_type,id=None):
         new_workspace = None
 
         if workspace_type == 'flat':
-            new_workspace = FlatWorkspace(workspace_name)
+            new_workspace = FlatWorkspace(workspace_name,id)
             new_workspace.users.append(self.alias)
             self.workspaces.append(new_workspace.workspace_id)
         else:
-            new_workspace = HierarchicalWorkspace(workspace_name)
+            new_workspace = HierarchicalWorkspace(workspace_name,id)
             new_workspace.users.append(self.alias)
             new_workspace.admins.append(self.alias)
             self.workspaces.append(new_workspace.workspace_id)
