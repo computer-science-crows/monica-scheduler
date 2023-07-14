@@ -10,13 +10,13 @@ from monica.monica import Monica
 
 class AgendaParser:
 
-    def __init__(self) -> None:
+    def __init__(self, show) -> None:
 
         self.parser = argparse.ArgumentParser(description='Command-line parser for the Monica Scheduler distributed agenda')
         self.subparsers = self.parser.add_subparsers(dest='command', help='Available commands')
         self._user_subparser()
         self._workspaces_subparsers()        
-        self.monica = Monica()
+        self.monica = Monica(show)
         
 
         self.commands = {'login':lambda args:self.monica.login(args),

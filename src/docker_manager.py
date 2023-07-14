@@ -17,11 +17,13 @@ class Docker_Manager():
         print("\U0001F6A7 \U0001F6E0  Building app, please wait...")
         self.net_name = net_name
         self.image_name = image_name
+
+        self._remove_dangling()
+
         self.net = self._create_network()
         self.image = self._build_image(cwd)
         self.containers = []
 
-        self._remove_dangling()
         self.create_servers()
 
         print()
@@ -68,9 +70,11 @@ class Docker_Manager():
                     container.remove()
         return image
 
-    def _create_container(self, send_bkgrd):
+    def _create_container(self, send_bckgrd):
+        cmd = 'back' if send_bckgrd else 'fore'
         return client.containers.run(
-            self.image_name, network=self.net_name, detach=send_bkgrd)
+            self.image_name, network=self.net_name, command=['-ground', cmd], 
+            detach=send_bckgrd, tty=not send_bckgrd, stdin_open=not send_bckgrd)
 
     def _remove_container(self, container):
         container.stop()

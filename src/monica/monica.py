@@ -18,11 +18,12 @@ def digest(string):
 
 class Monica:
 
-    def __init__(self) -> None:
+    def __init__(self, send_bckgrnd) -> None:
         self.factory = Factory()
         self.logged_user = None
 
-        self.connect()
+        if send_bckgrnd:
+            self.connect()
 
     def _already_logged(self):
         return self.logged_user != None
