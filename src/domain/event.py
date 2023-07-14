@@ -22,14 +22,15 @@ class Event:
         return f"{self.title}\n ID:{self.event_id}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n Workspace: {self.workspace_id}\n"
     
     def dicc(self):
-        return {'id':self.event_id,
+        return {'class':'event',
+                'id':self.event_id,
                 'from_user':self.from_user,
                 'title':self.title,
                 'date':self.date,
                 'place':self.place,
                 'start_time':self.start_time,
                 'end_time':self.end_time,
-                'workspace_id':self.workspace_id                
+                'workspace':self.workspace_id                
         }
         
 

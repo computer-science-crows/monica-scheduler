@@ -45,7 +45,8 @@ class JoinRequest(Request):
         return 'join'
     
     def dicc(self):
-        return {'id':self.request_id,
+        return {'class':'request',
+                'id':self.request_id,
                 'type':self.get_type(),
                 'workspace_id':self.workspace_id,
                 'from_user_alias':self.from_user_id,
@@ -66,13 +67,14 @@ class EventRequest(Request):
         self.event_id = event_id
 
     def __str__(self) -> str:
-        return f"[{self.request_id}] Request from user {self.from_user_id} to accept or reject creation of event {self.event_id} on workspace {self.workspace_id}"
+        return f"[{self.request_id}] Request from user {self.from_user_id} to create event {self.event_id} on workspace {self.workspace_id}"
 
     def get_type(self):
         return 'event'
     
     def dicc(self):
-        return {'id':self.request_id,
+        return {'class':'request',
+                'id':self.request_id,
                 'type':self.get_type(),
                 'workspace_id':self.workspace_id,
                 'from_user_alias':self.from_user_id,
@@ -88,13 +90,14 @@ class WorkspaceRequest(Request):
         self.admins = admins
 
     def __str__(self) -> str:
-        return f"[{self.request_id}] Request from user {self.from_user_id} to accept or reject changetype of workspace {self.workspace_id}"
+        return f"[{self.request_id}] Request from user {self.from_user_id} to change type of workspace {self.workspace_id}"
 
     def get_type(self):
         return 'workspace'
     
     def dicc(self):
-        return {'id':self.request_id,
+        return {'class':'request',
+                'id':self.request_id,
                 'type':self.get_type(),
                 'workspace_id':self.workspace_id,
                 'from_user_alias':self.from_user_id,
