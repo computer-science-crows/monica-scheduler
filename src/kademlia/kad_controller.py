@@ -136,7 +136,6 @@ def main(loop, key, value):
     elif key:
         result = asyncio.run(get(server, ip, port, key))
         stop_thread = True
-        print(result)
         return result
     else:
         connect_node(server, ip, port, loop)
@@ -157,5 +156,3 @@ def kad_controller(key=None, value=None):
         pass
 
     t.join()
-
-kad_controller()
