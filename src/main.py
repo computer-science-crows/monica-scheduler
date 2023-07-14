@@ -10,7 +10,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 log = logging.getLogger('kademlia')
 log.addHandler(handler)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 server = Server()
 
@@ -93,7 +93,7 @@ def main():
     if args.operation == 'set':
         if args.key and args.value and args.ip and args.port:
             asyncio.run(set(args))
-    if args.operation == 'get':
+    elif args.operation == 'get':
         if args.key and args.value and args.ip and args.port:
             asyncio.run(get(args))
     elif args.ip and args.port:

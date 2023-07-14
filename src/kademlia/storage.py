@@ -4,6 +4,9 @@ import operator
 from collections import OrderedDict
 from abc import abstractmethod, ABC
 
+import logging
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
 
 class IStorage(ABC):
     """
@@ -52,6 +55,7 @@ class ForgetfulStorage(IStorage):
         self.ttl = ttl
 
     def __setitem__(self, key, value):
+        log.debug('STORAGE MODIFIED')
         if key in self.data:
             del self.data[key]
         self.data[key] = (time.monotonic(), value)

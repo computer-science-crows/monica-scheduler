@@ -11,4 +11,4 @@ COPY . .
 # CMD ["python3", "main.py"]
 # CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468"]
 # CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468", "-o", "set", "-k", "my-key", "-v", "my awesome value"]
-CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468", "-o", "get", "-k", "my-key", "-v", "my awesome value"]
+# CMD ["python3", "main.py", "-i", "172.18.0.2", "-p", "8468", "-o", "get", "-k", "my-key", "-v", "my awesome value"]
