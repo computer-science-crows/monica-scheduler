@@ -1,6 +1,5 @@
-register marie marie 123 123
-create_workspace w1 f
-workspaces 
+register user1 user1 123 123
 logout
-register lau lau 123 123
+login user1 123
+profile
 logout

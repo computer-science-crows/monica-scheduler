@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -8,6 +9,14 @@ from domain.event import Event
 from domain.request import JoinRequest, EventRequest, WorkspaceRequest
 from domain.user import User
 from domain.workspace import FlatWorkspace, HierarchicalWorkspace
+
+# Function to convert date string to datetime object
+def parse_date(date_string):
+    return datetime.strptime(date_string, '%Y-%m-%d')
+
+# Function to convert time string to datetime.time object
+def parse_time(time_string):
+    return datetime.strptime(time_string, '%H:%M').time()
 
 
 class Factory:
@@ -31,13 +40,17 @@ class Factory:
 
     def _create_event(self,object):
 
-               
+        date = parse_date(object['date'])
+        start_time = parse_time(object['start_time'])
+        end_time = parse_time(object['end_time'])
+
+                      
         return Event(object['from_user'], 
                      object['title'],
-                     object['date'],
+                     date,
                      object['place'],
-                     object['start_time'],
-                     object['end_time'],
+                     start_time,
+                     end_time,
                      object['workspace'],
                      object['id'])
 
@@ -77,7 +90,7 @@ class Factory:
         else:
             admins = object['admins']
             request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count)
-            
+
         request.status =status
 
         return request

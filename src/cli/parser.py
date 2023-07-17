@@ -2,11 +2,22 @@ import argparse
 import dictdatabase as DDB
 import sys
 import os
+from datetime import datetime
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from monica.monica import Monica
+
+
+# Function to convert date string to datetime object
+def parse_date(date_string):
+    return datetime.strptime(date_string, '%Y-%m-%d')
+
+# Function to convert time string to datetime.time object
+def parse_time(time_string):
+    return datetime.strptime(time_string, '%H:%M').time()
+
 
 class AgendaParser:
 
@@ -37,7 +48,7 @@ class AgendaParser:
                     'change_workspace_type':lambda args:self.monica.change_workspace_type(args),
                     'exit_workspace':lambda args:self.monica.exit_workspace(args),
                     'request_status':lambda args:self.monica.request_status(args),
-                    'check_availability':lambda args: self.monica.chaeck_availability(args),
+                    'check_availability':lambda args: self.monica.check_availability(args),
                     'sudo':lambda args:self.monica.sudo(args)}
 
     def parse_arguments(self, line):
@@ -114,9 +125,9 @@ class AgendaParser:
         create_event = self.subparsers.add_parser('create_event', help="Create an event in a workspace of the user")
         create_event.add_argument('workspace_id',help='id of workspace',default=None)
         create_event.add_argument('title',help='Title of event', default=None)
-        create_event.add_argument('date',help='Date of event', default=None)        
-        create_event.add_argument('start_time', help='Start time', default=None)
-        create_event.add_argument('end_time',help='End time', default=None)
+        create_event.add_argument('date',help='Date of event (format: YYYY-MM-DD)', default=None, type=parse_date)        
+        create_event.add_argument('start_time', help='Start time (format: HH:MM)', default=None, type=parse_time)
+        create_event.add_argument('end_time',help='End time (format: HH:MM)', default=None, type=parse_time)
         create_event.add_argument('--place', help='Place of the event', default=None)
         create_event.add_argument('--id',help='id of workspace', default=None)
 
@@ -132,10 +143,10 @@ class AgendaParser:
         set_event = self.subparsers.add_parser('set_event',help='Edit event')
         set_event.add_argument('id', help='id of event', default=None)
         set_event.add_argument('--title',help='Title of event', default=None)
-        set_event.add_argument('--date',help='Date of event', default=None)
+        set_event.add_argument('--date',help='Date of event (format: YYYY-MM-DD)', default=None, type=parse_date)
         set_event.add_argument('--place', help='Place of the event', default=None)
-        set_event.add_argument('--start_time', help='Start time', default=None)
-        set_event.add_argument('--end_time',help='End time', default=None)        
+        set_event.add_argument('--start_time', help='Start time (format: HH:MM)', default=None, type=parse_time)
+        set_event.add_argument('--end_time',help='End time (format: HH:MM)', default=None, type=parse_time)        
 
         # change workspace type
         change_workspace = self.subparsers.add_parser('change_workspace_type',help='Change type of a workspace')
@@ -149,9 +160,9 @@ class AgendaParser:
         # check availability
         check_availability = self.subparsers.add_parser('check_availability',help='Check if there is any event on a given date and time')
         check_availability.add_argument('workspace_id',help='id of workspace', default=None)
-        check_availability.add_argument('date', help='Event date',default=None)
-        check_availability.add_argument('--start_time', help='Event start time',default=None)
-        check_availability.add_argument('--end_time', help='Event end time',default=None)
+        check_availability.add_argument('date', help='Event date (format: YYYY-MM-DD)',default=None, type=parse_date)
+        check_availability.add_argument('--start_time', help='Event start time (format: HH:MM)',default=None, type=parse_time)
+        check_availability.add_argument('--end_time', help='Event end time (format: HH:MM)',default=None, type=parse_time)
 
 
 
@@ -162,6 +173,8 @@ class AgendaParser:
                           'create', 'remove'], help='Creates or remove servers')
         sudo.add_argument('-n', type=int,
                           help='Number of servers to connect to network')
+        
+   
 
 
 

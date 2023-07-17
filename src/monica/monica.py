@@ -154,7 +154,6 @@ class Monica:
                 new = user.accept_request(requests[req_id],workspace)
                 if requests[req_id].get_type() == 'workspace' and new:
                     workspace = new
-                    print('hola')
                 print(f"Request successfully accepted.")
             else:
                 user.reject_request(requests[req_id],workspace)
@@ -389,7 +388,8 @@ class Monica:
 
                     event = self.get(event_id)
                     min_start_time, max_start_time, min_end_time = 0,0,0
-
+                    print(f"event.start_time {type(event.start_time)}")
+                    print(f"start_time {type(start_time)}")
                     if start_time > event.start_time:
                         min_start_time = event.start_time
                         max_start_time = start_time
@@ -565,9 +565,7 @@ class Monica:
         for r in workspace.requests:
             request = self.get(r)
             print(f"{request} - {request.status}")           
-        
-     
-
+      
     def exit_workspace(self, args):
         
         if not self._already_logged():
@@ -605,24 +603,34 @@ class Monica:
             event = self.get(event_id)
             if event.date == date:
                 if start_time and end_time:
+                    print("entre 1")
                     min_start_time, max_start_time, min_end_time = 0,0,0
 
                     if start_time > event.start_time:
+                        print("entre 1.1")
                         min_start_time = event.start_time
                         max_start_time = start_time
                         min_end_time = event.end_time
                     else:
+                        print("entre 1.2")
                         max_start_time = event.start_time
                         min_start_time = start_time
                         min_end_time = end_time
+
+                    print(f"min_start time {min_start_time}")
+                    print(f"max_start_time {max_start_time}")
+                    print(f"min_end_time {min_end_time}")
                     if min_start_time <= max_start_time and min_end_time > max_start_time:
+                        print("entre 1.3")
                         events.append(event)
                 elif start_time and start_time <= event.end_time:
+                    print("entre 2")
                     events.append(event)
                 elif end_time and end_time <= events.start_time:
+                    print("entre 3")
                     events.append(event)
 
-        if len(event) > 0:
+        if len(events) > 0:
             print("The following events collide with the given date and time:")
             for e in events:
                 print(f"- {e}")
@@ -631,7 +639,7 @@ class Monica:
 
 
 
-    def _sudo(self, args):
+    def sudo(self, args):
 
         action = self.args.action
         n_s = self.args.number_of_servers
@@ -650,6 +658,9 @@ class Monica:
                 self.api.remove_servers()
             else:
                 print('This command removes a random number of servers')
+
+
+    
 
     
     def get(self, key):

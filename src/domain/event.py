@@ -19,17 +19,17 @@ class Event:
         return False
     
     def __str__(self) -> str:
-        return f"{self.title}\n ID:{self.event_id}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n Workspace: {self.workspace_id}\n"
+        return f"{self.title}\n ID:{self.event_id}\n Date:{str(self.date)[:10]}\n Place: {self.place}\n Time: {str(self.start_time)[:5]}-{str(self.end_time)[:5]}\n Workspace: {self.workspace_id}\n"
     
     def dicc(self):
         return {'class':'event',
                 'id':self.event_id,
                 'from_user':self.from_user,
                 'title':self.title,
-                'date':self.date,
+                'date':str(self.date)[:10],
                 'place':self.place,
-                'start_time':self.start_time,
-                'end_time':self.end_time,
+                'start_time':str(self.start_time)[:5],
+                'end_time':str(self.end_time)[:5],
                 'workspace':self.workspace_id                
         }
         

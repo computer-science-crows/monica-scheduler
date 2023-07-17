@@ -29,4 +29,54 @@ def test(file_name):
         except:
             ...
 
-test(os.getcwd() + '/test_1.txt')
+# test register - login - logout
+# test(os.getcwd() + '/test_register_login_logout.txt')
+
+# test create_workspace
+# test(os.getcwd() + '/test_create_workspace.txt')
+
+# test create_event
+# test(os.getcwd() + '/test_create_event.txt')
+
+# test exit_workspace
+# test(os.getcwd() + '/test_exit_workspace.txt')
+
+# test add_user
+# test(os.getcwd() + '/test_add_user.txt')
+
+# test change_role
+# test(os.getcwd() + '/test_change_role.txt')
+
+# test change_workspace_type
+# test(os.getcwd() + '/test_change_workspace_type.txt')
+
+# test check_availability
+# test(os.getcwd() + '/test_check_availability.txt')
+
+# test events
+# test(os.getcwd() + '/test_events.txt')
+
+# test get_users
+# test(os.getcwd() + '/test_get_users.txt')
+
+
+# test profile
+# test(os.getcwd() + '/test_profile.txt')
+
+# test remove_event
+# test(os.getcwd() + '/test_remove_event.txt')
+
+# test remove_user
+# test(os.getcwd() + '/test_remove_user.txt')
+
+# test request_status
+# test(os.getcwd() + '/test_request_status.txt')
+
+# test set_event
+# test(os.getcwd() + '/test_set_events.txt')
+
+# test workspaces
+# test(os.getcwd() + '/test_workspaces.txt')
+
+
+

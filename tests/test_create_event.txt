@@ -1,6 +1,7 @@
-register marie marie 123 123
-create_workspace w1 f
-workspaces 
-logout
-register lau lau 123 123
+register user7 user7 123 123
+profile
+create_workspace w7 h
+workspaces
+create_event w7 event1 2023-7-17 8:00 10:00
+workspaces  
 logout

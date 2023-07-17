@@ -1,6 +1,20 @@
-register marie marie 123 123
-create_workspace w1 f
+register user2 user2 123 123
+profile
+create_workspace w3 f
+workspaces
+create_workspace w4 h
 workspaces 
 logout
-register lau lau 123 123
+register user3 user3 123 123
+profile
+logout
+login user2 123
+add_user w4 user3
+workspaces
+logout
+login user3 123
+profile
+inbox
+inbox --id <request_id> --handle accept
+workspaces
 logout
