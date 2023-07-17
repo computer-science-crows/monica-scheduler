@@ -65,6 +65,8 @@ class Factory:
         from_user_alias = object['from_user_alias']        
         max = object['max']
         count = object['count']
+        status = object['status']
+
 
         if type == 'join':
             to_user_alias = object['to_user']
@@ -74,7 +76,9 @@ class Factory:
             request = EventRequest(workspace_id,from_user_alias,max,event,id,count)
         else:
             admins = object['admins']
-            request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count,)
+            request = WorkspaceRequest(workspace_id,from_user_alias,max,admins,id,count)
+            
+        request.status =status
 
         return request
         

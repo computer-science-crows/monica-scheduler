@@ -1,25 +1,200 @@
 {
-  "21371c215aa1609f6f8dd55b74b66bf107e5ac0e": {
+  "02ec5dca472ce2c8c5fa9c3443f5b16fab95c2a3": {
+    "admins": [
+      "laura"
+    ],
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "marie",
+    "id": "acee5a00-df53-4bfe-9dbc-5fbb3946aadc",
+    "max": 1,
+    "status": "sent",
+    "type": "workspace",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "209d07a681bafea51b8d114d9e9a03f52d0d714b": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "marie",
+    "id": "14634592-3ebc-40a2-bf48-f86501494450",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "250de70b5b0f1f56c19ff547767c7df95a074a8b": {
     "class": "workspace",
     "events": [],
-    "id": "ef17c198-20b3-4202-8069-7bba2926ed12",
+    "id": "8965e764-a443-454f-92fd-373c0236576d",
     "name": "w1",
-    "requests": [],
+    "requests": [
+      "caa6a0cd-9bf0-43a2-a6bb-46a9b56faa88"
+    ],
     "type": "flat",
     "users": [
-      "marie"
+      "marie",
+      "laura"
     ],
     "waiting_events": [],
     "waiting_users": []
   },
-  "94dd0a2905844473aae04a7319a0863bc76a8d96": {
-    "alias": "lau",
+  "3cfce4b1856a4382abf50f6c1dd1b2c1ab52f9c0": {
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "marie",
+    "id": "caa6a0cd-9bf0-43a2-a6bb-46a9b56faa88",
+    "max": 1,
+    "to_user": "laura",
+    "type": "join",
+    "workspace_id": "8965e764-a443-454f-92fd-373c0236576d"
+  },
+  "418df651e228dad0c1660e9d5cbd096343c96623": {
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "marie",
+    "id": "971af564-f541-4252-8942-c7f1b5015221",
+    "max": 1,
+    "to_user": "laura",
+    "type": "join",
+    "workspace_id": "968376b8-0040-475f-879c-28af2c3b1a84"
+  },
+  "550117bc91d462c1fbec7bfbe16635bf0d1593f3": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "laura",
+    "id": "17c24daa-2b6f-4c74-92ed-a6cbe8423fa1",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "968376b8-0040-475f-879c-28af2c3b1a84"
+  },
+  "7e64b1fe3a2954da0c2c15ce3deaa725c9322dfc": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "marie",
+    "id": "d1dabe77-aed3-4d74-94d5-e7e3836fd179",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "88e664cf70c7320144442894e4f7f58e98ed1ad4": {
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "marie",
+    "id": "c32b19f4-6a87-4516-97f5-77c103a454b6",
+    "max": 1,
+    "to_user": "laura",
+    "type": "join",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "8e802883ac2b22f6ba30fbeb9e7de59fef8f501f": {
+    "admins": [
+      "laura"
+    ],
+    "class": "workspace",
+    "events": [],
+    "id": "36015d7b-1f20-46e3-ad98-637ecd051089",
+    "name": "w3",
+    "requests": [],
+    "type": "hierarchical",
+    "users": [
+      "marie",
+      "laura"
+    ],
+    "waiting_users": []
+  },
+  "92545844db64980df1b09b5b5763cb6d914fe82b": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "laura",
+    "id": "b52fa499-db4b-4b50-b0d0-020c9d932023",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "8965e764-a443-454f-92fd-373c0236576d"
+  },
+  "94745df4bd94de756ea5436584fec066fc7898d5": {
+    "alias": "laura",
     "class": "user",
-    "full_name": "lau",
-    "inbox": [],
-    "logged": false,
+    "full_name": "laura",
+    "inbox": [
+      "2ad9f133-99c5-4a3b-9b46-42cc05d38b5c"
+    ],
+    "logged": true,
     "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
-    "workspaces": []
+    "workspaces": [
+      "968376b8-0040-475f-879c-28af2c3b1a84",
+      "36015d7b-1f20-46e3-ad98-637ecd051089",
+      "8965e764-a443-454f-92fd-373c0236576d"
+    ]
+  },
+  "a71d08e765431f37e26d167ea6e4b9538d0210cb": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "laura",
+    "id": "09068eed-0ec7-4b2e-b325-c14dcbae80d2",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "8965e764-a443-454f-92fd-373c0236576d"
+  },
+  "aea460aedb3caaba54eb7e2c78dd1ae30a4af80b": {
+    "admins": [
+      "laura",
+      "marie"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "marie",
+    "id": "a4cb868a-ad6b-4331-b587-223113939bee",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "c53dbda19d8e84c39b4364f9fe47d51113996ffa": {
+    "admins": [
+      "laura"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "marie",
+    "id": "2ad9f133-99c5-4a3b-9b46-42cc05d38b5c",
+    "max": 1,
+    "status": "sent",
+    "type": "workspace",
+    "workspace_id": "36015d7b-1f20-46e3-ad98-637ecd051089"
+  },
+  "e7ff55b120f03c4aaf5bab03d5f50b33f682dc1a": {
+    "class": "workspace",
+    "events": [],
+    "id": "968376b8-0040-475f-879c-28af2c3b1a84",
+    "name": "w2",
+    "requests": [
+      "971af564-f541-4252-8942-c7f1b5015221"
+    ],
+    "type": "flat",
+    "users": [
+      "marie",
+      "laura"
+    ],
+    "waiting_events": [],
+    "waiting_users": []
   },
   "f0fd596f396d8fc32d5e4fe4c73c61fa2ac55c70": {
     "alias": "marie",
@@ -29,7 +204,22 @@
     "logged": false,
     "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
     "workspaces": [
-      "ef17c198-20b3-4202-8069-7bba2926ed12"
+      "8965e764-a443-454f-92fd-373c0236576d",
+      "968376b8-0040-475f-879c-28af2c3b1a84",
+      "36015d7b-1f20-46e3-ad98-637ecd051089"
     ]
+  },
+  "fdf93079e91d13c9c45069a9e98150bb859b026e": {
+    "admins": [
+      "marie",
+      "laura"
+    ],
+    "class": "request",
+    "count": 0,
+    "from_user_alias": "laura",
+    "id": "82a98ec9-1f40-4834-a5b4-d1b7cf440e97",
+    "max": 1,
+    "type": "workspace",
+    "workspace_id": "8965e764-a443-454f-92fd-373c0236576d"
   }
 }

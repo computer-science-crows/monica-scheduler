@@ -70,12 +70,7 @@ class User:
 
         return event
 
-    def remove_workspace(self, workspace_id):
-        if workspace_id in self.workspaces:
-            self.workspaces.remove(workspace_id)
-            return True
-        return False
-    
+        
     def set_event(self, event, workspace, **fields):
         return workspace.set_event(event, user=self.alias, **fields)
 
@@ -101,6 +96,28 @@ class User:
             return True
         
         return False
+    
+    def change_workspace_type(self, workspace, admins, users):
+
+        if workspace.workspace_id not in self.workspaces:
+            print(f"You do not belong to workspace {workspace.name}")
+            return None, None
+        
+        if admins != None:
+            not_in_workspace = []
+
+            for adm in admins:
+                if adm not in workspace.users:
+                    not_in_workspace.append(adm)
+
+            if len(not_in_workspace) > 0:
+                print(f"Users {not_in_workspace} do not belong to workspace {workspace.workspace_id}")
+                return None, None
+        
+        request, new_workspace = workspace.change_workspace_type(self.alias, admins, users)
+
+        return request, new_workspace
+
     
        
     def dicc(self):

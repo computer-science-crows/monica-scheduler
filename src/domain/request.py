@@ -8,6 +8,7 @@ class Request(ABC):
         self.workspace_id = workspace_id
         self.from_user_id = from_user_id
         self.max_users = max_users
+        self.status = 'sent'
         self.count = count
 
     def __eq__(self, other: object) -> bool:
@@ -52,6 +53,7 @@ class JoinRequest(Request):
                 'from_user_alias':self.from_user_id,
                 'to_user':self.to_user,
                 'max':self.max_users,
+                'status': self.status,
                 'count':self.count}
     
     def __repr__(self) -> str:
@@ -80,6 +82,7 @@ class EventRequest(Request):
                 'from_user_alias':self.from_user_id,
                 'max':self.max_users,
                 'count':self.count,
+                'status':self.status,
                 'event':self.event_id}
 
 
@@ -90,7 +93,7 @@ class WorkspaceRequest(Request):
         self.admins = admins
 
     def __str__(self) -> str:
-        return f"[{self.request_id}] Request from user {self.from_user_id} to change type of workspace {self.workspace_id}"
+        return f"[{self.request_id}] Request from user {self.from_user_id} to change type of workspace {self.workspace_id}."
 
     def get_type(self):
         return 'workspace'
@@ -102,6 +105,7 @@ class WorkspaceRequest(Request):
                 'workspace_id':self.workspace_id,
                 'from_user_alias':self.from_user_id,
                 'max':self.max_users,
+                'status':self.status,
                 'count':self.count,
                 'admins':self.admins}
 

@@ -64,7 +64,7 @@ class Workspace(ABC):
     def __str__(self) -> str:
         return self.name
     
-    
+
 
 class FlatWorkspace(Workspace):
 
@@ -170,8 +170,9 @@ class FlatWorkspace(Workspace):
         if request.request_id in self.requests:
             request_type = request.get_type()
             request.count += 1
-
+            
             if request.count == request.max_users:
+                
                 if request_type == 'join':
                     user_alias = request.to_user
                     self.users.append(user_alias)
@@ -183,6 +184,7 @@ class FlatWorkspace(Workspace):
                     self.waiting_events.remove(event_id) 
                 
                 else:
+                    print('entre 3')
                     new_workspace = HierarchicalWorkspace(self.name,self.workspace_id)
 
                     new_workspace.events = self.events
@@ -190,6 +192,8 @@ class FlatWorkspace(Workspace):
                     new_workspace.admins = request.admins
 
                     return new_workspace
+                
+                self.requests.status = 'accepted'
 
        
         return self
@@ -208,21 +212,29 @@ class FlatWorkspace(Workspace):
                 event_id = request.event_id
                 self.waiting_events.remove(event_id) 
 
-            self.requests.remove(request.request_id)
+            self.requests.status = 'rejected'
 
             return True
           
         return False
         
 
-    def change_workspace_type(self, from_user_id, admins):
+    def change_workspace_type(self, from_user_id, admins, users):
 
-        request = WorkspaceRequest(self.workspace_id, from_user_id,len(self.users)-1,admins)
+        if admins == None:
+            print(f"To change the type of workspace {self.workspace_id} to hierarchical, a list of workspace administrators is needed.")
+            return None, None
 
-        for user in self.users:
-            self.send_request(request.request_id,)
+        request = WorkspaceRequest(self.workspace_id, from_user_id, len(self.users)-1,admins)
+
+        for user in users:
+            if user.alias == from_user_id:
+                continue
+            self.send_request(request.request_id,user)
 
         self.requests.append(request.request_id)
+
+        return request, None
 
     def dicc(self):
         return {'class':'workspace',
@@ -362,7 +374,7 @@ class HierarchicalWorkspace(Workspace):
                 user_alias = request.to_user
                 self.users.append(user_alias)
                 self.waiting_users.remove(user_alias)
-                self.requests.remove(request.request_id) 
+                self.requests.status = 'accepted'
 
         return None
     
@@ -370,19 +382,20 @@ class HierarchicalWorkspace(Workspace):
         if request.request_id in self.requests:
             user_alias = request.to_user
             self.waiting_users.remove(user_alias)
-            self.requests.remove(request.request_id)
+            self.requests.status = 'rejected'
     
-    def change_workspace_type(self, from_user_id, admins):
+    def change_workspace_type(self, from_user_id, admins, users):
 
         if from_user_id not in self.admins:
-            return None
+            print(f"You cannot change workspace {self.workspace_id} type because you are not an administrator.")
+            return None, None
         
         new_workspace = FlatWorkspace(self.name, self.workspace_id)
 
         new_workspace.events = self.events
         new_workspace.users = self.users
        
-        return new_workspace
+        return None, new_workspace
     
     def dicc(self):
         return {'class':'workspace',

@@ -19,7 +19,7 @@ def digest(string):
 file_name = 'data'
 
 def database():
-    DDB.config.storage_directory = "../database"
+    DDB.config.storage_directory = "./database"
     database = DDB.at(f"{file_name}")
     if not database.exists():
         database.create({})
@@ -35,7 +35,6 @@ class Monica:
         return self.logged_user != None
 
     def login(self, args):
-
         
         if self._already_logged():
             print(f"There is a user logged already.")
@@ -79,9 +78,7 @@ class Monica:
         password= digest(args.password)
         confirmation = digest(args.confirmation)
 
-        print(password)
-
-              
+                      
         # Password and confirmation not matching
         if password != confirmation:
             print("Wrong password.")
@@ -157,6 +154,7 @@ class Monica:
                 new = user.accept_request(requests[req_id],workspace)
                 if requests[req_id].get_type() == 'workspace' and new:
                     workspace = new
+                    print('hola')
                 print(f"Request successfully accepted.")
             else:
                 user.reject_request(requests[req_id],workspace)
@@ -250,23 +248,6 @@ class Monica:
         self.set(new_workspace.workspace_id,new_workspace.dicc())
 
         print(f"Worspace {new_workspace.workspace_id} was created.")
-
-    def remove_workspace(self, args):
-
-        if not self._already_logged():
-            print("There is no user logged")
-            return
-        
-        workspace_id = args.id
-
-        user = self.get(self.logged_user)
-        remove = user.remove_workspace(workspace_id)
-
-        if remove:
-            self.set(user.alias,user.dicc())            
-            print(f"successfully removed workspace")
-        else:
-            print(f"User {user} does not belong to workspace {workspace_id}")
 
     def add_user(self, args):
         
@@ -532,6 +513,60 @@ class Monica:
             print("There is no user logged")
             return
         
+        workspace_id = args.workspace_id
+        admins = args.admins
+
+        print(f"ADMINS {admins}")
+        workspace = self.get(workspace_id)
+
+        if workspace == None:
+            print(f"Worspace {workspace_id} does not exist")
+            return
+        
+        user = self.get(self.logged_user)
+
+        users = []
+
+        for u in workspace.users:                        
+            users.append(self.get(u))    
+
+        request, new_workspace = user.change_workspace_type(workspace,admins, users)
+
+        if request != None:
+            self.set(request.request_id, request.dicc())
+            print(f"Request to change type of workspace {workspace_id} sent")
+        if new_workspace != None:
+            self.set(new_workspace.workspace_id, new_workspace.dicc())           
+            print(f"Type of workspace {workspace_id} was changed successfully")
+        else:
+            self.set(workspace.workspace_id, workspace.dicc())
+            
+        
+        for u in users:
+            self.set(u.alias, u.dicc())
+
+
+    def request_status(self,args):
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id =args.workspace_id
+
+        workspace =self.get(workspace_id)
+
+        if self.logged_user not in workspace.users:
+            print(f"You do not belong to workspace {workspace_id}")
+            return
+        
+        print(f"Request from workspace {workspace_id}:")
+
+        for r in workspace.requests:
+            request = self.get(r)
+            print(f"{request} - {request.status}")           
+        
+     
 
     def exit_workspace(self, args):
         
@@ -550,6 +585,51 @@ class Monica:
         self.set(workspace.workspace_id, workspace.dicc())
 
         print(f"You have successfulle exited workspace {workspace_id}")
+
+    def check_availability(self, args):
+
+        if not self._already_logged():
+            print("There is no user logged")
+            return
+        
+        workspace_id = args.workspace_id
+        date = args.date
+        start_time = args.start_time
+        end_time = args.end_time
+
+        workspace = self.get(workspace_id)
+
+        events = []
+
+        for event_id in workspace.events:
+            event = self.get(event_id)
+            if event.date == date:
+                if start_time and end_time:
+                    min_start_time, max_start_time, min_end_time = 0,0,0
+
+                    if start_time > event.start_time:
+                        min_start_time = event.start_time
+                        max_start_time = start_time
+                        min_end_time = event.end_time
+                    else:
+                        max_start_time = event.start_time
+                        min_start_time = start_time
+                        min_end_time = end_time
+                    if min_start_time <= max_start_time and min_end_time > max_start_time:
+                        events.append(event)
+                elif start_time and start_time <= event.end_time:
+                    events.append(event)
+                elif end_time and end_time <= events.start_time:
+                    events.append(event)
+
+        if len(event) > 0:
+            print("The following events collide with the given date and time:")
+            for e in events:
+                print(f"- {e}")
+        else:
+            print("The given date and time is available for any event")
+
+
 
     def _sudo(self, args):
 
@@ -584,8 +664,7 @@ class Monica:
             data = DDB.at(f"{file_name}", key=f"{key}").read()
 
         return self.factory.create(data)
-
-    
+ 
 
     def set(self,key, value):
 

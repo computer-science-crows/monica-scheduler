@@ -1,0 +1,6 @@
+register marie marie 123 123
+create_workspace w1 f
+workspaces 
+logout
+register lau lau 123 123
+logout

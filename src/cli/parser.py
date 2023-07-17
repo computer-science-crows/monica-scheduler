@@ -26,7 +26,6 @@ class AgendaParser:
                     'workspaces':lambda args:self.monica.workspaces(args),
                     'profile':lambda args:self.monica.user_profile(args),
                     'create_workspace':lambda args:self.monica.create_workspace(args),
-                    'remove_workspace':lambda args:self.monica.remove_workspace(args),
                     'add_user':lambda args:self.monica.add_user(args),
                     'remove_user':lambda args:self.monica.remove_user(args),
                     'get_users':lambda args:self.monica.get_user(args),
@@ -35,8 +34,10 @@ class AgendaParser:
                     'remove_event':lambda args:self.monica.remove_event(args),
                     'events':lambda args:self.monica.events(args),
                     'set_event':lambda args:self.monica.set_event(args),
-                    'change_wokspace_type':lambda args:self.monica.change_workspace_type(args),
+                    'change_workspace_type':lambda args:self.monica.change_workspace_type(args),
                     'exit_workspace':lambda args:self.monica.exit_workspace(args),
+                    'request_status':lambda args:self.monica.request_status(args),
+                    'check_availability':lambda args: self.monica.chaeck_availability(args),
                     'sudo':lambda args:self.monica.sudo(args)}
 
     def parse_arguments(self, line):
@@ -89,10 +90,7 @@ class AgendaParser:
         create_workspace.add_argument('type',choices=['f', 'h'],help='Type of workspace', default=None)
         create_workspace.add_argument('--id',help='id of workspace', default=None)
         
-        # remove workspace
-        remove_workspace = self.subparsers.add_parser('remove_workspace',help='Remove workspace')
-        remove_workspace.add_argument('id',help="id of workspace. You can run command 'workspaces' to see id.", default=None)
-                
+                      
         # add user
         add_user = self.subparsers.add_parser('add_user',help='Add user to workspace')
         add_user.add_argument('workspace_id',help='Id of workspace', default=None)
@@ -142,7 +140,20 @@ class AgendaParser:
         # change workspace type
         change_workspace = self.subparsers.add_parser('change_workspace_type',help='Change type of a workspace')
         change_workspace.add_argument('workspace_id', help='id of workspace', default=None)
-        change_workspace.add_argument('--admins',help='Administrators of workspace',type=list, default=None)
+        change_workspace.add_argument('--admins',help='Administrators of workspace',nargs='+',metavar='user', type=str, default=None)
+
+        # request status
+        request_status = self.subparsers.add_parser('request_status',help='Status of requests sent')
+        request_status.add_argument('workspace_id',help='Id of workspace', default=None)
+
+        # check availability
+        check_availability = self.subparsers.add_parser('check_availability',help='Check if there is any event on a given date and time')
+        check_availability.add_argument('workspace_id',help='id of workspace', default=None)
+        check_availability.add_argument('date', help='Event date',default=None)
+        check_availability.add_argument('--start_time', help='Event start time',default=None)
+        check_availability.add_argument('--end_time', help='Event end time',default=None)
+
+
 
     def _server_subparsers(self):
 
