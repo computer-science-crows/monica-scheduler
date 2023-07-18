@@ -23,9 +23,12 @@ class KademliaProtocol(RPCProtocol):
         Get ids to search for to keep old buckets up to date.
         """
         ids = []
+        log.debug("LONELY BUCKETS: %s", self.router.lonely_buckets())
+        log.debug("BUCKETS: %s", self.router.buckets)
         for bucket in self.router.lonely_buckets():
             rid = random.randint(*bucket.range).to_bytes(20, byteorder='big')
             ids.append(rid)
+        log.debug('GET REFRESH IDS: %s', ids)
         return ids
 
     def rpc_stun(self, sender):  # pylint: disable=no-self-use

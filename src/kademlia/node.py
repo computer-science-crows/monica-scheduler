@@ -1,5 +1,9 @@
 from operator import itemgetter
 import heapq
+import logging
+from kademlia.utils import digest_lid
+
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 class Node:
@@ -20,9 +24,11 @@ class Node:
             port (int): Optional port for this Node (set when IP is set)
         """
         self.id = node_id  # pylint: disable=invalid-name
+        log.debug("NODE CREATED WITH ID: %s", self.id)
         self.ip = ip  # pylint: disable=invalid-name
         self.port = port
-        self.long_id = int(node_id, 16)
+        self.long_id = int(digest_lid(node_id).hex(), 16)
+        log.debug("NODE'S LONG ID: %s", self.long_id)
 
     def same_home_as(self, node):
         return self.ip == node.ip and self.port == node.port

@@ -149,7 +149,7 @@ class RoutingTable:
         Get all of the buckets that haven't been updated in over
         an hour.
         """
-        hrago = time.monotonic() - 3600
+        hrago = time.monotonic()
         return [b for b in self.buckets if b.last_updated < hrago]
 
     def remove_contact(self, node):

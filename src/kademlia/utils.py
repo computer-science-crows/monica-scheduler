@@ -18,6 +18,12 @@ def digest(string):
     return hashlib.sha1(string).hexdigest()
 
 
+def digest_lid(string):
+    if not isinstance(string, bytes):
+        string = str(string).encode('utf8')
+    return hashlib.sha1(string).digest()
+
+
 def shared_prefix(args):
     """
     Find the shared prefix between the strings.

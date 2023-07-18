@@ -41,7 +41,7 @@ class Server:
         self.ksize = ksize
         self.alpha = alpha
         self.storage = Storage(self.id)
-        self.node = Node(node_id or digest((ip)))
+        self.node = Node(node_id or digest(ip))
         self.transport = None
         self.protocol = None
         self.refresh_loop = None
@@ -81,7 +81,7 @@ class Server:
         log.debug("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
-        self.refresh_loop = loop.call_later(3600, self.refresh_table)
+        self.refresh_loop = loop.call_later(3, self.refresh_table)
 
     async def _refresh_table(self):
         """
@@ -93,6 +93,7 @@ class Server:
             # print(f"NODE ID: {node_id}")
             node = Node(node_id)
             nearest = self.protocol.router.find_neighbors(node, self.alpha)
+            log.debug('NEAREST IN REFRESH TABLE: %s', nearest)
             spider = NodeSpiderCrawl(self.protocol, node, nearest,
                                      self.ksize, self.alpha)
             results.append(spider.find())
@@ -101,7 +102,7 @@ class Server:
         await asyncio.gather(*results)
 
         # now republish keys older than one hour
-        for dkey, value in self.storage.iter_older_than(3600):
+        for dkey, value in self.storage.iter_older_than(3):
             # print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 
