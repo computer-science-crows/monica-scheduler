@@ -22,17 +22,20 @@ def test(file_name):
     agenda_parser = AgendaParser()
 
     for line in content:
-        print('\U0001F4C6 ' + line)
-        # try:
-        #     agenda_parser.parse_arguments(line.split())
-        #     agenda_parser.act()
-        # except:
-        #     ...
+        
+        if len(line) > 1:
 
-        agenda_parser.parse_arguments(line.split())
-        agenda_parser.act()
+            print('\U0001F4C6 ' + line)
+            # try:
+            #     agenda_parser.parse_arguments(line.split())
+            #     agenda_parser.act()
+            # except:
+            #     ...
 
-        print()
+            agenda_parser.parse_arguments(line.split())
+            agenda_parser.act()
+
+            print()
 
 path = os.getcwd() +'/tests'
 
@@ -76,10 +79,28 @@ path = os.getcwd() +'/tests'
 # test(path +'/test_remove_user.txt')
 
 # test request_status
-# test(path +'/test_request_status.txt')
+#test(path +'/test_request_status.txt')
 
 # test set_event
 # test(path +'/test_set_events.txt')
+
+# test_collisions
+# test(path +'/test_event_collisions.txt')
+
+# test_sudo_1
+# test(path +'/test_sudo_1.txt')
+
+# test_sudo_2
+# test(path +'/test_sudo_2.txt')
+
+# test_sudo_3
+# test(path +'/test_sudo_3.txt')
+
+# test_sudo_4
+# test(path +'/test_sudo_4.txt')
+
+# test_sudo_5
+# test(path +'/test_sudo_5.txt')
 
 
 

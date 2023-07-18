@@ -15,6 +15,6 @@ logout
 login user3 123
 profile
 inbox
-inbox --id w4user2 --handle accept
+inbox --id w4user2user3 --handle accept
 workspaces
 logout

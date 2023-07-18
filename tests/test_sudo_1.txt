@@ -1,0 +1,8 @@
+register user25 user25 123 123
+logout
+login user25 123
+logout
+sudo create --n 1
+sudo remove
+login user25 123
+logout

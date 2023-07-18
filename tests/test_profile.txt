@@ -2,4 +2,10 @@ register user9 user9 123 123
 profile
 profile --name user16
 profile
+profile --alias user16
+profile
+profile --change_password
+logout
+login user16 123
+login user16 1234
 logout

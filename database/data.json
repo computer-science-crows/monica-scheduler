@@ -1,39 +1,161 @@
 {
-  "2927b4649cf4307f990009a16d33a38ceea4c866": {
+  "139d013d2034560dd051464481a9e7366334030d": {
     "admins": [
-      "marie"
+      "user24"
     ],
     "class": "workspace",
-    "events": [],
-    "id": "w1",
-    "name": "w1",
+    "events": [
+      "event10"
+    ],
+    "id": "w18",
+    "name": "w18",
     "requests": [],
     "type": "hierarchical",
     "users": [
-      "marie"
+      "user24"
     ],
     "waiting_users": []
   },
-  "ad52825a8f4812e92f87b8c606fc22a69c7e5f8f": {
-    "class": "event",
-    "date": "2023-07-17",
-    "end_time": "12:00",
-    "from_user": "marie",
-    "id": "event1",
-    "place": null,
-    "start_time": "11:00",
-    "title": "event1",
-    "workspace": "w1"
-  },
-  "f0fd596f396d8fc32d5e4fe4c73c61fa2ac55c70": {
-    "alias": "marie",
+  "18727a62524792efc6f1d6c77825901e00bbcc26": {
+    "alias": "user24",
     "class": "user",
-    "full_name": "marie",
+    "full_name": "user24",
     "inbox": [],
-    "logged": true,
+    "logged": false,
     "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
     "workspaces": [
-      "w1"
+      "w18",
+      "w16"
     ]
+  },
+  "1ded2e3c92caf7b7082534acbd3aa63ba729d53f": {
+    "alias": "user22",
+    "class": "user",
+    "full_name": "user22",
+    "inbox": [],
+    "logged": false,
+    "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
+    "workspaces": [
+      "w16"
+    ]
+  },
+  "314a67ac9b75fc36fe7f3db923b4e405299f6a0c": {
+    "class": "event",
+    "date": "2023-07-18",
+    "end_time": "12:00",
+    "from_user": "user23",
+    "id": "event9",
+    "place": null,
+    "start_time": "10:00",
+    "title": "event9",
+    "workspace": "w17"
+  },
+  "34949925bbb17becaf8cf64561efc615723bd2ff": {
+    "admins": [
+      "user22"
+    ],
+    "class": "workspace",
+    "events": [
+      "event11",
+      "event11"
+    ],
+    "id": "w16",
+    "name": "w16",
+    "requests": [
+      "w16user22user23",
+      "w16user22user24"
+    ],
+    "type": "hierarchical",
+    "users": [
+      "user22",
+      "user23",
+      "user24"
+    ],
+    "waiting_users": []
+  },
+  "43e0bd9edee6ba9de6b514cdcac87e4ddb9d008e": {
+    "class": "event",
+    "date": "2023-07-18",
+    "end_time": "11:00",
+    "from_user": "user23",
+    "id": "event8",
+    "place": null,
+    "start_time": "10:00",
+    "title": "event8",
+    "workspace": "w17"
+  },
+  "5848e0c090da052dcf806b6172cdeb99bcf8a4e4": {
+    "class": "event",
+    "date": "2023-07-18",
+    "end_time": "12:00",
+    "from_user": "user24",
+    "id": "event10",
+    "place": null,
+    "start_time": "09:00",
+    "title": "event10",
+    "workspace": "w18"
+  },
+  "5c93e9c9687fa6e228cb148a5dd3aa5b9c1a8953": {
+    "admins": [
+      "user23"
+    ],
+    "class": "workspace",
+    "events": [
+      "event8",
+      "event9"
+    ],
+    "id": "w17",
+    "name": "w17",
+    "requests": [],
+    "type": "hierarchical",
+    "users": [
+      "user23"
+    ],
+    "waiting_users": []
+  },
+  "7b11d0e5c4e8a2a089111d86b36a2ffa8409e2e2": {
+    "alias": "user23",
+    "class": "user",
+    "full_name": "user23",
+    "inbox": [],
+    "logged": false,
+    "password": "40bd001563085fc35165329ea1ff5c5ecbdbbeef",
+    "workspaces": [
+      "w17",
+      "w16"
+    ]
+  },
+  "c19d2b41c8d036d3c91ea30489396099a9e6e339": {
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "user22",
+    "id": "w16user22user24",
+    "max": 1,
+    "status": "accepted",
+    "to_user": "user24",
+    "type": "join",
+    "workspace_id": "w16"
+  },
+  "c38865d7cdcbf7733392a3fcb7c40ef8d24f9291": {
+    "class": "request",
+    "count": 1,
+    "from_user_alias": "user22",
+    "id": "w16user22user23",
+    "max": 1,
+    "status": "accepted",
+    "to_user": "user23",
+    "type": "join",
+    "workspace_id": "w16"
+  },
+  "f2f20d1ed773168b92aae8f88b08fda6a4b3e1bc": {
+    "class": "event",
+    "date": "2023-07-18",
+    "end_time": "14:00",
+    "from_user": "user22",
+    "id": "event11",
+    "place": null,
+    "start_time": "13:00",
+    "title": "event11",
+    "workspace": "w16"
   }
 }

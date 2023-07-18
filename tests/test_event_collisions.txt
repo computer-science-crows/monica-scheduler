@@ -1,0 +1,44 @@
+register user22 user22 123 123
+create_workspace w16 h
+workspaces
+logout
+register user23 user23 123 123
+create_workspace w17 h
+workspaces
+create_event w17 event8 2023-7-18 10:00 11:00
+workspaces
+create_event w17 event9 2023-7-18 10:00 12:00
+events w17
+logout
+register user24 user24 123 123
+create_workspace w18 h
+workspaces
+create_event w18 event10 2023-7-18 9:00 12:00
+workspaces
+logout
+login user22 123
+add_user w16 user23
+add_user w16 user24
+request_status w16
+logout
+login user23 123
+inbox 
+inbox --id w16user22user23 --handle accept
+workspaces
+logout
+login user24 123
+inbox
+inbox --id w16user22user24 --handle accept
+workspaces
+logout
+login user22 123
+workspaces
+create_event w16 event11 2023-7-18 8:00 12:00
+create_event w16 event11 2023-7-18 13:00 14:00
+events w16
+logout
+
+
+
+
+

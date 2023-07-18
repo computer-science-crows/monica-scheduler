@@ -1,0 +1,24 @@
+register user27 user27 123 123
+create_workspace w22 h
+workspaces
+logout
+register user28 user28 123 123
+logout
+sudo create -n 1
+login user27 123
+workspaces
+add_user w22 user28
+logout
+login user28 123
+inbox 
+inbox --id w22user27user28 --handle accept
+workspaces
+logout
+sudo create -n 1
+login user27 123
+workspaces
+logout
+sudo remove
+login user28 123
+workspaces
+logout

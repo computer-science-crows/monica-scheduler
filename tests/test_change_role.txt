@@ -10,7 +10,7 @@ add_user w5 user5
 logout
 login user5 123
 inbox
-inbox --id w5user4 --handle accept
+inbox --id w5user4user5 --handle accept
 workspaces
 logout
 login user4 123

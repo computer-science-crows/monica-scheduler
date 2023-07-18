@@ -1,0 +1,24 @@
+register user29 user29 123 123
+create_workspace w23 h
+workspaces
+create_event w23 event12 2023-7-18 8:00 9:00
+workspaces
+logout
+register user30 user30 123 123
+create_workspace w24 h
+create_event w24 event13 2023-7-18 10:00 11:00
+workspaces
+add_user w24 user29 
+logout
+sudo create -1
+login user29 123
+workspaces
+inbox
+inbox --id w24user30user29 --handle accept
+workspaces
+logout
+sudo remove
+login user30 123
+workspaces
+logout
+

@@ -2,6 +2,7 @@ import sys
 import os
 import hashlib
 import dictdatabase as DDB
+import getpass
 
 
 # Add the parent directory to the Python path
@@ -136,7 +137,7 @@ class Monica:
         user = self.get(self.logged_user)
         requests = {}
 
-        if req_id not in user.requests:
+        if req_id != None and req_id not in user.requests:
             print("Wrong request id.")
             return
 
@@ -196,13 +197,12 @@ class Monica:
         
         alias = args.alias
         name = args.name
-        password = args.password
-
+        change_password = args.change_password
                   
                 
         user = self.get(self.logged_user)
 
-        if alias == None and name == None and password == None:
+        if alias == None and name == None and not change_password:
             print(f'Profile:\n Alias: {user.alias}\n Name: {user.full_name}')
             return
             
@@ -216,11 +216,29 @@ class Monica:
             print(f"User with alias {alias} already exists")
             return
         
+        new_password = None
+        if change_password:            
+            while True:
+               confirmation = getpass.getpass("Please type your current password:")
+               if digest(confirmation) != user.password:
+                   print("Incorrect password")
+               else:
+                    while True:
+                        new_password = digest(getpass.getpass("Type the new password:"))                   
+                        new_password_confirmation = digest(getpass.getpass("New password confirmation:"))
+                        if new_password_confirmation == new_password:
+                            break
+                        else:
+                            print('Incorrect password')
+                    break
+
+
+        
         new_user = self.factory.create(
             {'class': 'user',
             'alias':alias or user.alias,
             'full_name':name or user.full_name,
-            'password':password or user.password,
+            'password':new_password or user.password,
             'logged':user.active, 
             'inbox':user.requests, 
             'workspaces':user.workspaces}
@@ -254,7 +272,7 @@ class Monica:
         self.set(user.alias,user.dicc())
         self.set(new_workspace.workspace_id,new_workspace.dicc())
 
-        print(f"Worspace {new_workspace.workspace_id} was created.")
+        print(f"Workspace {new_workspace.workspace_id} was created.")
 
     def add_user(self, args):
         
@@ -379,6 +397,7 @@ class Monica:
 
         if workspace_id not in user_get.workspaces:
             print(f"User {user_get.alias} does not belong to workspace {workspace_id}")
+            return
 
         workspace_get = self.get(workspace_id)
         users = []
@@ -396,8 +415,7 @@ class Monica:
 
                     event = self.get(event_id)
                     min_start_time, max_start_time, min_end_time = 0,0,0
-                    print(f"event.start_time {type(event.start_time)}")
-                    print(f"start_time {type(start_time)}")
+                   
                     if start_time > event.start_time:
                         min_start_time = event.start_time
                         max_start_time = start_time
@@ -528,7 +546,7 @@ class Monica:
         workspace = self.get(workspace_id)
 
         if workspace == None:
-            print(f"Worspace {workspace_id} does not exist")
+            print(f"Workspace {workspace_id} does not exist")
             return
         
         user = self.get(self.logged_user)
@@ -610,31 +628,25 @@ class Monica:
             event = self.get(event_id)
             if event.date == date:
                 if start_time and end_time:
-                    print("entre 1")
+                    
                     min_start_time, max_start_time, min_end_time = 0,0,0
 
                     if start_time > event.start_time:
-                        print("entre 1.1")
+                        
                         min_start_time = event.start_time
                         max_start_time = start_time
                         min_end_time = event.end_time
                     else:
-                        print("entre 1.2")
+                        
                         max_start_time = event.start_time
                         min_start_time = start_time
                         min_end_time = end_time
 
-                    print(f"min_start time {min_start_time}")
-                    print(f"max_start_time {max_start_time}")
-                    print(f"min_end_time {min_end_time}")
                     if min_start_time <= max_start_time and min_end_time > max_start_time:
-                        print("entre 1.3")
                         events.append(event)
                 elif start_time and start_time <= event.end_time:
-                    print("entre 2")
                     events.append(event)
                 elif end_time and end_time <= events.start_time:
-                    print("entre 3")
                     events.append(event)
 
         if len(events) > 0:
@@ -653,8 +665,6 @@ class Monica:
 
         if action == 'create':
             if n_s:
-                # print("hola")
-                # print(n_s)
                 self.api.create_servers(n_s)
                 print(f'{n_s} server(s) added')
             else:
