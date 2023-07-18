@@ -1,6 +1,7 @@
 import sys
 import os
 import hashlib
+import time
 import dictdatabase as DDB
 
 
@@ -649,8 +650,8 @@ class Monica:
 
     def sudo(self, args):
 
-        action = self.args.action
-        n_s = self.args.number_of_servers
+        action = args.action
+        n_s = args.n
 
         if action == 'create':
             if n_s:
@@ -688,3 +689,4 @@ class Monica:
 
     def set(self,key, value):
         self.api.set_value(key, value)
+        time.sleep(5)

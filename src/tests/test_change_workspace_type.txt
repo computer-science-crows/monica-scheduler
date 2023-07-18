@@ -1,5 +1,4 @@
 register user6 user6 123 123
-profile
 create_workspace w6 h
 workspaces 
 change_workspace_type w6

@@ -20,11 +20,11 @@ def main():
             break
 
         # Parse the arguments
-        # try:
-        agenda_parser.parse_arguments(line.split())
-        agenda_parser.act()
+        try:
+            agenda_parser.parse_arguments(line.split())
+            agenda_parser.act()
             
-        # except:...
+        except:...
 
         # Handle the command
         # handle_command(args, api)

@@ -79,6 +79,7 @@ class KBucket:
 
     def depth(self):
         vals = self.nodes.values()
+        log.debug("vals in depth function KBUCKET: %s", vals)
         sprefix = shared_prefix([bytes_to_bit_string(n.id) for n in vals])
         return len(sprefix)
 
@@ -149,7 +150,7 @@ class RoutingTable:
         Get all of the buckets that haven't been updated in over
         an hour.
         """
-        hrago = time.monotonic()
+        hrago = time.monotonic() - 3600
         return [b for b in self.buckets if b.last_updated < hrago]
 
     def remove_contact(self, node):

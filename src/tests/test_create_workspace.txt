@@ -1,5 +1,4 @@
 register user2 user2 123 123
-profile
 create_workspace w1 f
 workspaces
 create_workspace w2 h

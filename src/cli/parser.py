@@ -26,7 +26,8 @@ class AgendaParser:
         self.parser = argparse.ArgumentParser(description='Command-line parser for the Monica Scheduler distributed agenda')
         self.subparsers = self.parser.add_subparsers(dest='command', help='Available commands')
         self._user_subparser()
-        self._workspaces_subparsers()        
+        self._workspaces_subparsers()     
+        self._server_subparsers()   
         self.monica = Monica(api)
         
 
@@ -164,8 +165,7 @@ class AgendaParser:
         check_availability.add_argument('--start_time', help='Event start time (format: HH:MM)',default=None, type=parse_time)
         check_availability.add_argument('--end_time', help='Event end time (format: HH:MM)',default=None, type=parse_time)
 
-
-
+        
     def _server_subparsers(self):
 
         sudo = self.subparsers.add_parser('sudo', help='Network actions')

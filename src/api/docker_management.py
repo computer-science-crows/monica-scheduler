@@ -56,8 +56,8 @@ def create_container(image_name, params=[]):
             logs = [line for line in lines if 'DEBUG' in line or 'INFO' in line]
         last_line = logs[-2] if len(logs) > 1 else logs[0]
         # print(f'!!!!!!!!!!!!!!!! {last_line}')
-        container.stop()
-        container.remove()
+        # container.stop()
+        # container.remove()
         return last_line
 
     return container

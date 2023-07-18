@@ -1,5 +1,4 @@
 register user10 user10 123 123
-profile
 create_workspace w9 h
 workspaces
 create_event w9 event2 2023-7-17 8:00 10:00
