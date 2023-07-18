@@ -5,7 +5,6 @@ logout
 register user13 user13 123 123
 logout
 login user12 123
-profile
 add_user w11 user13
 request_status w11
 logout

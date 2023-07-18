@@ -3,7 +3,6 @@ create_workspace w5 h
 workspaces 
 logout
 register user5 user5 123 123
-profile
 logout
 login user4 123
 add_user w5 user5

@@ -81,7 +81,7 @@ class Server:
         log.debug("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
-        self.refresh_loop = loop.call_later(3, self.refresh_table)
+        self.refresh_loop = loop.call_later(1, self.refresh_table)
 
     async def _refresh_table(self):
         """
@@ -102,7 +102,7 @@ class Server:
         await asyncio.gather(*results)
 
         # now republish keys older than one hour
-        for dkey, value in self.storage.iter_older_than(3):
+        for dkey, value in self.storage.iter_older_than(1):
             # print(f"NODE DKEY: {dkey}")
             await self.set_digest(dkey, value)
 

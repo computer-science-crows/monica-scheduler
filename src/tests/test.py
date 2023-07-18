@@ -24,8 +24,14 @@ def test(file_name):
     api = API()
     agenda_parser = AgendaParser(api)
 
+    print("\U0001F499 Monica Scheduler \U0001F499")
+    print("Enter 'quit' to exit.")
     for line in content:
         print('\U0001F4C6 ' + line)
+
+        if line == 'quit':
+            break
+
         # try:
         #     agenda_parser.parse_arguments(line.split())
         #     agenda_parser.act()
@@ -35,7 +41,7 @@ def test(file_name):
         agenda_parser.parse_arguments(line.split())
         agenda_parser.act()
 
-        time.sleep(10)
+        time.sleep(30)
         print()
 
 path = os.getcwd() +'/tests'
@@ -77,10 +83,10 @@ path = os.getcwd() +'/tests'
 # test(path +'/test_remove_event.txt')
 
 # test remove_user
-test(path +'/test_remove_user.txt')
+# test(path +'/test_remove_user.txt')
 
 # test request_status
-# test(path +'/test_request_status.txt')
+test(path +'/test_request_status.txt')
 
 # test set_event
 # test(path +'/test_set_events.txt')
