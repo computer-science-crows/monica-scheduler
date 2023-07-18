@@ -1,0 +1,5 @@
+register user9 user9 123 123
+profile
+profile --name user16
+profile
+logout

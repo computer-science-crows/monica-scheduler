@@ -1,0 +1,19 @@
+register user4 user4 123 123
+create_workspace w5 h
+workspaces 
+logout
+register user5 user5 123 123
+profile
+logout
+login user4 123
+add_user w5 user5
+logout
+login user5 123
+inbox
+inbox --id w5user4user5 --handle accept
+workspaces
+logout
+login user4 123
+change_role user5 w5
+workspaces
+logout

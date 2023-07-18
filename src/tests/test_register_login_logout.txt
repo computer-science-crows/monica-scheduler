@@ -1,0 +1,5 @@
+register user1 user1 123 123
+logout
+login user1 123
+profile
+logout

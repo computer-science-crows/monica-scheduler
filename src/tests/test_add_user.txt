@@ -1,0 +1,21 @@
+register user2 user2 123 123
+profile
+create_workspace w3 f
+workspaces
+create_workspace w4 h
+workspaces 
+logout
+register user3 user3 123 123
+profile
+logout
+login user2 123
+workspaces
+add_user w4 user3
+workspaces
+logout
+login user3 123
+profile
+inbox
+inbox --id w4user2user3 --handle accept
+workspaces
+logout

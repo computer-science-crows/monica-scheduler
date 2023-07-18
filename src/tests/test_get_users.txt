@@ -1,0 +1,23 @@
+register user17 user17 123 123
+create_workspace w14 f
+workspaces
+logout
+register user18 user18 123 123
+logout
+register user19 user19 123 123
+logout
+login user17 123
+add_user w14 user18
+add_user w14 user19
+logout
+login user18 123
+inbox
+inbox --id w14user17user18 --handle accept
+workspaces
+logout 
+login user19 123
+inbox
+inbox --id w14user17user19 --handle accept
+workspaces
+get_users w14
+logout

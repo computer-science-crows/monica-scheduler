@@ -1,0 +1,7 @@
+register user8 user8 123 123
+profile
+create_workspace w8 f
+workspaces 
+exit_workspace w8
+workspaces
+logout

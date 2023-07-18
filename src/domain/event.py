@@ -3,7 +3,6 @@ import uuid
 class Event:
 
     def __init__(self, from_user, title, date, place, start_time, end_time, workspace_id, id=None):
-        self.event_id = id or str(uuid.uuid4())
         self.from_user = from_user
         self.title = title
         self.date = date
@@ -11,6 +10,7 @@ class Event:
         self.start_time = start_time
         self.end_time = end_time
         self.workspace_id= workspace_id
+        self.event_id = id or self.title
 
     def __eq__(self, other_event) -> bool:
 
@@ -19,17 +19,18 @@ class Event:
         return False
     
     def __str__(self) -> str:
-        return f"{self.title}\n ID:{self.event_id}\n Date:{self.date}\n Place: {self.place}\n Time: {self.start_time}-{self.end_time}\n Workspace: {self.workspace_id}\n"
+        return f"{self.title}\n ID:{self.event_id}\n Date:{str(self.date)[:10]}\n Place: {self.place}\n Time: {str(self.start_time)[:5]}-{str(self.end_time)[:5]}\n Workspace: {self.workspace_id}\n"
     
     def dicc(self):
-        return {'id':self.event_id,
+        return {'class':'event',
+                'id':self.event_id,
                 'from_user':self.from_user,
                 'title':self.title,
-                'date':self.date,
+                'date':str(self.date)[:10],
                 'place':self.place,
-                'start_time':self.start_time,
-                'end_time':self.end_time,
-                'workspace_id':self.workspace_id                
+                'start_time':str(self.start_time)[:5],
+                'end_time':str(self.end_time)[:5],
+                'workspace':self.workspace_id                
         }
         
 
