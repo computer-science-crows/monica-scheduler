@@ -6,12 +6,12 @@ from abc import abstractclassmethod, ABC
 
 class Workspace(ABC):
 
-    def __init__(self, name, id=None) -> None:
+    def __init__(self, name, id=None) -> None:        
         
-        self.workspace_id = id or uuid.uuid4()
         self.name = name
         self.events = []
         self.users = []    
+        self.workspace_id = id or self.name
 
                
     
@@ -83,6 +83,11 @@ class FlatWorkspace(Workspace):
     def add_event(self,from_user_id,title,date,place,start_time,end_time, users, id=None):
 
         event = Event(from_user_id,title,date,place,start_time,end_time, self.workspace_id,id)
+
+        if len(self.users) == 1 and from_user_id in self.users:
+            self.events.append(event.event_id)
+            print(f"Event {event.title} successfully added to workspace {self.name}")
+            return event,None
            
         request = EventRequest(self.workspace_id,from_user_id,len(self.users)-1,event.event_id)
         for user in users:
@@ -184,7 +189,6 @@ class FlatWorkspace(Workspace):
                     self.waiting_events.remove(event_id) 
                 
                 else:
-                    print('entre 3')
                     new_workspace = HierarchicalWorkspace(self.name,self.workspace_id)
 
                     new_workspace.events = self.events
@@ -193,7 +197,7 @@ class FlatWorkspace(Workspace):
 
                     return new_workspace
                 
-                self.requests.status = 'accepted'
+                request.status = 'accepted'
 
        
         return self
@@ -212,11 +216,11 @@ class FlatWorkspace(Workspace):
                 event_id = request.event_id
                 self.waiting_events.remove(event_id) 
 
-            self.requests.status = 'rejected'
+            request.status = 'rejected'
 
-            return True
+            return request
           
-        return False
+        return None
         
 
     def change_workspace_type(self, from_user_id, admins, users):
@@ -224,6 +228,15 @@ class FlatWorkspace(Workspace):
         if admins == None:
             print(f"To change the type of workspace {self.workspace_id} to hierarchical, a list of workspace administrators is needed.")
             return None, None
+        
+        if len(self.users) == 1 and from_user_id in self.users:
+            new_workspace = HierarchicalWorkspace(self.name,self.workspace_id)
+
+            new_workspace.events = self.events
+            new_workspace.users = self.users
+            new_workspace.admins = admins
+            
+            return None,new_workspace
 
         request = WorkspaceRequest(self.workspace_id, from_user_id, len(self.users)-1,admins)
 
@@ -301,7 +314,7 @@ class HierarchicalWorkspace(Workspace):
         if not fields['user'] in self.admins:
             print(f"User {fields['user']} cannot modify event {event.event_id}")
             return None
-        if event not in self.events:
+        if event.event_id not in self.events:
             print(f"Event {event.event_id} does not exist.")
             return None
         return Event(
@@ -374,7 +387,7 @@ class HierarchicalWorkspace(Workspace):
                 user_alias = request.to_user
                 self.users.append(user_alias)
                 self.waiting_users.remove(user_alias)
-                self.requests.status = 'accepted'
+                request.status = 'accepted'
 
         return None
     
@@ -382,7 +395,10 @@ class HierarchicalWorkspace(Workspace):
         if request.request_id in self.requests:
             user_alias = request.to_user
             self.waiting_users.remove(user_alias)
-            self.requests.status = 'rejected'
+            request.status = 'rejected'
+            return request
+        
+        
     
     def change_workspace_type(self, from_user_id, admins, users):
 

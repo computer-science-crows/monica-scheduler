@@ -1,4 +1,0 @@
-register marie marie 123 123
-create_workspace w1 f
-workspaces 
-logout

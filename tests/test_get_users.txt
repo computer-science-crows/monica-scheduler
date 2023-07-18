@@ -12,12 +12,12 @@ add_user w14 user19
 logout
 login user18 123
 inbox
-inbox --id <request_id> --handle accept
+inbox --id w14user17user18 --handle accept
 workspaces
 logout 
 login user19 123
 inbox
-inbox --id <request_id> --handle accept
+inbox --id w14user17user19 --handle accept
 workspaces
 get_users w14
 logout

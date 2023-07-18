@@ -91,11 +91,11 @@ class User:
     def reject_request(self, request, workspace):
         
         if request.request_id in self.requests:
-            workspace.rejected_request(request)
+            request = workspace.rejected_request(request)
             self.requests.remove(request.request_id)
-            return True
+            return request
         
-        return False
+        return None
     
     def change_workspace_type(self, workspace, admins, users):
 
@@ -115,6 +115,9 @@ class User:
                 return None, None
         
         request, new_workspace = workspace.change_workspace_type(self.alias, admins, users)
+
+        if request != None:
+            self.requests.append(request.request_id)
 
         return request, new_workspace
 

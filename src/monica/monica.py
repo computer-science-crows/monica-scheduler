@@ -117,10 +117,11 @@ class Monica:
         user = self.get(self.logged_user)
         user.active = False
         self.set(user.alias,user.dicc())
+        print(f"Bye {self.logged_user}!")
         self.logged_user = None
 
         
-        print(f"Bye! {self.logged_user}")
+       
 
    
     def inbox(self, args):
@@ -135,8 +136,14 @@ class Monica:
         user = self.get(self.logged_user)
         requests = {}
 
+        if req_id not in user.requests:
+            print("Wrong request id.")
+            return
+
         for req in user.requests:
             requests[req] = self.get(req)
+
+        
         
         if handle_request == None and req_id == None:
             print(f"Inbox:")
@@ -153,15 +160,16 @@ class Monica:
             if handle_request == 'accept':                
                 new = user.accept_request(requests[req_id],workspace)
                 if requests[req_id].get_type() == 'workspace' and new:
-                    workspace = new
+                    workspace = new               
                 print(f"Request successfully accepted.")
             else:
-                user.reject_request(requests[req_id],workspace)
+                new = user.reject_request(requests[req_id],workspace)
                 print(f"Request successfully rejected.")
 
             self.set(user.alias, user.dicc())
             self.set(workspace.workspace_id, workspace.dicc())
             self.set(req_id, requests[req_id].dicc())
+            
 
     def workspaces(self, args):
         
@@ -195,7 +203,7 @@ class Monica:
         user = self.get(self.logged_user)
 
         if alias == None and name == None and password == None:
-            print(f'Profile:\n Alias: {user.alias}\n Name:{user.full_name}')
+            print(f'Profile:\n Alias: {user.alias}\n Name: {user.full_name}')
             return
             
 
@@ -516,7 +524,7 @@ class Monica:
         workspace_id = args.workspace_id
         admins = args.admins
 
-        print(f"ADMINS {admins}")
+        
         workspace = self.get(workspace_id)
 
         if workspace == None:
@@ -539,8 +547,7 @@ class Monica:
             self.set(new_workspace.workspace_id, new_workspace.dicc())           
             print(f"Type of workspace {workspace_id} was changed successfully")
         else:
-            self.set(workspace.workspace_id, workspace.dicc())
-            
+            self.set(workspace.workspace_id, workspace.dicc())            
         
         for u in users:
             self.set(u.alias, u.dicc())
@@ -582,7 +589,7 @@ class Monica:
         self.set(user.alias, user.dicc())
         self.set(workspace.workspace_id, workspace.dicc())
 
-        print(f"You have successfulle exited workspace {workspace_id}")
+        print(f"You have successfull exited workspace {workspace_id}")
 
     def check_availability(self, args):
 

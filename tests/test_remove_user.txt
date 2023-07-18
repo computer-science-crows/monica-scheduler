@@ -9,7 +9,7 @@ add_user w15 user21
 logout
 login user21 123
 inbox
-inbox --id <request_id> --handle accept
+inbox --id w15user20user21 --handle accept
 workspaces
 logout
 login user20 123

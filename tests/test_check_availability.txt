@@ -2,10 +2,10 @@ register user11 user11 123 123
 profile
 create_workspace w10 h
 workspaces
-create_event w10 2023-7-19 8:00 10:00
+create_event w10 event10 2023-7-19 8:00 10:00
 workspaces
-create_event w10 2023-7-19 10:00 12:00 
+create_event w10 event11 2023-7-19 10:00 12:00 
 workspaces
 events w10
-check_availability w10 2023-7-19 9:00 11:00
+check_availability w10 2023-7-19 --start_time 9:00 --end_time 11:00
 logout

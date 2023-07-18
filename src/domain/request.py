@@ -4,12 +4,13 @@ import uuid
 class Request(ABC):
 
     def __init__(self, workspace_id, from_user_id, max_users, id=None, count=0):
-        self.request_id = id or uuid.uuid4()
+        
         self.workspace_id = workspace_id
         self.from_user_id = from_user_id
         self.max_users = max_users
         self.status = 'sent'
         self.count = count
+        
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other,Request):
@@ -35,6 +36,7 @@ class JoinRequest(Request):
     def __init__(self, workspace_id, from_user_id, max_users, to_user, id=None, count=0):
         super().__init__(workspace_id, from_user_id, max_users, id, count)
         self.to_user = to_user
+        self.request_id = id or self.workspace_id + self.from_user_id + self.to_user
     
     def __eq__(self, other: object) -> bool:
         if isinstance(other,Request):
@@ -67,6 +69,7 @@ class EventRequest(Request):
     def __init__(self, workspace_id, from_user_id,max_users, event_id, id=None, count=0):
         super().__init__(workspace_id, from_user_id, max_users,id,count)
         self.event_id = event_id
+        self.request_id = id or self.workspace_id + self.from_user_id + self.event_id
 
     def __str__(self) -> str:
         return f"[{self.request_id}] Request from user {self.from_user_id} to create event {self.event_id} on workspace {self.workspace_id}"
@@ -91,6 +94,14 @@ class WorkspaceRequest(Request):
     def __init__(self, workspace_id, from_user_id, max_users, admins, id=None, count=0):
         super().__init__(workspace_id, from_user_id, max_users, id, count)
         self.admins = admins
+        admins_str = ''
+        for adm in self.admins:
+            admins_str+=adm
+        self.request_id = id or self.workspace_id + self.from_user_id + admins_str
+        
+        print(f"Request id {self.request_id}")
+
+        
 
     def __str__(self) -> str:
         return f"[{self.request_id}] Request from user {self.from_user_id} to change type of workspace {self.workspace_id}."

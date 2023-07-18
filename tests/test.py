@@ -23,60 +23,64 @@ def test(file_name):
 
     for line in content:
         print('\U0001F4C6 ' + line)
-        try:
-            agenda_parser.parse_arguments(line.split())
-            agenda_parser.act()
-        except:
-            ...
+        # try:
+        #     agenda_parser.parse_arguments(line.split())
+        #     agenda_parser.act()
+        # except:
+        #     ...
+
+        agenda_parser.parse_arguments(line.split())
+        agenda_parser.act()
+
+        print()
+
+path = os.getcwd() +'/tests'
 
 # test register - login - logout
-# test(os.getcwd() + '/test_register_login_logout.txt')
+# test(path +'/test_register_login_logout.txt')
 
 # test create_workspace
-# test(os.getcwd() + '/test_create_workspace.txt')
+# test(path +'/test_create_workspace.txt')
 
 # test create_event
-# test(os.getcwd() + '/test_create_event.txt')
+# test(path +'/test_create_event.txt')
 
 # test exit_workspace
-# test(os.getcwd() + '/test_exit_workspace.txt')
+# test(path +'/test_exit_workspace.txt')
 
 # test add_user
-# test(os.getcwd() + '/test_add_user.txt')
+# test(path +'/test_add_user.txt')
 
 # test change_role
-# test(os.getcwd() + '/test_change_role.txt')
+# test(path +'/test_change_role.txt')
 
 # test change_workspace_type
-# test(os.getcwd() + '/test_change_workspace_type.txt')
+# test(path +'/test_change_workspace_type.txt')
 
 # test check_availability
-# test(os.getcwd() + '/test_check_availability.txt')
+# test(path +'/test_check_availability.txt')
 
 # test events
-# test(os.getcwd() + '/test_events.txt')
+# test(path +'/test_events.txt')
 
 # test get_users
-# test(os.getcwd() + '/test_get_users.txt')
-
+# test(path +'/test_get_users.txt')
 
 # test profile
-# test(os.getcwd() + '/test_profile.txt')
+# test(path +'/test_profile.txt')
 
 # test remove_event
-# test(os.getcwd() + '/test_remove_event.txt')
+# test(path +'/test_remove_event.txt')
 
 # test remove_user
-# test(os.getcwd() + '/test_remove_user.txt')
+# test(path +'/test_remove_user.txt')
 
 # test request_status
-# test(os.getcwd() + '/test_request_status.txt')
+# test(path +'/test_request_status.txt')
 
 # test set_event
-# test(os.getcwd() + '/test_set_events.txt')
+# test(path +'/test_set_events.txt')
 
-# test workspaces
-# test(os.getcwd() + '/test_workspaces.txt')
 
 
 
