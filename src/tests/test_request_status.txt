@@ -1,0 +1,28 @@
+register user12 user12 123 123
+create_workspace w11 f
+workspaces 
+logout
+register user13 user13 123 123
+logout
+login user12 123
+add_user w11 user13
+request_status w11
+logout
+login user13 123
+inbox
+inbox --id w11user12user13 --handle accept
+workspaces
+logout 
+login user12 123
+create_event w11 event4 2023-4-4 13:00 15:00
+workspaces
+change_workspace_type w11 --admins user12 user13
+request_status w11
+logout
+login user13 123
+inbox
+inbox --id w11user12event4 --handle accept
+inbox --id w11user12user12user13 --handle reject
+workspaces
+request_status w11
+logout

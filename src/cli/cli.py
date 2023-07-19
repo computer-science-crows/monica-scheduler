@@ -1,10 +1,14 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from api.api import API
-from app.parser import AgendaParser
+from parser import AgendaParser
 
 
 def main():
     api = API()
-    agenda_parser = AgendaParser(api=api)
+    agenda_parser = AgendaParser(api)
 
     print("\U0001F499 Monica Scheduler \U0001F499")
     print("Enter 'quit' to exit.")

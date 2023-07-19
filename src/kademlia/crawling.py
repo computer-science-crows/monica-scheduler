@@ -117,17 +117,20 @@ class ValueSpiderCrawl(SpiderCrawl):
         make sure we tell the nearest node that *didn't* have
         the value to store it.
         """
-        # print(f'!!!!!!!!! VALUES !!!!!!!!!!!! {values}')
-        value_counts = Counter(values)
-        if len(value_counts) != 1:
-            log.warning("Got multiple values for key %i: %s",
-                        self.node.long_id, str(values))
-        value = value_counts.most_common(1)[0][0]
+        log.debug(f'!!!!!!!!! VALUES !!!!!!!!!!!! {values}')
+        value = max(values, key=lambda x: x[0])
+            
+        # value_counts = Counter(values)
+        # log.debug(f'!!!!!!!!! VALUE COUNTS !!!!!!!!!!!! {value_counts}')
+        # if len(value_counts) != 1:
+        #     log.warning("Got multiple values for key %i: %s",
+        #                 self.node.long_id, str(values))
+        # value = value_counts.most_common(1)[0][0]
         # print(f'!!!!!! HANDLE FOUND VALUES: {value} !!!!!!')
 
         peer = self.nearest_without_value.popleft()
         if peer:
-            await self.protocol.call_store(peer, self.node.id, value)
+            await self.protocol.call_store(peer, self.node.id, value[1])
         return value
 
 
@@ -179,7 +182,7 @@ class RPCFindResponse:
 
     def get_value(self):
         # print(self.response)
-        return self.response[1]['value'][1]
+        return self.response[1]['value']
 
     def get_node_list(self):
         """

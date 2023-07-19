@@ -1,0 +1,9 @@
+register user user9 123 123
+profile
+profile --name user16
+profile
+profile --change_password
+logout
+login user 123
+login user 1234
+logout

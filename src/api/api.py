@@ -36,7 +36,8 @@ class API():
             to_remove = [self.containers[i] for i in range(len(self.containers)) if self.containers[i].id == cont_id] 
         else:
             to_remove = random.choices(
-                self.containers, k=random.randint(1, len(self.containers)))
+                self.containers, k=random.randint(1, len(self.containers)-1))
+            to_remove = list(set(to_remove))
         print(to_remove)
         if len(to_remove) == len(self.containers):
             print("BE AWARE: All servers are going down")

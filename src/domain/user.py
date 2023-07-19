@@ -1,7 +1,14 @@
 import uuid
-from app.domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
-from app.domain.event import Event
-from app.domain.request import Request
+
+import sys
+import os
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from domain.workspace import Workspace, FlatWorkspace, HierarchicalWorkspace
+from domain.event import Event
+from domain.request import Request
 from kademlia.utils import digest
 
 class User:
@@ -30,19 +37,19 @@ class User:
     def logged(self):
         self.active = True
 
-    def create_event(self, workspace: Workspace, title, date,place, start_time, end_time, users):
-        new_event, new_request = workspace.add_event(self.alias,title,date,place,start_time,end_time, users)
+    def create_event(self, workspace: Workspace, title, date,place, start_time, end_time, users, id=None):
+        new_event, new_request = workspace.add_event(self.alias,title,date,place,start_time,end_time, users, id)
         return new_event, new_request
     
-    def create_workspace(self, workspace_name, workspace_type):
+    def create_workspace(self, workspace_name, workspace_type,id=None):
         new_workspace = None
 
         if workspace_type == 'flat':
-            new_workspace = FlatWorkspace(workspace_name)
+            new_workspace = FlatWorkspace(workspace_name,id)
             new_workspace.users.append(self.alias)
             self.workspaces.append(new_workspace.workspace_id)
         else:
-            new_workspace = HierarchicalWorkspace(workspace_name)
+            new_workspace = HierarchicalWorkspace(workspace_name,id)
             new_workspace.users.append(self.alias)
             new_workspace.admins.append(self.alias)
             self.workspaces.append(new_workspace.workspace_id)
@@ -68,12 +75,9 @@ class User:
     def remove_event(self, workspace: Workspace, event: Event):
         event = workspace.remove_event(self.alias, event)
 
-    def remove_workspace(self, workspace_id):
-        if workspace_id in self.workspaces:
-            self.workspaces.remove(workspace_id)
-            return True
-        return False
-    
+        return event
+
+        
     def set_event(self, event, workspace, **fields):
         return workspace.set_event(event, user=self.alias, **fields)
 
@@ -94,11 +98,36 @@ class User:
     def reject_request(self, request, workspace):
         
         if request.request_id in self.requests:
-            workspace.rejected_request(request)
+            request = workspace.rejected_request(request)
             self.requests.remove(request.request_id)
-            return True
+            return request
         
-        return False
+        return None
+    
+    def change_workspace_type(self, workspace, admins, users):
+
+        if workspace.workspace_id not in self.workspaces:
+            print(f"You do not belong to workspace {workspace.name}")
+            return None, None
+        
+        if admins != None:
+            not_in_workspace = []
+
+            for adm in admins:
+                if adm not in workspace.users:
+                    not_in_workspace.append(adm)
+
+            if len(not_in_workspace) > 0:
+                print(f"Users {not_in_workspace} do not belong to workspace {workspace.workspace_id}")
+                return None, None
+        
+        request, new_workspace = workspace.change_workspace_type(self.alias, admins, users)
+
+        if request != None:
+            self.requests.append(request.request_id)
+
+        return request, new_workspace
+
     
        
     def dicc(self):

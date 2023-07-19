@@ -26,7 +26,7 @@ class Server:
 
     protocol_class = KademliaProtocol
 
-    def __init__(self, ip, ksize=20, alpha=3, node_id=None, storage=None):
+    def __init__(self, ip, ksize=3, alpha=2, node_id=None, storage=None):
         """
         Create a server instance.  This will start listening on the given port.
 
@@ -81,7 +81,7 @@ class Server:
         log.debug("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
-        self.refresh_loop = loop.call_later(3, self.refresh_table)
+        self.refresh_loop = loop.call_later(30, self.refresh_table)
 
     async def _refresh_table(self):
         """
@@ -101,10 +101,12 @@ class Server:
         # do our crawling
         await asyncio.gather(*results)
 
-        # now republish keys older than one hour
-        for dkey, value in self.storage.iter_older_than(3):
-            # print(f"NODE DKEY: {dkey}")
-            await self.set_digest(dkey, value)
+        # # now republish keys older than one hour
+        for dkey, value in self.storage:
+            data = self.storage.get(dkey)
+            await self.set_refresh(dkey, data)
+        #     log.debug("Refresh table key: %s", dkey)
+        #     self.storage[dkey] = await self.get(dkey, refresh=True)
 
     def bootstrappable_neighbors(self):
         """
@@ -140,7 +142,7 @@ class Server:
         result = await self.protocol.ping(addr, self.node.id)
         return Node(result[1], addr[0], addr[1]) if result[0] else None
 
-    async def get(self, key):
+    async def get(self, key, refresh=False):
         """
         Get a key if the network has it.
 
@@ -148,11 +150,13 @@ class Server:
             :class:`None` if not found, the value otherwise.
         """
         log.info("Looking up key %s", key)
-        dkey = digest(key)
+        dkey = key
+        if not refresh:
+            dkey = digest(key)
         # if this node has it, return it
-        if self.storage.get(dkey) is not None:
-            # print('1')
-            return self.storage.get(dkey)
+        res_self = self.storage.get(dkey)
+        log.debug("RESULT GET SELF: %s", res_self)
+
         node = Node(dkey)
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
@@ -161,7 +165,21 @@ class Server:
             return None
         spider = ValueSpiderCrawl(self.protocol, node, nearest,
                                   self.ksize, self.alpha)
-        return await spider.find()
+        result = await spider.find()
+
+        log.debug("RESULT GET: %s", result)
+
+        if res_self is not None and result is not None:
+            if res_self[0] > result[0]:
+                return res_self[1] 
+            else:
+                self.storage[dkey] = result[1]
+                return result[1]
+        if res_self is not None:
+            return res_self[1]
+        if result is not None:
+            return result[1]
+        return None
 
     async def set(self, key, value):
         """
@@ -183,6 +201,7 @@ class Server:
         node = Node(dkey)
 
         nearest = self.protocol.router.find_neighbors(node)
+
         if not nearest:
             log.warning("There are no known neighbors to set key %s",
                         dkey)
@@ -192,12 +211,37 @@ class Server:
                                  self.ksize, self.alpha)
         nodes = await spider.find()
         log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
+        log.debug("NODES SET DIGEST %s",nodes)
 
         # if this node is close too, then store here as well
         biggest = max([n.distance_to(node) for n in nodes])
         if self.node.distance_to(node) < biggest:
             self.storage[dkey] = value
         results = [self.protocol.call_store(n, dkey, value) for n in nodes]
+        # return true only if at least one store call succeeded
+        return any(await asyncio.gather(*results))
+
+    async def set_refresh(self, dkey, value):
+        """
+        Set the given SHA1 digest key (bytes) to the given value in the
+        network.
+        """
+        node = Node(dkey)
+
+        nearest = self.protocol.router.find_neighbors(node)
+        
+        if not nearest:
+            log.warning("There are no known neighbors to set key %s",
+                        dkey)
+            return False
+
+        spider = NodeSpiderCrawl(self.protocol, node, nearest,
+                                 self.ksize, self.alpha)
+        nodes = await spider.find()
+        log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
+        log.debug("NODES SET DIGEST %s",nodes)
+
+        results = [self.protocol.call_refresh(n, dkey, value) for n in nodes]
         # return true only if at least one store call succeeded
         return any(await asyncio.gather(*results))
 

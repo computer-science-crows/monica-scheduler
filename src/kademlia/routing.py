@@ -51,7 +51,10 @@ class KBucket:
         return self.range[0] <= node.long_id <= self.range[1]
 
     def is_new_node(self, node):
-        return node.id not in self.nodes
+        for n in self.get_nodes():
+            if node.id == n.id and n.port == node.port:
+                return False
+        return True
 
     def add_node(self, node):
         """
@@ -79,6 +82,7 @@ class KBucket:
 
     def depth(self):
         vals = self.nodes.values()
+        log.debug("vals in depth function KBUCKET: %s", vals)
         sprefix = shared_prefix([bytes_to_bit_string(n.id) for n in vals])
         return len(sprefix)
 
@@ -149,7 +153,7 @@ class RoutingTable:
         Get all of the buckets that haven't been updated in over
         an hour.
         """
-        hrago = time.monotonic()
+        hrago = time.monotonic() - 10
         return [b for b in self.buckets if b.last_updated < hrago]
 
     def remove_contact(self, node):

@@ -167,8 +167,6 @@
 		\href{https://github.com/computer-science-crows/monica-scheduler}{https://github.com/computer-science-crows/monica-scheduler}
 	\end{center}
 
-	Implementación de una Agenda Electrónica como Sistema Distribuido con DHT Kademlia
-	
 	\section{Introducción}
 	
 	El tiempo es un recurso invaluable y su gestión eficiente es esencial para la productividad y el bienestar personal. Una estrategia comúnmente utilizada para la gestión del tiempo es el uso de una agenda. Sin embargo, en muchas ocasiones, es necesario coordinar dicha agenda con otras personas para llevar a cabo actividades conjuntas. Este proceso implica la identificación de horarios compartidos y la detección de intervalos de tiempo libres. Además, estas planificaciones pueden verse alteradas por eventos imprevistos que requieren asistencia, lo que conlleva la necesidad de modificar la agenda nuevamente.
@@ -199,44 +197,81 @@
 	El sistema se compone de cuatro partes fundamentales: CLI, capa de negocio, capa que conecta la l\'ogica con la red y la red con los datos.
 	
 	\begin{center}
-		\includegraphics[scale=0.4]{esquema}
+		\begin{figure}[h]
+			\includegraphics[scale=0.4]{esquema}
+			\caption{Esquema de flujo del sistema.}
+			\label{esquema}
+		\end{figure}
+		
 	\end{center}
 	
 	\subsection{CLI}
 	
-	Para la presentación y prueba del sistema, se desarrolló una interfaz de línea de comandos (CLI). Los usuarios pueden interactuar con el sistema a través de la CLI, lo que permite una interacción flexible y eficiente con el sistema. La lista de comandos y su descripci\'on se pueden observar al ejecutar el sistema e insertar el comando \texttt{-h} o \texttt{--help}.
+	Para facilitar la presentación y prueba del sistema, se implementó una interfaz de línea de comandos (CLI, por sus siglas en inglés) que permite a los usuarios interactuar con el sistema de manera flexible y eficiente. En su desarrollo se utilizó el módulo \textit{\textbf{argparse}} de Python para analizar y procesar cada línea de comando ingresada por los usuarios.
 	
-	\subsection{L\'ogica de negocio}
+	La CLI proporciona una variedad de comandos que los usuarios pueden ejecutar para realizar diferentes acciones en el sistema. Al ejecutar el sistema e ingresar el comando \texttt{-h} o \texttt{---}\texttt{help}, se muestra una lista completa de los comandos disponibles junto con su descripción correspondiente. Esta funcionalidad brinda a los usuarios una referencia rápida y fácil de los comandos admitidos, lo que facilita la interacción con el sistema.
 	
-	En la capa de negocio se implementaron las clases y m\'etodos necesarios para la representaci\'on de las entidades y relaciones que el problema se evidencian. Entre dichas entidades se encuantran:
+	Gracias al uso del módulo argparse, se implementa una lógica robusta para analizar y manejar los argumentos de la línea de comandos. Esto incluye la validación de los argumentos ingresados y la ejecución de las acciones correspondientes en función de los comandos proporcionados. Los usuarios pueden proporcionar los argumentos requeridos y opcionales de manera ordenada y estructurada, lo que mejora la experiencia de uso y evita posibles errores de entrada.
+	
+	\subsection{Monica}	
+	
+	La capa de lógica de negocio desempeña un papel fundamental en la implementación y gestión de las reglas y procesos específicos del sistema. Dentro de esta capa, se llevaron a cabo diversas actividades clave para garantizar el correcto funcionamiento y cumplimiento de los requisitos del negocio.
+	
+	Una de las actividades esenciales fue la validación y verificación de datos. Esto implic\'o asegurarse de que los datos recibidos fueran válidos y cumplieran con las reglas establecidas. Se realizaron comprobaciones exhaustivas para garantizar la integridad y calidad de los datos antes de procesarlos, evitando posibles inconsistencias o errores en el sistema. Para la coordinaci\'on de procesos del sistema se tuvieron que orquestar y sincronizar diferentes operaciones y componentes para garantizar la correcta secuencia y flujo de las tareas, asegurando que cada paso se realizara en el momento adecuado y en conformidad con las dependencias y restricciones establecidas. Adem\'as, se manejaron adecuadamente las excepciones, capturándolas, registrándolas y tomando las medidas necesarias para mitigar su impacto, as\'i como se proporcionaron mensajes de error claros y significativos para informar al usuario sobre las incidencias y facilitar su resolución.
+	
+	
+	\subsubsection{Dominio}	
+	El dominio de nuestro sistema se centra en la gestión colaborativa de eventos y actividades entre múltiples usuarios. En \'el se identifican cuatro entidades principales: User (Usuario), Request (Petición), Event (Evento) y Workspace.
 	\begin{itemize}
-		\item \textbf{User}: Representa a un usuario de la agenda distribuida.
-		\item \textbf{Workspace}: Representa un grupo en la agenda distribuida. Los grupos pueden ser jer\'arquicos o no.
-		\item \textbf{Event}: Representa un evento de un workspace en la agenda distribuida.
-		\item \textbf{Request}: Representa una petici\'on o invitaci\'on que realizan los usuarios y se muestran como notificaciones. Se utilizan para invitar a usuarios a un grupo o aceptar la creaci\'on de un evento en grupos no jer\'arquicos.
+		\item \textbf{User:} Representa a los usuarios de la aplicación de agenda distribuida. Cada usuario puede tener atributos como nombre, alias y contraseña, los cuales se utilizan para identificar y autenticar a los usuarios en el sistema.
+		\item \textbf{Request:} Representa las peticiones realizadas dentro de la aplicación. Estas peticiones pueden ser de distintos tipos y se envían entre usuarios para realizar acciones específicas. Los atributos y relaciones de la entidad Request se detallan en la Figura [\ref{merx}].
+		\item \textbf{Event:} Representa los eventos o actividades programadas en la agenda distribuida. Cada evento puede tener atributos como título, fecha, lugar, hora de inicio y hora de finalización, que permiten identificar y organizar las diferentes actividades en el sistema.
+		\item \textbf{Workspace:} Representa los espacios de trabajo colaborativo en los cuales se comparte la agenda distribuida. Cada workspace puede tener un nombre asociado y permite agrupar a los usuarios y eventos relacionados.
 	\end{itemize}
 
+	Las relaciones y atributos específicos de las entidades  se encuentran detallados en la Figura [\ref{merx}], proporcionando una representación visual que muestra cómo se conectan y se relacionan estas entidades dentro del dominio de la aplicación de agenda distribuida.
+	
+
+
 	\begin{center}
-		\includegraphics[scale=0.3]{modelo-merx}
+		\begin{figure}[h]
+			\includegraphics[scale=0.35]{modelo-merx}
+			\caption{Diagrama entidad-relaci\'on del problema agenda distribuida.}
+			\label{merx}
+		\end{figure}
+		
 	\end{center}
+
+	 
 	
 
 	
-	\subsection{Capa intermedia}
+	\subsection{API}
 	
 	Esta capa se encarga de conectar la l\'ogica de negocio con la red de datos. Para ello se auxilia de m\'etodos \texttt{get()} y \texttt{set()} para pedir y guardar datos en la red.
 	
 	\subsection{Red de Kademlia}
 	
-	 Kademlia \cite{kad} es un protocolo de la capa de aplicación diseñado para redes P2P descentralizadas. En una de este tipo los nodos se distribuyen de forma descentralizada utilizando una estructura de árbol binario. 
-	 
-	El proceso de ingreso de un nodo a la red Kademlia se realiza mediante un mecanismo de broadcast. Cuando un nuevo nodo se quiere unir a la red, envía un mensaje de broadcast a todos los nodos existentes. Si hay algun servidor escuchando este devolvera su ip, lo cual permitira al nodo poder conectarse a la red. Los nodos existentes actualizan sus tablas de enrutamiento para incluir al nuevo nodo.
-	 
-	Para realizar búsquedas en la red, se utiliza un algoritmo basado en DHT (Distributed Hash Table). El algoritmo busca los k nodos más cercanos (en términos de distancia XOR) a una clave específica. Comienza seleccionando $\alpha$ contactos de los k cubetas que contienen nodos más cercanos a la clave buscada. Luego, envía mensajes asincrónicos a estos contactos para obtener información sobre la clave. Cada contacto activo devuelve información que ayuda a acercarse al nodo objetivo. Este proceso se repite hasta que se encuentra el nodo deseado.	
-	 
-	 Por otra parte, para el almacenamiento de los datos se utiliz\'o la librer\'ia \texttt{dictdatabase}, la cual proporciona m\'etodos para obtener y guardar datos en archivos \textit{.json}.
-		
-	En cuanto a la tolerancia a fallos, Kademlia utiliza una estructura descentralizada que proporciona una fuerte defensa contra ataques de denegación de servicio. Debido a la distribución de los nodos y la redundancia de la información en la red, es difícil para un atacante afectar el funcionamiento de toda la red. Además, Kademlia permite que los nodos se unan y abandonen la red de forma independiente, lo que proporciona flexibilidad y adaptabilidad a cambios en la disponibilidad de nodos.
+	Kademlia \cite{kad} es un protocolo descentralizado utilizado en redes peer-to-peer (P2P) para el almacenamiento y recuperación eficiente de información. Los nodos en la red se representa mediante una identificación única llamada ID de nodo que se deriva del valor hash de una clave pública criptográfica. El protocolo utiliza una estructura de árbol binario conocida como ''árbol de cubetas'' para organizar los nodos en la red. Cada nodo mantiene una tabla de enrutamiento que contiene información sobre otros nodos en la red y su cercanía en el espacio de direcciones. Esta tabla se divide en ''cubetas'' que agrupan nodos con direcciones similares. Cuando un nodo necesita buscar o almacenar información, realiza consultas a través de la red utilizando la distancia de XOR entre los ID de nodo como criterio de enrutamiento. Esto permite un enrutamiento eficiente hacia los nodos más cercanos al ID de destino.
+	
+	El protocolo es conocido por su resistencia a fallos y su capacidad para adaptarse a cambios en la red, como nodos que se unen o abandonan. También es escalable, lo que significa que puede funcionar eficientemente en redes P2P grandes con millones de nodos.		
+	
+
+	
+	\subsubsection{Implementaci\'on}
+	
+	En la implementación de la red Kademlia, se utiliza un algoritmo basado en DHT (Distributed Hash Table) para realizar búsquedas en la red. Este algoritmo busca los \textit{k} nodos más cercanos a una clave específica en términos de distancia XOR. El proceso comienza seleccionando $\alpha$ contactos de las \textit{k} cubetas que contienen los nodos más cercanos a la clave buscada. Luego, se envían mensajes asincrónicos a estos contactos para obtener información sobre la clave. Cada contacto activo devuelve información que ayuda a acercarse al nodo objetivo. Este proceso se repite hasta encontrar el nodo deseado.
+	
+	
+	Cuando un nuevo nodo desea unirse a la red de Kademlia, se utiliza un mecanismo de \textit{broadcast}. El nuevo nodo envía un mensaje de broadcast y espera activamente a que alg\'un nodo responda a su solicitud. Los nodos que reciben el mensaje pueden decidir responder al nuevo nodo proporcionando su dirección IP. Una vez que se recibe la respuesta, el nuevo nodo puede utilizar la información proporcionada para establecer una conexión con la red y actualizar su tabla de enrutamiento para incluir a los nodos con los que ha establecido comunicación. A su vez,  los nodos existentes actualizan sus tablas de enrutamiento para incluir al nuevo nodo.
+	
+	% Sin embargo, los vecinos más cercanos del nuevo nodo no comparten automáticamente todos sus datos. En cambio, el nuevo nodo participa en la red almacenando y recuperando datos según lo soliciten otros nodos. De esta manera, los datos se almacenan y recuperan según sea necesario, basándose en las solicitudes de otros nodos de la red.
+	
+	Para el almacenamiento de datos, se utilizó la biblioteca \texttt{dictdatabase}, la cual proporciona métodos para obtener y guardar datos en archivos con formato JSON. La clave de los valores se genera a partir del SHA1 del identificador del objeto. Cada vez que se modifica el objeto, se actualiza el valor asociado a dicha llave en la base de datos.
+	
+	Se consideró otra opción que consistía en aplicar el algoritmo SHA1 a toda la información que encapsula el objeto, lo que generaría una nueva clave cada vez que se modifica el objeto. Sin embargo, esta opción aumentaría la cantidad de datos almacenados y sería difícil mantener la consistencia de la mayoría de los datos, ya que se requeriría cambiar la clave antigua por la nueva en cada objeto que la almacene. Por lo tanto, se decidió utilizar el enfoque anteriormente mencionado para asegurar una gestión eficiente y coherente de los datos almacenados.
+	
+	
 	
 	
 	

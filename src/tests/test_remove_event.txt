@@ -1,0 +1,9 @@
+register user15 user15 123 123
+create_workspace w13 h
+workspaces
+create_event w13 event7 2023-12-24 20:00 22:00
+workspaces  
+events w13
+remove_event event7
+events w13
+logout

@@ -1,8 +1,10 @@
-\BOOKMARK [1][-]{section.1}{\376\377\000I\000n\000t\000r\000o\000d\000u\000c\000c\000i\000\363\000n}{}% 1
-\BOOKMARK [1][-]{section.2}{\376\377\000R\000e\000q\000u\000e\000r\000i\000m\000i\000e\000n\000t\000o\000s}{}% 2
-\BOOKMARK [1][-]{section.3}{\376\377\000A\000r\000q\000u\000i\000t\000e\000c\000t\000u\000r\000a\000\040\000d\000e\000l\000\040\000S\000i\000s\000t\000e\000m\000a}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{\376\377\000C\000L\000I}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{\376\377\000L\000\363\000g\000i\000c\000a\000\040\000d\000e\000\040\000n\000e\000g\000o\000c\000i\000o}{section.3}% 5
-\BOOKMARK [2][-]{subsection.3.3}{\376\377\000C\000a\000p\000a\000\040\000i\000n\000t\000e\000r\000m\000e\000d\000i\000a}{section.3}% 6
-\BOOKMARK [2][-]{subsection.3.4}{\376\377\000R\000e\000d\000\040\000d\000e\000\040\000K\000a\000d\000e\000m\000l\000i\000a}{section.3}% 7
-\BOOKMARK [1][-]{section.4}{\376\377\000D\000o\000c\000k\000e\000r}{}% 8
+\BOOKMARK [1][-]{section.1}{Introducci\363n}{}% 1
+\BOOKMARK [1][-]{section.2}{Requerimientos}{}% 2
+\BOOKMARK [1][-]{section.3}{Arquitectura del Sistema}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{CLI}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Monica}{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Dominio}{subsection.3.2}% 6
+\BOOKMARK [2][-]{subsection.3.3}{API}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.4}{Red de Kademlia}{section.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Implementaci\363n}{subsection.3.4}% 9
+\BOOKMARK [1][-]{section.4}{Docker}{}% 10
