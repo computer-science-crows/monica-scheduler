@@ -102,7 +102,9 @@ class Server:
         await asyncio.gather(*results)
 
         # # now republish keys older than one hour
-        # for dkey, value in self.storage:
+        for dkey, value in self.storage:
+            data = self.storage.get(dkey)
+            await self.set_refresh(dkey, data)
         #     log.debug("Refresh table key: %s", dkey)
         #     self.storage[dkey] = await self.get(dkey, refresh=True)
 
@@ -199,6 +201,7 @@ class Server:
         node = Node(dkey)
 
         nearest = self.protocol.router.find_neighbors(node)
+
         if not nearest:
             log.warning("There are no known neighbors to set key %s",
                         dkey)
@@ -208,12 +211,37 @@ class Server:
                                  self.ksize, self.alpha)
         nodes = await spider.find()
         log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
+        log.debug("NODES SET DIGEST %s",nodes)
 
         # if this node is close too, then store here as well
         biggest = max([n.distance_to(node) for n in nodes])
         if self.node.distance_to(node) < biggest:
             self.storage[dkey] = value
         results = [self.protocol.call_store(n, dkey, value) for n in nodes]
+        # return true only if at least one store call succeeded
+        return any(await asyncio.gather(*results))
+
+    async def set_refresh(self, dkey, value):
+        """
+        Set the given SHA1 digest key (bytes) to the given value in the
+        network.
+        """
+        node = Node(dkey)
+
+        nearest = self.protocol.router.find_neighbors(node)
+        
+        if not nearest:
+            log.warning("There are no known neighbors to set key %s",
+                        dkey)
+            return False
+
+        spider = NodeSpiderCrawl(self.protocol, node, nearest,
+                                 self.ksize, self.alpha)
+        nodes = await spider.find()
+        log.info("setting '%s' on %s", dkey, list(map(str, nodes)))
+        log.debug("NODES SET DIGEST %s",nodes)
+
+        results = [self.protocol.call_refresh(n, dkey, value) for n in nodes]
         # return true only if at least one store call succeeded
         return any(await asyncio.gather(*results))
 

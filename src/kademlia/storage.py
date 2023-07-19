@@ -60,6 +60,22 @@ class Storage:
         if DDB.at(f"{self.file_name}", key=f"{key}").exists():
             return DDB.at(f"{self.file_name}", key=f"{key}").read()[1]
 
+    def set(self, key, value):
+        if value == None:
+            pass
+        else:
+            data = value
+            log.debug("New data %s", data)
+            if DDB.at(f"{self.file_name}", key=key).exists():
+                data_read = DDB.at(f"{self.file_name}", key=f"{key}").read()
+                log.debug("Data %s", data_read)
+                if value[0] < data_read[0]:
+                    data =data_read                  
+
+            with DDB.at(f"{self.file_name}").session() as (session, file):
+                file[f"{key}"] = data
+                session.write()
+
     def get(self, key: str, default=None):
         """
         Get given key.  If not found, return default.

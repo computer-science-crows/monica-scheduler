@@ -39,6 +39,16 @@ class KademliaProtocol(RPCProtocol):
         self.welcome_if_new(source)
         return self.source_node.id
 
+    def rpc_refresh(self, sender, nodeid, key, value):
+        source = Node(nodeid, sender[0], sender[1])
+        self.welcome_if_new(source)
+        # print('AQUIIIIIIIIIIIIIIIII')
+        # print(key)
+        log.debug("got a refresh store request from %s, storing '%s'='%s'",
+                  sender, key, value)
+        self.storage.set(key, value)
+        return True
+
     def rpc_store(self, sender, nodeid, key, value):
         source = Node(nodeid, sender[0], sender[1])
         self.welcome_if_new(source)
@@ -88,8 +98,15 @@ class KademliaProtocol(RPCProtocol):
         address = (node_to_ask.ip, node_to_ask.port)
         result = await self.store(address, self.source_node.id, key, value)
         return self.handle_call_response(result, node_to_ask)
+    
+    async def call_refresh(self, node_to_ask, key, value):
+        address = (node_to_ask.ip, node_to_ask.port)
+        result = await self.refresh(address, self.source_node.id, key, value)
+        return self.handle_call_response(result, node_to_ask)
 
     def welcome_if_new(self, node):
+        log.info("!!!!!!!!!!!!!!!!!! WELCOME IF NEW METHOD !!!!!!!!!!!")
+        log.info("node %s", node)
         """
         Given a new node, send it all the keys/values it should be storing,
         then add it to the routing table.
@@ -104,6 +121,7 @@ class KademliaProtocol(RPCProtocol):
         on the new node (per section 2.5 of the paper)
         """
         if not self.router.is_new_node(node):
+            log.info("already in router")
             return
 
         log.info("never seen %s before, adding to router", node)
@@ -112,11 +130,14 @@ class KademliaProtocol(RPCProtocol):
             log.info("Element in storage: %s %s", key, value)
             keynode = Node(digest(key))
             neighbors = self.router.find_neighbors(keynode)
+            log.info("NEIGHBOURS %s", neighbors)
             if neighbors:
                 last = neighbors[-1].distance_to(keynode)
                 new_node_close = node.distance_to(keynode) < last
+                log.info("NEW NODE CLOSE %s", new_node_close)
                 first = neighbors[0].distance_to(keynode)
                 this_closest = self.source_node.distance_to(keynode) < first
+                log.info("THIS CLOSEST %s", this_closest)
             if not neighbors or (new_node_close and this_closest):
                 asyncio.ensure_future(self.call_store(node, key, value))
         self.router.add_contact(node)

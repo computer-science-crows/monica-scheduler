@@ -51,7 +51,10 @@ class KBucket:
         return self.range[0] <= node.long_id <= self.range[1]
 
     def is_new_node(self, node):
-        return node.id not in self.nodes
+        for n in self.get_nodes():
+            if node.id == n.id and n.port == node.port:
+                return False
+        return True
 
     def add_node(self, node):
         """

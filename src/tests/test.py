@@ -98,6 +98,6 @@ path = os.getcwd() +'/tests'
 # sudo
 # test(path +'/test_sudo_1.txt')
 # test(path +'/test_sudo_2.txt')
-test(path +'/test_sudo_3.txt')
+# test(path +'/test_sudo_3.txt')
 # test(path +'/test_sudo_4.txt')
-# test(path +'/test_sudo_5.txt')
+test(path +'/test_sudo_5.txt')
