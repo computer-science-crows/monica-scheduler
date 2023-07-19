@@ -3,4 +3,8 @@ create_workspace w6 h
 workspaces 
 change_workspace_type w6
 workspaces
+create_workspace w7 f
+workspaces
+change_workspace_type w7 --admins user6
+workspaces
 logout

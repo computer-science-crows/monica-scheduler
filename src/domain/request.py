@@ -99,7 +99,7 @@ class WorkspaceRequest(Request):
             admins_str+=adm
         self.request_id = id or self.workspace_id + self.from_user_id + admins_str
         
-        print(f"Request id {self.request_id}")
+        # print(f"Request id {self.request_id}")
 
         
 

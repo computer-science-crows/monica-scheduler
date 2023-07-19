@@ -29,17 +29,17 @@ def test(file_name):
     for line in content:
         print('\U0001F4C6 ' + line)
 
-        if line == 'quit':
+        if line == 'quit' or len(line) <= 1:
             break
 
-        # try:
-        #     agenda_parser.parse_arguments(line.split())
-        #     agenda_parser.act()
-        # except:
-        #     ...
+        try:
+            agenda_parser.parse_arguments(line.split())
+            agenda_parser.act()
+        except:
+            ...
 
-        agenda_parser.parse_arguments(line.split())
-        agenda_parser.act()
+        # agenda_parser.parse_arguments(line.split())
+        # agenda_parser.act()
 
         # time.sleep(30)
         print()
@@ -90,8 +90,14 @@ path = os.getcwd() +'/tests'
 # test(path +'/test_change_workspace_type.txt')
 
 # test request_status
-test(path +'/test_request_status.txt')
+# test(path +'/test_request_status.txt')
 
+# test check collisions
+test(path +'/test_event_collisions.txt')
 
-
-
+# sudo
+# test(path +'/test_sudo_1.txt')
+# test(path +'/test_sudo_2.txt')
+# test(path +'/test_sudo_3.txt')
+# test(path +'/test_sudo_4.txt')
+# test(path +'/test_sudo_5.txt')

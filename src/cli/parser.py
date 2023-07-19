@@ -86,9 +86,8 @@ class AgendaParser:
         
         # profile
         user_profile = self.subparsers.add_parser('profile', help='User profile', )
-        user_profile.add_argument('--alias', help='Edit alias', type=str, default=None)
         user_profile.add_argument('--name', help='Edit name', type=str, default=None)
-        user_profile.add_argument('--password', help='Edit password', type=str, default=None)
+        user_profile.add_argument('--change_password',action='store_true', help='Edit password')
 
         # exit workspace
         exit_workspace = self.subparsers.add_parser('exit_workspace',help='Exit workspace')

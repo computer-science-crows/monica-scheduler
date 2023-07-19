@@ -102,9 +102,9 @@ class Server:
         await asyncio.gather(*results)
 
         # # now republish keys older than one hour
-        for dkey, value in self.storage:
-            log.debug("Refresh table key: %s", dkey)
-            self.storage[dkey] = await self.get(dkey, refresh=True)
+        # for dkey, value in self.storage:
+        #     log.debug("Refresh table key: %s", dkey)
+        #     self.storage[dkey] = await self.get(dkey, refresh=True)
 
     def bootstrappable_neighbors(self):
         """
@@ -168,7 +168,11 @@ class Server:
         log.debug("RESULT GET: %s", result)
 
         if res_self is not None and result is not None:
-            return res_self[1] if res_self[0] > result[0] else result[1]
+            if res_self[0] > result[0]:
+                return res_self[1] 
+            else:
+                self.storage[dkey] = result[1]
+                return result[1]
         if res_self is not None:
             return res_self[1]
         if result is not None:
