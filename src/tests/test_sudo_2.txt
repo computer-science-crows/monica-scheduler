@@ -4,11 +4,11 @@ workspaces
 create_workspace w21 f
 workspaces
 logout
-sudo create --n 1
+sudo create -n 1
 login user26 123
 workspaces
 logout
 sudo remove
 login user26 123
-worksapces
+workspaces
 logout

@@ -14,7 +14,6 @@ inbox
 inbox --id w22user27user28 --handle accept
 workspaces
 logout
-sudo create -n 1
 login user27 123
 workspaces
 logout

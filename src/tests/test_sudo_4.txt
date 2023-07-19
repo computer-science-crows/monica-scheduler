@@ -10,7 +10,7 @@ create_event w24 event13 2023-7-18 10:00 11:00
 workspaces
 add_user w24 user29 
 logout
-sudo create -1
+sudo create -n 1
 login user29 123
 workspaces
 inbox
