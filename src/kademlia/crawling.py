@@ -118,7 +118,7 @@ class ValueSpiderCrawl(SpiderCrawl):
         the value to store it.
         """
         log.debug(f'!!!!!!!!! VALUES !!!!!!!!!!!! {values}')
-        value = max(values, key=lambda x: x[0])[1]
+        value = max(values, key=lambda x: x[0])
             
         # value_counts = Counter(values)
         # log.debug(f'!!!!!!!!! VALUE COUNTS !!!!!!!!!!!! {value_counts}')
@@ -130,7 +130,7 @@ class ValueSpiderCrawl(SpiderCrawl):
 
         peer = self.nearest_without_value.popleft()
         if peer:
-            await self.protocol.call_store(peer, self.node.id, value)
+            await self.protocol.call_store(peer, self.node.id, value[1])
         return value
 
 

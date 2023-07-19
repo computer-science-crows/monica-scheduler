@@ -1,3 +1,4 @@
+import logging
 import time
 from itertools import takewhile
 import operator
@@ -7,7 +8,7 @@ import dictdatabase as DDB
 import json
 import pickle
 
-
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 # DDB.config.use_compression = True
 
 
@@ -37,9 +38,12 @@ class Storage:
         Set a key to the given value.
         """
         # print(f'!!!!!!!!!! {self.file_name} !!!!!!!!!!')
-        with DDB.at(f"{self.file_name}").session() as (session, file):
-            file[f"{key}"] = (time.monotonic(), value)
-            session.write()
+        if value == None:
+            pass
+        else:
+            with DDB.at(f"{self.file_name}").session() as (session, file):
+                file[f"{key}"] = (time.monotonic(), value)
+                session.write()
 
     def cull(self):
         with DDB.at(f"{self.file_name}").session() as (session, data):
@@ -62,11 +66,13 @@ class Storage:
         """
         # print(f"KEY {key}")
         # print(DDB.at(f"{self.file_name}").read())
-        if DDB.at(f"{self.file_name}", key=f"{key}").exists():
+        if DDB.at(f"{self.file_name}", key=key).exists():
             # print("HOLAAAAA")
+            log.debug("DDB EXISTS!!!!!!!!!!!!!!!!")
             return DDB.at(f"{self.file_name}", key=f"{key}").read()
+        log.debug("DDB DOES NOT EXISTS!!!!!!!!!!!!!!!!")
         return default
-
+    
     def iter_older_than(self, seconds_old):
         min_birthday = time.monotonic() - seconds_old
         zipped = self._triple_iter()

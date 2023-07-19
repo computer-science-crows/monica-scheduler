@@ -81,7 +81,7 @@ class Server:
         log.debug("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
-        self.refresh_loop = loop.call_later(3600, self.refresh_table)
+        self.refresh_loop = loop.call_later(30, self.refresh_table)
 
     async def _refresh_table(self):
         """
@@ -101,10 +101,10 @@ class Server:
         # do our crawling
         await asyncio.gather(*results)
 
-        # now republish keys older than one hour
-        for dkey, value in self.storage.iter_older_than(3600):
-            # print(f"NODE DKEY: {dkey}")
-            await self.set_digest(dkey, value)
+        # # now republish keys older than one hour
+        for dkey, value in self.storage:
+            log.debug("Refresh table key: %s", dkey)
+            self.storage[dkey] = await self.get(dkey, refresh=True)
 
     def bootstrappable_neighbors(self):
         """
@@ -140,7 +140,7 @@ class Server:
         result = await self.protocol.ping(addr, self.node.id)
         return Node(result[1], addr[0], addr[1]) if result[0] else None
 
-    async def get(self, key):
+    async def get(self, key, refresh=False):
         """
         Get a key if the network has it.
 
@@ -148,11 +148,13 @@ class Server:
             :class:`None` if not found, the value otherwise.
         """
         log.info("Looking up key %s", key)
-        dkey = digest(key)
+        dkey = key
+        if not refresh:
+            dkey = digest(key)
         # if this node has it, return it
-        if self.storage.get(dkey) is not None:
-            # print('1')
-            return self.storage.get(dkey)
+        res_self = self.storage.get(dkey)
+        log.debug("RESULT GET SELF: %s", res_self)
+
         node = Node(dkey)
         nearest = self.protocol.router.find_neighbors(node)
         if not nearest:
@@ -161,7 +163,17 @@ class Server:
             return None
         spider = ValueSpiderCrawl(self.protocol, node, nearest,
                                   self.ksize, self.alpha)
-        return await spider.find()
+        result = await spider.find()
+
+        log.debug("RESULT GET: %s", result)
+
+        if res_self is not None and result is not None:
+            return res_self[1] if res_self[0] > result[0] else result[1]
+        if res_self is not None:
+            return res_self[1]
+        if result is not None:
+            return result[1]
+        return None
 
     async def set(self, key, value):
         """
