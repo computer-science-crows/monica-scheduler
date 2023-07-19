@@ -243,12 +243,9 @@
 	\end{center}
 
 	 
-	
-
-	
 	\subsection{API}
 	
-	Esta capa se encarga de conectar la l\'ogica de negocio con la red de datos. Para ello se auxilia de m\'etodos \texttt{get()} y \texttt{set()} para pedir y guardar datos en la red.
+	Esta capa se encarga de conectar la l\'ogica de negocio con la red de datos. La clase API, primeramente se encarga de construir la imagen de docker y levantar la red de Kademlia con una cantidad de nodos igual a dos, creando un container por cada uno. Tiene cinco m\'etodos fundamentales: build\_image (construye la imagen de docker), create\_servers(crea contenedores y por cada uno levanta un servidor de la red), remove\_servers (para un n\'umero random de contenedores), get\_value (dada una llave levanta un contenedor temporal que se conecta a la red para obtener el valor correspondiente y al obtenerlo lo para) y set\_value (dada una llave y un valor levanta un contenedor temporal que se conecta a la red para obtener el establecer el valor correspondiente en la llave especificada, y lugo para el container).
 	
 	\subsection{Red de Kademlia}
 	

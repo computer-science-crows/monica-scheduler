@@ -26,7 +26,7 @@ class Server:
 
     protocol_class = KademliaProtocol
 
-    def __init__(self, ip, ksize=3, alpha=2, node_id=None, storage=None):
+    def __init__(self, ip, ksize=2, alpha=1, node_id=None, storage=None):
         """
         Create a server instance.  This will start listening on the given port.
 
